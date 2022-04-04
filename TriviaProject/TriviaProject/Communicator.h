@@ -15,4 +15,4 @@ public:
 	void startHandleRequests();
 	void bindAndListen();
 	void handleNewClient(SOCKET);
-}
+};
