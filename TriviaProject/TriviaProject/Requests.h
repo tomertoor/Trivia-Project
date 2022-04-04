@@ -4,6 +4,8 @@
 #include "IRequestHandler.h"
 #include <ctime>
 
+class IRequestHandler;
+
 namespace Requests
 {
 	struct RequestResult
