@@ -5,10 +5,6 @@ IP = "127.0.0.1"
 PORT = 42069
 
 def get_data_from_socket(sock):
-    # data_len = socket.recv(4).decode()
-    # byte_json = socket.recv(data_len).decode()
-    # my_json = byte_json.decode('utf8').replace("'", '"')
-    # return my_json
     return sock.recv(1024).decode()
 
 def get_code_from_socket(sock):
@@ -21,10 +17,15 @@ def send_data_to_server(sock, data):
     sock.send(msg.encode())
 
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.connect((IP, PORT))
+def main():
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect((IP, PORT))
 
-print(get_data_from_socket(sock))
-send_data_to_server(sock, "Hello")
+    print(get_data_from_socket(sock))
+    send_data_to_server(sock, "Hello")
 
-sock.close()
+    sock.close()
+
+
+if __name__ == "__main__":
+    main()
