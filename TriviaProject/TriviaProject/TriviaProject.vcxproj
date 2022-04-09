@@ -156,16 +156,20 @@
     <ClInclude Include="Responses.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="sqlite3.h" />
+    <ClInclude Include="WSAInitializer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Communicator.cpp" />
+    <ClCompile Include="IRequestHandler.cpp" />
     <ClCompile Include="JsonResponsePacketSerializer.cpp" />
     <ClCompile Include="LoggedUser.cpp" />
     <ClCompile Include="LoginManager.cpp" />
     <ClCompile Include="LoginRequestHandler.cpp" />
     <ClCompile Include="RequestHandlerFactory.cpp" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="Source.cpp" />
     <ClCompile Include="sqlite3.c" />
+    <ClCompile Include="WSAInitializer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
