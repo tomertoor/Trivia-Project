@@ -1,5 +1,6 @@
 #pragma once
 #include "Communicator.h"
+#include <thread>
 
 class Server
 {
@@ -9,4 +10,6 @@ private:
 	RequestHandlerFactory m_requestHandlerFactory;
 public:
 	void run();
+	Server();
+	~Server();
 };
