@@ -5,6 +5,7 @@
 #include <thread>
 #include "RequestHandlerFactory.h"
 #include "IRequestHandler.h"
+#include "JsonResponsePacketDeserializer.h"
 
 const int PORT = 42069;
 

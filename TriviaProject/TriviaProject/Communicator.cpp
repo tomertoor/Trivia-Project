@@ -1,5 +1,8 @@
 #include "Communicator.h"
 
+#define LOGIN "5"
+#define SIGN_UP "1"
+
 Communicator::Communicator(RequestHandlerFactory& handlerFactory) : m_handlerFactory(handlerFactory)
 
 {
@@ -67,12 +70,18 @@ void Communicator::handleNewClient(SOCKET sock)
 {
 	LoginRequestHandler* handler = new LoginRequestHandler();
 	this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(sock, handler));
-	this->sendData(sock, "Hello");
+	/*this->sendData(sock, "Hello");
 	std::string userData = this->getPartFromSocket(sock, 5);
 	std::cout << "User sent: " << userData << std::endl;
 	delete this->m_clients.find(sock)->second;
-	this->m_clients.erase(sock);
+	this->m_clients.erase(sock);*/
 	
+	std::string code = this->getPartFromSocket(sock, 1);
+
+	if (code == LOGIN)
+		handler->login();
+	else if (code == SIGN_UP)
+		handler->signup();
 }
 
 /*Helper function for sending data
