@@ -6,5 +6,5 @@
 
 struct Buffer
 {
-	std::vector<std::byte> buffer;
+	std::vector<unsigned char> buffer;
 };
