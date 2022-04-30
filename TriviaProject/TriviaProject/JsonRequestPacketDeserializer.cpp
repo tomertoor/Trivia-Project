@@ -4,10 +4,13 @@ Requests::LoginRequest JsonRequestPacketDeserializer::deserializeLoginRequest(Bu
 {
 	Requests::LoginRequest request;
 
-	std::string str;
+	std::string str = "";
 	
+	for (auto it = buffer.buffer.begin() + 5; it != buffer.buffer.end(); it++)
+	{
+		str += *it;
+	}
 
-	std::copy(buffer.buffer.begin() + 6, buffer.buffer.end(), str);
 	json json = json::parse(str);
 	request.username = json["username"];
 	request.password = json["password"];
@@ -18,10 +21,15 @@ Requests::SignupRequest JsonRequestPacketDeserializer::deserializeSignupRequest(
 {
 	Requests::SignupRequest request;
 	
-	std::string str;
+	std::string str = "";
 
+	for (auto it = buffer.buffer.begin() + 5; it != buffer.buffer.end(); it++)
+	{
+		str += *it;
+	}
 
-	std::copy(buffer.buffer.begin() + 6, buffer.buffer.end(), str);
+	std::cout << str << std::endl;
+
 	json json = json::parse(str);
 	request.username = json["username"];
 	request.password = json["password"];
