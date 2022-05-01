@@ -2,10 +2,14 @@
 
 LoginRequestHandler::LoginRequestHandler()
 {
+	m_handlerFactory = new RequestHandlerFactory;
+	m_loginManager = new LoginManager;
 }
 
 LoginRequestHandler::~LoginRequestHandler()
 {
+	delete m_handlerFactory;
+	delete m_loginManager;
 }
 
 bool LoginRequestHandler::isRequestRelevant(Requests::RequestInfo request)
@@ -58,4 +62,16 @@ Requests::RequestResult LoginRequestHandler::handleRequest(Requests::RequestInfo
 	Responses::ErrorResponse errorResponse = {"Error, incorrect state"};
 	result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
 	return result;
+}
+
+Requests::RequestResult LoginRequestHandler::login(Requests::LoginRequest loginDetails)
+{
+
+	return 
+}
+
+Requests::RequestResult LoginRequestHandler::signup(Requests::SignupRequest registerDetails)
+{
+	m_loginManager->signup(registerDetails.email, registerDetails.username, registerDetails.password);
+	return Requests::RequestResult();
 }
