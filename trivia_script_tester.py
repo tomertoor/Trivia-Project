@@ -7,26 +7,36 @@ PORT = 42069
 SIGN_UP = '1'
 LOGIN = '5'
 
+"""
+this function gets the data from the socket by the bytes num
+"""
 def get_data_from_socket(sock, byte_num):
-    return sock.recv(byte_num).decode()
+    return str(sock.recv(byte_num).decode())
 
+"""
+this function returns the full data from the server
+"""
 def get_string_data(sock):
     code = str(sock.recv(1).decode())
-    data = get_data_from_socket(sock, sock.recv(4).decode())
-    return f"CODE:{code}, DATA:{data}"
+    data = get_data_from_socket(sock, int(sock.recv(4).decode()))
+    return f"CODE:{code}, DATA:{data}\n"
 
-def send_request(sock, json_data, request_code):
-    msg += request_code
-    msg += str(len(json_data))
+"""
+this funtion sends request to teh server by the json data given
+"""
+def send_request(sock, request_code, json_data):
+    msg = request_code
+    msg += str(len(json_data)).rjust(4, '0')
     msg += json_data
     sock.send(msg.encode())
+
 
 def main():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((IP, PORT))
 
     while True:
-        choice = int(input("1 for get data\n2 for login request\n3 for signup request\n4 to exit"))
+        choice = int(input("1 for get data\n2 for login request\n3 for signup request\n4 to exit\n"))
         if choice == 4:
             break
         elif choice == 1:
@@ -34,11 +44,11 @@ def main():
         elif choice == 2:
             json_data = '{"username": "user1", "password": "1234"}'
             send_request(sock, LOGIN, json_data)
-            print(f"Sent the followong data: {json_data}")
+            print(f"Sent the following data: {json_data}\n")
         elif choice == 3:
-            json_data = '{"username": "user1", "password": "1234", "mail":"user1@gmail.com"'
+            json_data = '{"username": "user1", "password": "1234", "email":"user1@gmail.com"}'
             send_request(sock, SIGN_UP, json_data)
-            print(f"Sent the followong data: {json_data}")
+            print(f"Sent the followong data: {json_data}\n")
         else:
             print("choose valid option\n")
 
