@@ -26,7 +26,7 @@ void Communicator::startHandleRequests()
 		if (client_socket == INVALID_SOCKET)
 			throw std::exception(__FUNCTION__);
 
-		std::cout << "Client  " <<  client_socket <<" accepted.Server and client can speak" << std::endl;
+		std::cout << "Client at socket " <<  client_socket << " accepted .Server and client can speak" << std::endl;
 		// the function that handle the conversation with the client
 		std::thread handleThread(&Communicator::handleNewClient, this, client_socket);//, std::ref(*this));
 		handleThread.detach();
@@ -124,7 +124,6 @@ void Communicator::handleNewClient(SOCKET sock)
         std::cout << "User at socket " << sock << " disconnected." << std::endl;
 
     }
-    
 }
 
 
