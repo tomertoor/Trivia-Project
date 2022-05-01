@@ -32,11 +32,11 @@ def main():
         elif choice == 1:
             print(get_string_data(sock))
         elif choice == 2:
-            json_data = "{username: \"user1\", password: \"1234\"}"
+            json_data = '{"username": "user1", "password": "1234"}'
             send_request(sock, LOGIN, json_data)
             print(f"Sent the followong data: {json_data}")
         elif choice == 3:
-            json_data = "{username: \"user1\", password: \"1234\", mail:\"user1@gmail.com\""
+            json_data = '{"username": "user1", "password": "1234", "mail":"user1@gmail.com"'
             send_request(sock, SIGN_UP, json_data)
             print(f"Sent the followong data: {json_data}")
         else:
