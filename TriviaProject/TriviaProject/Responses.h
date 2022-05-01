@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#define OK_STATUS 1
+
 namespace Responses
 {
 	struct LoginResponse

@@ -4,6 +4,9 @@
 #include "IRequestHandler.h"
 #include <ctime>
 
+#define SIGNUP_REQUEST 1
+#define SIGNIN_REQUEST 5
+
 class IRequestHandler;
 
 namespace Requests

@@ -76,12 +76,28 @@ void Communicator::handleNewClient(SOCKET sock)
 	delete this->m_clients.find(sock)->second;
 	this->m_clients.erase(sock);*/
 	
-	std::string code = this->getPartFromSocket(sock, 1);
+	Requests::RequestInfo ri;
+	ri.buffer = Buffer();
+	ri.id = stoi(this->getPartFromSocket(sock, 1));
+	for (int i = 0; i < stoi(this->getPartFromSocket(sock, 4)) ; i++)
+	{
+		ri.buffer.buffer.push_back(this->getPartFromSocket(sock, 1)[0]);
+	}
+	if (handler->isRequestRelevant(ri))
+	{
+		if (ri.id == 1)
+		{
 
-	if (code == LOGIN)
-		handler->login();
-	else if (code == SIGN_UP)
-		handler->signup();
+		}
+		else(ri.id == 5)
+		{
+
+		}
+	}
+	else
+	{
+
+	}
 }
 
 /*Helper function for sending data

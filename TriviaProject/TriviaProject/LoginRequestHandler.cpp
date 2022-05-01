@@ -14,18 +14,54 @@ LoginRequestHandler::~LoginRequestHandler()
 
 bool LoginRequestHandler::isRequestRelevant(Requests::RequestInfo request)
 {
-	return false;
+	return (request.id == SIGNIN_REQUEST || request.id == SIGNUP_REQUEST) ? true : false;
 }
 
 Requests::RequestResult LoginRequestHandler::handleRequest(Requests::RequestInfo request)
 {
-	return Requests::RequestResult();
-}
+	Requests::RequestResult result;
+	if (this->isRequestRelevant(request))
+	{
+		result.newHandler = new LoginRequestHandler();
+		if (request.id == SIGNIN_REQUEST)
+		{
 
-Requests::RequestResult LoginRequestHandler::login(Requests::LoginRequest loginDetails)
-{
+			Requests::LoginRequest loginRequest = JsonRequestPacketDeserializer::deserializeLoginRequest(request.buffer);
+			if (loginRequest.username != "")
+			{
+				if (loginRequest.password != "")
+				{
+					Responses::LoginResponse response;
+					response.status = OK_STATUS;
+					result.response = JsonResponsePacketSerializer::serializeResponse(response);
+					return result;
+				}
+			}
+			else if (request.id == SIGNUP_REQUEST)
+			{
+				Requests::SignupRequest signupRequest = JsonRequestPacketDeserializer::deserializeSignupRequest(request.buffer);
 
-	return 
+				if (signupRequest.email != "")
+				{
+					if (signupRequest.username != "")
+					{
+						if (signupRequest.password != "")
+						{
+							Responses::LoginResponse response;
+							response.status = OK_STATUS;
+							result.response = JsonResponsePacketSerializer::serializeResponse(response);
+							return result;
+						}
+					}
+				}
+
+
+			}
+		}
+		Responses::ErrorResponse errorResponse = { "Error, incorrect state" };
+		result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
+		return result;
+	}
 }
 
 Requests::RequestResult LoginRequestHandler::signup(Requests::SignupRequest registerDetails)

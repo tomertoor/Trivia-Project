@@ -7,7 +7,9 @@
 using json = nlohmann::json;
 
 #define MAX_FILLING_LENGTH 4
-
+#define ERROR_CODE 3
+#define LOGIN_CODE 5
+#define SIGNUP_CODE 1
 
 class JsonResponsePacketSerializer
 {
