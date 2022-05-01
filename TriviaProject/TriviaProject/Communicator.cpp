@@ -78,10 +78,10 @@ void Communicator::handleNewClient(SOCKET sock)
 	
 	std::string code = this->getPartFromSocket(sock, 1);
 
-	if (code == LOGIN)
+	/*if (code == LOGIN)
 		handler->login();
 	else if (code == SIGN_UP)
-		handler->signup();
+		handler->signup();*/
 }
 
 /*Helper function for sending data

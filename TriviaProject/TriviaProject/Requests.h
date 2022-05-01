@@ -34,4 +34,4 @@ namespace Requests
 		std::string password;
 		std::string email;
 	};
-}
+};

@@ -26,7 +26,7 @@ Requests::RequestResult LoginRequestHandler::handleRequest(Requests::RequestInfo
 		result.newHandler = new LoginRequestHandler();
 		if (request.id == SIGNIN_REQUEST)
 		{
-			
+
 			Requests::LoginRequest loginRequest = JsonRequestPacketDeserializer::deserializeLoginRequest(request.buffer);
 			if (loginRequest.username != "")
 			{
@@ -56,18 +56,19 @@ Requests::RequestResult LoginRequestHandler::handleRequest(Requests::RequestInfo
 					}
 				}
 
-				
+
+			}
 		}
+		Responses::ErrorResponse errorResponse = { "Error, incorrect state" };
+		result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
+		return result;
 	}
-	Responses::ErrorResponse errorResponse = {"Error, incorrect state"};
-	result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
-	return result;
 }
 
 Requests::RequestResult LoginRequestHandler::login(Requests::LoginRequest loginDetails)
 {
 
-	return 
+	return Requests::RequestResult();
 }
 
 Requests::RequestResult LoginRequestHandler::signup(Requests::SignupRequest registerDetails)
