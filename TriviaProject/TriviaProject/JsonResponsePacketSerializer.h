@@ -2,6 +2,16 @@
 
 #include "Responses.h"
 #include "Buffer.h"
+#include "json.hpp"
+
+using json = nlohmann::json;
+
+#define MAX_FILLING_LENGTH 4
+
+#define SIGNUP_CODE 1
+#define LOGIN_CODE 5
+#define ERROR_CODE 3
+
 
 class JsonResponsePacketSerializer
 {

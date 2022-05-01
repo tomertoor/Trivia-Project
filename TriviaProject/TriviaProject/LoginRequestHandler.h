@@ -3,6 +3,8 @@
 #include "IRequestHandler.h"
 #include "LoginManager.h"
 #include "RequestHandlerFactory.h"
+#include "JsonResponsePacketSerializer.h"
+#include "JsonRequestPacketDeserializer.h"
 
 class RequestHandlerFactory;
 
@@ -18,7 +20,7 @@ public:
 
 	bool isRequestRelevant(Requests::RequestInfo request) override;
 	Requests::RequestResult handleRequest(Requests::RequestInfo request) override;
-	Requests::RequestResult login(Requests::RequestInfo loginDetails);
-	Requests::RequestResult signup(Requests::RequestInfo registerDetails);
+	Requests::RequestResult login(Requests::LoginRequest loginDetails);
+	Requests::RequestResult signup(Requests::SignupRequest registerDetails);
 
 };

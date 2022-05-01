@@ -4,6 +4,10 @@
 #include "IRequestHandler.h"
 #include <ctime>
 
+#define SIGNUP_REQUEST 1
+
+#define SIGNIN_REQUEST 5
+
 class IRequestHandler;
 
 namespace Requests
@@ -19,4 +23,15 @@ namespace Requests
 		tm receivalTime;
 		Buffer buffer;
 	};
-}
+	struct LoginRequest
+	{
+		std::string username;
+		std::string password;
+	};
+	struct SignupRequest
+	{
+		std::string username;
+		std::string password;
+		std::string email;
+	};
+};

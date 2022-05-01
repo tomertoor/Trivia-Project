@@ -1,5 +1,8 @@
 #include "Communicator.h"
 
+#define LOGIN "5"
+#define SIGN_UP "1"
+
 Communicator::Communicator(RequestHandlerFactory& handlerFactory) : m_handlerFactory(handlerFactory)
 
 {
@@ -23,7 +26,7 @@ void Communicator::startHandleRequests()
 		if (client_socket == INVALID_SOCKET)
 			throw std::exception(__FUNCTION__);
 
-		std::cout << "Client accepted. Server and client can speak" << std::endl;
+		std::cout << "Client  " <<  client_socket <<" accepted.Server and client can speak" << std::endl;
 		// the function that handle the conversation with the client
 		std::thread handleThread(&Communicator::handleNewClient, this, client_socket);//, std::ref(*this));
 		handleThread.detach();
@@ -65,15 +68,65 @@ void Communicator::bindAndListen()
 */
 void Communicator::handleNewClient(SOCKET sock)
 {
-	LoginRequestHandler* handler = new LoginRequestHandler();
-	this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(sock, handler));
-	this->sendData(sock, "Hello");
-	std::string userData = this->getPartFromSocket(sock, 5);
-	std::cout << "User sent: " << userData << std::endl;
-	delete this->m_clients.find(sock)->second;
-	this->m_clients.erase(sock);
-	
+
+    IRequestHandler* handler = new LoginRequestHandler();
+    this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(sock, handler));
+
+    Requests::RequestInfo ri;
+
+    try
+    {
+        while (true)
+        {
+            ri.buffer = Buffer();
+            ri.id = stoi(this->getPartFromSocket(sock, 1));
+            int len = stoi(this->getPartFromSocket(sock, 4));
+            for (int i = 0; i < len; i++)
+            {
+                ri.buffer.buffer.push_back(this->getPartFromSocket(sock, 1)[0]);
+            }
+
+            if (handler->isRequestRelevant(ri))
+            {
+                Requests::RequestResult rs = handler->handleRequest(ri);
+                if (rs.newHandler != nullptr)
+                    handler = rs.newHandler;
+                try
+                {
+                    this->sendData(sock, this->bufferToString(rs.response));
+                }
+                catch (const std::exception& e)
+                {
+                    std::cout << e.what() << std::endl;
+                }
+            }
+            else
+            {
+                Responses::ErrorResponse er;
+                er.message = "Invalid code";
+                Buffer b = JsonResponsePacketSerializer::serializeResponse(er);
+                try
+                {
+                    this->sendData(sock, this->bufferToString(b));
+                }
+                catch (const std::exception& e)
+                {
+                    std::cout << e.what() << std::endl;
+                }
+            }
+        }
+    }
+    catch (...)
+    {
+        delete this->m_clients.find(sock)->second;
+        this->m_clients.erase(sock);
+
+        std::cout << "User at socket " << sock << " disconnected." << std::endl;
+
+    }
+    
 }
+
 
 /*Helper function for sending data
 * Input - sc : the socket to receive from, message: the message to send
@@ -120,4 +173,18 @@ std::string Communicator::getPartFromSocket(const SOCKET sc, const int bytesNum,
 	std::string received(data);
 	delete[] data;
 	return received;
+}
+
+
+/*
+Helper function to convert buffer to string
+input: buffer
+output: string with the content of the buffer
+*/
+std::string Communicator::bufferToString(Buffer buf)
+{
+    std::string data = "";
+    for (int i = 0; i < buf.buffer.size(); i++)
+        data += buf.buffer[i];
+    return data;
 }
