@@ -24,6 +24,7 @@ private:
 	void bindAndListen();
 	void handleNewClient(SOCKET sock);
 
+	std::string bufferToString(Buffer buf);
 	void sendData(const SOCKET sc, const std::string message);
 	std::string getPartFromSocket(const SOCKET sc, const int bytesNum);
 	std::string getPartFromSocket(const SOCKET sc, const int bytesNum, const int flags);

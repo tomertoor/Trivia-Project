@@ -68,7 +68,7 @@ void Communicator::bindAndListen()
 */
 void Communicator::handleNewClient(SOCKET sock)
 {
-	LoginRequestHandler* handler = new LoginRequestHandler();
+	IRequestHandler* handler = new LoginRequestHandler();
 	this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(sock, handler));
 	/*this->sendData(sock, "Hello");
 	std::string userData = this->getPartFromSocket(sock, 5);
@@ -78,26 +78,58 @@ void Communicator::handleNewClient(SOCKET sock)
 	
 	Requests::RequestInfo ri;
 	ri.buffer = Buffer();
-	ri.id = stoi(this->getPartFromSocket(sock, 1));
-	for (int i = 0; i < stoi(this->getPartFromSocket(sock, 4)) ; i++)
+
+	while (true)
 	{
-		ri.buffer.buffer.push_back(this->getPartFromSocket(sock, 1)[0]);
-	}
-	if (handler->isRequestRelevant(ri))
-	{
-		if (ri.id == 1)
+		ri.id = stoi(this->getPartFromSocket(sock, 1));
+		int len = stoi(this->getPartFromSocket(sock, 4));
+		for (int i = 0; i < len; i++)
 		{
-
+			ri.buffer.buffer.push_back(this->getPartFromSocket(sock, 1)[0]);
 		}
-		else(ri.id == 5)
+		
+		if (handler->isRequestRelevant(ri))
 		{
-
+			Requests::RequestResult rs = handler->handleRequest(ri);
+			if (rs.newHandler != nullptr)
+				handler = rs.newHandler;
+			try
+			{
+				this->sendData(sock, this->bufferToString(rs.response));
+			}
+			catch (const std::exception& e)
+			{
+				std::cout << e.what() << std::endl;
+			}
+		}
+		else
+		{
+			Responses::ErrorResponse er;
+			er.message = "Invalid code";
+			Buffer b = JsonResponsePacketSerializer::serializeResponse(er);
+			try
+			{
+				this->sendData(sock, this->bufferToString(b));
+			}
+			catch (const std::exception& e)
+			{
+				std::cout << e.what() << std::endl;
+			}
 		}
 	}
-	else
-	{
+}
 
-	}
+/*
+Helper function to convert buffer to string
+input: buffer
+output: string with the content of the buffer
+*/
+std::string Communicator::bufferToString(Buffer buf)
+{
+	std::string data = "";
+	for (int i = 0; i < buf.buffer.size(); i++)
+		data += buf.buffer[i];
+	return data;
 }
 
 /*Helper function for sending data
