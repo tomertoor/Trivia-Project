@@ -26,4 +26,5 @@ private:
 	void sendData(const SOCKET sc, const std::string message);
 	std::string getPartFromSocket(const SOCKET sc, const int bytesNum);
 	std::string getPartFromSocket(const SOCKET sc, const int bytesNum, const int flags);
+	std::string bufferToString(Buffer buf);
 };

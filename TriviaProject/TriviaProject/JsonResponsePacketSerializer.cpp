@@ -1,5 +1,9 @@
 #include "JsonResponsePacketSerializer.h"
 
+/*Serializing error response
+* Input - The response to serialize
+* Output - The buffer to be sent
+*/
 Buffer JsonResponsePacketSerializer::serializeResponse(Responses::ErrorResponse response)
 {
     Buffer buffer;
@@ -18,6 +22,10 @@ Buffer JsonResponsePacketSerializer::serializeResponse(Responses::ErrorResponse 
     return buffer;
 }
 
+/*Serializing login response
+* Input - The response to serialize
+* Output - The buffer to be sent
+*/
 Buffer JsonResponsePacketSerializer::serializeResponse(Responses::LoginResponse response)
 {
     Buffer buffer;
@@ -36,6 +44,10 @@ Buffer JsonResponsePacketSerializer::serializeResponse(Responses::LoginResponse 
     return buffer;
 }
 
+/*Serializing signup response
+* Input - The response to serialize
+* Output - The buffer to be sent
+*/
 Buffer JsonResponsePacketSerializer::serializeResponse(Responses::SignupResponse response)
 {
     Buffer buffer;
