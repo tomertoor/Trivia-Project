@@ -2,20 +2,53 @@
 
 LoginManager::LoginManager()
 {
+	m_database = new SqliteDataBase;
 }
 
 LoginManager::~LoginManager()
 {
+	delete m_database;
 }
 
+/*
+This function signes up a new user, if not exists on the data base
+input: user name, password and email
+output: none
+*/
 void LoginManager::signup(const std::string& mail, const std::string& username, const std::string& password)
 {
+	if (!m_database->doesUserExist(username))
+	{
+		m_database->addNewUser(username, password, mail);
+		LoggedUser lg(username);
+		m_loggedUsers.push_back(lg);
+	}
 }
 
+/*
+This function logges in an exisiting user, if already registered
+input: password and user name
+output: none
+*/
 void LoginManager::login(const std::string& username, const std::string& password)
 {
+	if (m_database->doesPasswordMatch(username, password))
+	{
+		LoggedUser lg(username);
+		m_loggedUsers.push_back(lg);
+	}
 }
 
+/*
+This fucntion logges out a user, if he is logged in
+input: username
+output: none
+*/
 void LoginManager::logout(const std::string& username)
 {
+	for (auto it = m_loggedUsers.begin() ; it != m_loggedUsers.end() ; it++) 
+	{
+		if (it->getName() == username)
+			m_loggedUsers.erase(it);
+	}
 }

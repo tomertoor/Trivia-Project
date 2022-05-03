@@ -9,6 +9,6 @@ public:
 	LoggedUser(const std::string& name);
 	LoggedUser();
 	~LoggedUser();
-	void setName();
+	void setName(const std::string& username);
 	std::string getName() const;
 };
