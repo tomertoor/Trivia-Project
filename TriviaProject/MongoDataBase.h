@@ -29,6 +29,7 @@ private:
 	mongocxx::uri uri;
 	mongocxx::client client;
 	mongocxx::database db;
+	boost::optional<bsoncxx::v_noabi::document::value> getUser(std::string username);
 public:
 	MongoDataBase();
 	virtual ~MongoDataBase();

@@ -1,5 +1,17 @@
 #include "MongoDataBase.h"
 
+//return 0 if no user with the name, 1 otherwise
+boost::optional<bsoncxx::v_noabi::document::value> MongoDataBase::getUser(std::string username)
+{
+	return db[COLLECTION_NAME].find_one(
+
+		document{}
+		<< "username" << username
+		<< finalize
+	);
+
+}
+
 //constructor
 MongoDataBase::MongoDataBase()
 {
@@ -20,16 +32,7 @@ output: true if exsits, false otherwise
 */
 bool MongoDataBase::doesUserExist(const std::string& username)
 {
-	mongocxx::collection coll = db[COLLECTION_NAME];
-	mongocxx::cursor cursor = coll.find({});
-	for (auto&& doc : cursor)
-	{
-		bsoncxx::document::element element = doc["username"];
-		std::string name = std::string(element.get_utf8().value);
-		if (name == username)
-			return true;
-	}
-	return false;
+	return bool(getUser(username));
 }
 
 /*
@@ -39,21 +42,12 @@ output: true if matches, false otherwise
 */
 bool MongoDataBase::doesPasswordMatch(const std::string& username, const std::string& password)
 {
-	if (doesUserExist(username))
-	{
-		mongocxx::collection coll = db[COLLECTION_NAME];
-		mongocxx::cursor cursor = coll.find({});
-		for (auto&& doc : cursor)
-		{
-			bsoncxx::document::element element = doc["username"];
-			bsoncxx::document::element element2 = doc["password"];
-			std::string name = std::string(element.get_utf8().value);
-			std::string pass = std::string(element2.get_utf8().value);
-			if (name == username && pass == password)
-				return true;
-		}
-	}
-	return false;
+	return bool(db[COLLECTION_NAME].find_one(
+		document{}
+		<< "username" << username
+		<< "password" << password
+		<< finalize
+	));
 }
 
 /*
