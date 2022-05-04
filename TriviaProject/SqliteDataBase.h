@@ -2,8 +2,6 @@
 #include "IDatabase.h"
 #include "sqlite3.h"
 #include <iostream>
-#include <vector>
-#include <tuple>
 
 #define DB_NAME "users.sqlite"
 
