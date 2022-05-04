@@ -21,7 +21,7 @@ using bsoncxx::builder::stream::open_document;
 
 #define DB_NAME "USERS"
 #define COLLECTION_NAME "users"
-#define URI "mongodb://localhost:27017"
+#define URI "mongodb+srv://profzak:nowicanknowhowtousemongodb@cluster0.oyn8b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 
 class MongoDataBase : public IDatabase
 {
