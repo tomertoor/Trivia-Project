@@ -3,6 +3,7 @@
 #include "LoginRequestHandler.h"
 
 class LoginRequestHandler;
+class MenuRequestHandler;
 
 class RequestHandlerFactory
 {
@@ -13,5 +14,9 @@ public:
 	RequestHandlerFactory();
 	~RequestHandlerFactory();
 
-	LoginRequestHandler createLoginRequestHandler();
+	LoginRequestHandler* createLoginRequestHandler();
+	MenuRequestHandler* createMenuRequestHandler();
+
+	LoginManager& getLoginManager();
+
 };

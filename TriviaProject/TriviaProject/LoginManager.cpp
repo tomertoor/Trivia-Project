@@ -23,6 +23,10 @@ void LoginManager::signup(const std::string& mail, const std::string& username, 
 		LoggedUser lg(username);
 		m_loggedUsers.push_back(lg);
 	}
+	else
+	{
+		throw dbException(USER_EXIST);
+	}
 }
 
 /*
@@ -36,6 +40,10 @@ void LoginManager::login(const std::string& username, const std::string& passwor
 	{
 		LoggedUser lg(username);
 		m_loggedUsers.push_back(lg);
+	}
+	else
+	{
+		throw dbException(WRONG_PASS);
 	}
 }
 
