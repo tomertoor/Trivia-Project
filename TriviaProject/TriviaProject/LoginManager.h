@@ -7,7 +7,7 @@
 class LoginManager
 {
 private:
-	IDatabase* m_database;
+	std::shared_ptr<IDatabase> m_database;
 	std::vector<LoggedUser> m_loggedUsers;
 public:
 	LoginManager();

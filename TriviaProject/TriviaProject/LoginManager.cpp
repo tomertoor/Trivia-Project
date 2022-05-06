@@ -1,13 +1,13 @@
 #include "LoginManager.h"
+#include "MongoDataBase.h"
 
 LoginManager::LoginManager()
 {
-	m_database = new SqliteDataBase;
+	m_database = MongoDataBase::getInstance();
 }
 
 LoginManager::~LoginManager()
 {
-	delete m_database;
 }
 
 /*
