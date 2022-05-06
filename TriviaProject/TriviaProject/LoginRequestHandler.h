@@ -5,6 +5,11 @@
 #include "RequestHandlerFactory.h"
 #include "JsonResponsePacketSerializer.h"
 #include "JsonRequestPacketDeserializer.h"
+#include "MenuRequestHandler.h"
+#include <regex>
+
+#define MIN_NAME_LENGTH 5
+#define MAX_NAME_LENGTH 15
 
 class RequestHandlerFactory;
 
@@ -16,11 +21,14 @@ private:
 
 public:
 	LoginRequestHandler();
+	LoginRequestHandler(LoginManager* manager, RequestHandlerFactory* factory);
 	~LoginRequestHandler();
 
 	bool isRequestRelevant(Requests::RequestInfo request) override;
 	Requests::RequestResult handleRequest(Requests::RequestInfo request) override;
+private:
 	Requests::RequestResult login(Requests::LoginRequest loginDetails);
 	Requests::RequestResult signup(Requests::SignupRequest registerDetails);
-
+	bool isValidUserName(const std::string& username);
+	bool isEmailValid(const std::string& email);
 };

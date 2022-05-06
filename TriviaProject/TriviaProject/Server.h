@@ -5,7 +5,7 @@
 class Server
 {
 private:
-	IDatabase* m_database;
+	std::shared_ptr<IDatabase> m_database;
 	Communicator m_communicator;
 	RequestHandlerFactory m_requestHandlerFactory;
 public:
