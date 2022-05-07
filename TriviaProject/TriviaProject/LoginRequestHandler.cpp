@@ -32,7 +32,6 @@ Requests::RequestResult LoginRequestHandler::handleRequest(Requests::RequestInfo
 
 	if (this->isRequestRelevant(request))
 	{
-		result.newHandler = new LoginRequestHandler();
 		if (request.id == SIGNIN_REQUEST)
 		{
 
@@ -41,9 +40,6 @@ Requests::RequestResult LoginRequestHandler::handleRequest(Requests::RequestInfo
 			{
 				if (loginRequest.password != "")
 				{
-					/*Responses::LoginResponse response;
-					response.status = OK_STATUS;
-					result.response = JsonResponsePacketSerializer::serializeResponse(response);*/
 					return this->login(loginRequest);
 				}
 			}
@@ -59,9 +55,6 @@ Requests::RequestResult LoginRequestHandler::handleRequest(Requests::RequestInfo
 				{
 					if (signupRequest.password != "")
 					{
-						/*Responses::SignupResponse response;
-						response.status = OK_STATUS;
-						result.response = JsonResponsePacketSerializer::serializeResponse(response);*/
 						return this->signup(signupRequest);
 					}
 				}
