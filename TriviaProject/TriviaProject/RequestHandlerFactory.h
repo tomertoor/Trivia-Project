@@ -3,15 +3,20 @@
 #include "LoginRequestHandler.h"
 
 class LoginRequestHandler;
+class MenuRequestHandler;
 
 class RequestHandlerFactory
 {
 private:
 	LoginManager m_loginManager;
-	IDatabase* m_database;
+	std::shared_ptr<IDatabase> m_database;
 public:
 	RequestHandlerFactory();
 	~RequestHandlerFactory();
 
-	LoginRequestHandler createLoginRequestHandler();
+	LoginRequestHandler* createLoginRequestHandler();
+	MenuRequestHandler* createMenuRequestHandler();
+
+	LoginManager& getLoginManager();
+
 };

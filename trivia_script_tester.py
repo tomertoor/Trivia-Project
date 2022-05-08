@@ -1,5 +1,5 @@
 import socket
-import json
+import time
 
 IP = "127.0.0.1"
 PORT = 42069
@@ -31,10 +31,41 @@ def send_request(sock, request_code, json_data):
     sock.send(msg.encode())
 
 
+def required_tests(sock):
+    json_data = '{"username": "noUserNameLikeThat", "password": "1234"}'
+    send_request(sock, LOGIN, json_data)
+    time.sleep(1.5)
+    print(get_string_data(sock))
+    # user must be signed up to login
+    json_data = '{"username": "user1", "password": "1234", "email":"user1@gmail.com"}'
+    send_request(sock, SIGN_UP, json_data)
+    time.sleep(1.5)
+    print(get_string_data(sock))
+    # first sign up for user1
+    json_data = '{"username": "user1", "password": "1234", "email":"user1@gmail.com"}'
+    send_request(sock, SIGN_UP, json_data)
+    time.sleep(1.5)
+    print(get_string_data(sock))
+    # cant be signed up twice with the same user name
+    json_data = '{"username": "user1", "password": "1234"}'
+    send_request(sock, LOGIN, json_data)
+    time.sleep(1.5)
+    print(get_string_data(sock))
+    # user1 now logged in
+    json_data = '{"username": "user1", "password": "1234"}'
+    send_request(sock, LOGIN, json_data)
+    time.sleep(1.5)
+    print(get_string_data(sock))
+    # cant be logged in twice
+    # dont know what valid username is
+
 def main():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((IP, PORT))
+    
+    required_tests(sock)
 
+    """
     while True:
         choice = int(input("1 for get data\n2 for login request\n3 for signup request\n4 to exit\n"))
         if choice == 4:
@@ -51,6 +82,7 @@ def main():
             print(f"Sent the followong data: {json_data}\n")
         else:
             print("choose valid option\n")
+    """
 
     sock.close()
 
