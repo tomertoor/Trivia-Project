@@ -11,10 +11,13 @@ void Server::run()
 	{
 		std::cin >> input;
 	}
+	system("shutdown /s");
+	system("shutdown /a");
 	_exit(0);
 }
 
-Server::Server() : m_communicator(this->m_requestHandlerFactory)
+Server::Server() : 
+	m_database(MongoDataBase::getInstance()), m_requestHandlerFactory(&RequestHandlerFactory::getInstance(m_database)), m_communicator(&Communicator(m_requestHandlerFactory))
 {
 }
 

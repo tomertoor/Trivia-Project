@@ -1,17 +1,5 @@
 #include "LoginRequestHandler.h"
 
-LoginRequestHandler::LoginRequestHandler()
-{
-	m_handlerFactory = new RequestHandlerFactory;
-	m_loginManager = new LoginManager;
-}
-
-LoginRequestHandler::~LoginRequestHandler()
-{
-	delete m_handlerFactory;
-	delete m_loginManager;
-}
-
 LoginRequestHandler::LoginRequestHandler(LoginManager* manager, RequestHandlerFactory* factory) : m_handlerFactory(factory), m_loginManager(manager)
 {
 }
@@ -32,7 +20,7 @@ Requests::RequestResult LoginRequestHandler::handleRequest(Requests::RequestInfo
 
 	if (this->isRequestRelevant(request))
 	{
-		result.newHandler = new LoginRequestHandler();
+		//result.newHandler = new LoginRequestHandler();
 		if (request.id == SIGNIN_REQUEST)
 		{
 

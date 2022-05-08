@@ -15,7 +15,7 @@ namespace Requests
 	struct RequestResult
 	{
 		Buffer response;
-		IRequestHandler* newHandler;
+		std::shared_ptr<IRequestHandler> newHandler;
 	};
 	struct RequestInfo
 	{

@@ -20,9 +20,8 @@ private:
 	RequestHandlerFactory* m_handlerFactory;
 
 public:
-	LoginRequestHandler();
 	LoginRequestHandler(LoginManager* manager, RequestHandlerFactory* factory);
-	~LoginRequestHandler();
+	~LoginRequestHandler() = default;
 
 	bool isRequestRelevant(Requests::RequestInfo request) override;
 	Requests::RequestResult handleRequest(Requests::RequestInfo request) override;

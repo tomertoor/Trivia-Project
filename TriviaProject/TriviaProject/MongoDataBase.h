@@ -38,12 +38,7 @@ public:
 	MongoDataBase(const MongoDataBase&) = delete;
 	MongoDataBase& operator=(const MongoDataBase&) = delete;
 
-	static std::shared_ptr<IDatabase> getInstance()
-	{
-		static std::shared_ptr<IDatabase> instance(new MongoDataBase());
-
-		return instance;
-	}
+	static std::shared_ptr<IDatabase> getInstance();
 
 
 	bool doesUserExist(const std::string& username) override;

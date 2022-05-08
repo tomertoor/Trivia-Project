@@ -1,13 +1,15 @@
 #include "LoginManager.h"
 #include "MongoDataBase.h"
 
-LoginManager::LoginManager()
+LoginManager::LoginManager(std::shared_ptr<IDatabase>& db)
 {
-	m_database = MongoDataBase::getInstance();
+	m_database = db;
 }
 
-LoginManager::~LoginManager()
+LoginManager& LoginManager::getInstance(std::shared_ptr<IDatabase>& database)
 {
+	static LoginManager instance(database);
+	return instance;
 }
 
 /*

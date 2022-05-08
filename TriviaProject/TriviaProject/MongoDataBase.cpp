@@ -9,7 +9,6 @@ boost::optional<bsoncxx::v_noabi::document::value> MongoDataBase::getUser(std::s
 		<< "username" << username
 		<< finalize
 	);
-
 }
 
 //constructor
@@ -19,6 +18,13 @@ MongoDataBase::MongoDataBase() :
 	uri = mongocxx::uri(URI);
 	client = mongocxx::client(uri);
 	db = client[DB_NAME];
+}
+
+std::shared_ptr<IDatabase> MongoDataBase::getInstance()
+{
+	static std::shared_ptr<IDatabase> instance(new MongoDataBase());
+
+	return instance;
 }
 
 /*

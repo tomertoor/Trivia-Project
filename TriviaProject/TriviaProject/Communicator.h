@@ -6,6 +6,7 @@
 #include "RequestHandlerFactory.h"
 #include "IRequestHandler.h"
 #include "JsonRequestPacketDeserializer.h"
+#include "MongoDataBase.h"
 
 const int PORT = 42069;
 
@@ -13,10 +14,10 @@ class Communicator
 {
 private:
 	SOCKET m_serverSocket;
-	std::map<SOCKET, IRequestHandler*> m_clients;
-	RequestHandlerFactory& m_handlerFactory;
+	std::map<SOCKET, std::shared_ptr<IRequestHandler>> m_clients;
+	RequestHandlerFactory* m_handlerFactory;
 public:
-	Communicator(RequestHandlerFactory& handlerFactory);
+	Communicator(RequestHandlerFactory* handlerFactory);
 	~Communicator();
 	void startHandleRequests();
 private:

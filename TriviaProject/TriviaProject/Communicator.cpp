@@ -3,7 +3,7 @@
 #define LOGIN "5"
 #define SIGN_UP "1"
 
-Communicator::Communicator(RequestHandlerFactory& handlerFactory) : m_handlerFactory(handlerFactory)
+Communicator::Communicator(RequestHandlerFactory* handlerFactory) : m_handlerFactory(handlerFactory)
 
 {
 }
@@ -68,9 +68,7 @@ void Communicator::bindAndListen()
 */
 void Communicator::handleNewClient(SOCKET sock)
 {
-
-    IRequestHandler* handler = new LoginRequestHandler();
-    this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(sock, handler));
+    this->m_clients.insert(std::pair<SOCKET, std::shared_ptr<IRequestHandler>>(sock, m_handlerFactory->createLoginRequestHandler()));
 
     Requests::RequestInfo ri;
 
@@ -86,6 +84,7 @@ void Communicator::handleNewClient(SOCKET sock)
                 ri.buffer.buffer.push_back(this->getPartFromSocket(sock, 1)[0]);
             }
 
+            auto handler = m_clients.find(sock)->second;
             if (handler->isRequestRelevant(ri))
             {
                 Requests::RequestResult rs = handler->handleRequest(ri);
@@ -118,7 +117,6 @@ void Communicator::handleNewClient(SOCKET sock)
     }
     catch (...)
     {
-        delete this->m_clients.find(sock)->second;
         this->m_clients.erase(sock);
 
         std::cout << "User at socket " << sock << " disconnected." << std::endl;

@@ -1,26 +1,23 @@
 #include "RequestHandlerFactory.h"
 #include "MongoDataBase.h"
 
-RequestHandlerFactory::RequestHandlerFactory()
-{
-	m_database = MongoDataBase::getInstance();
-}
-
-RequestHandlerFactory::~RequestHandlerFactory()
+RequestHandlerFactory::RequestHandlerFactory(std::shared_ptr<IDatabase>& database) :
+	m_database(database), m_loginManager(&LoginManager::getInstance(m_database))
 {
 }
 
-LoginRequestHandler* RequestHandlerFactory::createLoginRequestHandler()
+RequestHandlerFactory& RequestHandlerFactory::getInstance(std::shared_ptr<IDatabase>& database)
 {
-	return new LoginRequestHandler(&this->m_loginManager, this);
+	static RequestHandlerFactory instance(database);
+	return instance;
 }
 
-LoginManager& RequestHandlerFactory::getLoginManager()
+std::shared_ptr<IRequestHandler> RequestHandlerFactory::createLoginRequestHandler()
 {
-	return this->m_loginManager;
+	return std::shared_ptr<LoginRequestHandler>(new LoginRequestHandler(m_loginManager, this));
 }
 
-MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler()
+std::shared_ptr<IRequestHandler> RequestHandlerFactory::createMenuRequestHandler()
 {
-	return new MenuRequestHandler(); // to be changed next version
+	return std::shared_ptr<MenuRequestHandler>(new MenuRequestHandler()); // to be changed next version
 }

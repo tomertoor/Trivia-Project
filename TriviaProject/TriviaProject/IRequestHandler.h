@@ -8,8 +8,7 @@ struct Requests::RequestResult;
 class IRequestHandler
 {
 public:
-	IRequestHandler();
-	virtual ~IRequestHandler();
+	virtual ~IRequestHandler() = default;
 
 	virtual bool isRequestRelevant(Requests::RequestInfo request) = 0;
 	virtual Requests::RequestResult handleRequest(Requests::RequestInfo request) = 0;
