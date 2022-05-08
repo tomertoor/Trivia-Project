@@ -3,6 +3,8 @@
 #define LOGIN "5"
 #define SIGN_UP "1"
 
+Communicator* Communicator::instance = nullptr;
+
 Communicator::Communicator(RequestHandlerFactory& handlerFactory) : m_handlerFactory(handlerFactory)
 
 {
@@ -32,6 +34,16 @@ void Communicator::startHandleRequests()
 		handleThread.detach();
 
 	}
+}
+
+//get instance for singleton
+Communicator* Communicator::getInstance(RequestHandlerFactory& handlerFactory)
+{
+    if (instance == nullptr)
+    {
+        instance = new Communicator(handlerFactory);
+    }
+    return instance;
 }
 
 /*Handles of binding and to start the listen to the port specified.

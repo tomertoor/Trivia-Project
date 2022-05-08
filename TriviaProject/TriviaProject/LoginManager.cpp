@@ -4,9 +4,21 @@
 #include "GlobalException.h"
 #include "Address.h"
 
+LoginManager* LoginManager::instance = nullptr;
+
 LoginManager::LoginManager()
 {
 	m_database = MongoDataBase::getInstance();
+}
+
+//singleton getinstance
+LoginManager* LoginManager::getInstance()
+{
+	if (instance == nullptr)
+	{
+		instance = new LoginManager();
+	}
+	return instance;
 }
 
 LoginManager::~LoginManager()
@@ -93,7 +105,7 @@ bool LoginManager::isAdressValid(const Address& adress)
 
 bool LoginManager::isPhoneValid(const std::string& phone)
 {
-	std::regex phoneRegex("(^0[\d]{1,2}[-][\d]{7,9}$)");
+	std::regex phoneRegex(R"(^0[\d]{1,2}[-][\d]{7,9}$)");
 	return regex_match(phone, phoneRegex);
 }
 

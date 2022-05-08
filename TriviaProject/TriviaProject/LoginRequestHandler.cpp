@@ -2,8 +2,8 @@
 
 LoginRequestHandler::LoginRequestHandler()
 {
-	m_handlerFactory = new RequestHandlerFactory;
-	m_loginManager = new LoginManager;
+	m_handlerFactory = RequestHandlerFactory::getInstance();
+	m_loginManager = LoginManager::getInstance();
 }
 
 LoginRequestHandler::~LoginRequestHandler()

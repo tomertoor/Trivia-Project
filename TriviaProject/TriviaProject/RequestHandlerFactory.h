@@ -8,11 +8,21 @@ class MenuRequestHandler;
 class RequestHandlerFactory
 {
 private:
-	LoginManager m_loginManager;
+	LoginManager* m_loginManager;
 	std::shared_ptr<IDatabase> m_database;
-public:
+
 	RequestHandlerFactory();
-	~RequestHandlerFactory();
+
+	static RequestHandlerFactory* instance;
+
+public:
+
+	RequestHandlerFactory(RequestHandlerFactory&) = delete;
+	RequestHandlerFactory& operator=(const RequestHandlerFactory&) = delete;
+
+	static RequestHandlerFactory* getInstance();
+
+	~RequestHandlerFactory() = default;
 
 	LoginRequestHandler* createLoginRequestHandler();
 	MenuRequestHandler* createMenuRequestHandler();

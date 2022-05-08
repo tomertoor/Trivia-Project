@@ -1,9 +1,19 @@
 #include "JsonResponsePacketSerializer.h"
 
+JsonResponsePacketSerializer* JsonResponsePacketSerializer::instance = nullptr;
+
 /*Serializing error response
 * Input - The response to serialize
 * Output - The buffer to be sent
 */
+JsonResponsePacketSerializer* JsonResponsePacketSerializer::getInstance()
+{
+    if (instance == nullptr)
+    {
+        instance = new JsonResponsePacketSerializer();
+    }
+    return instance;
+}
 Buffer JsonResponsePacketSerializer::serializeResponse(Responses::ErrorResponse response)
 {
     Buffer buffer;

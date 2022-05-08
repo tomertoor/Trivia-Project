@@ -1,23 +1,34 @@
 #include "RequestHandlerFactory.h"
 #include "MongoDataBase.h"
 
+
+RequestHandlerFactory* RequestHandlerFactory::instance = nullptr;
+
 RequestHandlerFactory::RequestHandlerFactory()
 {
+	m_loginManager = LoginManager::getInstance();
 	m_database = MongoDataBase::getInstance();
 }
 
-RequestHandlerFactory::~RequestHandlerFactory()
+//get instance for singleton
+RequestHandlerFactory* RequestHandlerFactory::getInstance()
 {
+	if (instance == nullptr)
+	{
+		instance = new RequestHandlerFactory();
+	}
+	return instance;
 }
+
 
 LoginRequestHandler* RequestHandlerFactory::createLoginRequestHandler()
 {
-	return new LoginRequestHandler(&this->m_loginManager, this);
+	return new LoginRequestHandler(this->m_loginManager, this);
 }
 
 LoginManager& RequestHandlerFactory::getLoginManager()
 {
-	return this->m_loginManager;
+	return *this->m_loginManager;
 }
 
 MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler()

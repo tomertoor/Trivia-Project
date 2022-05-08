@@ -21,7 +21,7 @@ using bsoncxx::builder::stream::open_document;
 
 #define DB_NAME "USERS"
 #define COLLECTION_NAME "users"
-#define URI "mongodb+srv://profzak:nowicanknowhowtousemongodb@cluster0.oyn8b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+#define URI "mongodb+srv://tomertoor12:wYsZDmvUo^7*Vb@cluster0.g4kew.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 
 class MongoDataBase : public IDatabase
 {
@@ -38,6 +38,7 @@ public:
 	MongoDataBase(const MongoDataBase&) = delete;
 	MongoDataBase& operator=(const MongoDataBase&) = delete;
 
+	//get instance for singleton
 	static std::shared_ptr<IDatabase> getInstance()
 	{
 		static std::shared_ptr<IDatabase> instance(new MongoDataBase());

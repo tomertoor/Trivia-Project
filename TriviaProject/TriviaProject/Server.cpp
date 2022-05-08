@@ -1,9 +1,11 @@
 #include "Server.h"
 
+Server* Server::instance = nullptr;
+
 //Takes care of the server itself.
 void Server::run()
 {
-	std::thread t_connector(&Communicator::startHandleRequests, &this->m_communicator);
+	std::thread t_connector(&Communicator::startHandleRequests, this->m_communicator);
 	t_connector.detach();
 
 	std::string input = "";
@@ -14,8 +16,20 @@ void Server::run()
 	_exit(0);
 }
 
-Server::Server() : m_communicator(this->m_requestHandlerFactory)
+//singelton returns the instance
+Server* Server::getInstance()
 {
+	if (instance == nullptr)
+	{
+		instance = new Server();
+	}
+	return instance;
+}
+
+Server::Server()
+{
+	this->m_requestHandlerFactory = RequestHandlerFactory::getInstance();
+	this->m_communicator = Communicator::getInstance(*this->m_requestHandlerFactory);
 }
 
 Server::~Server()

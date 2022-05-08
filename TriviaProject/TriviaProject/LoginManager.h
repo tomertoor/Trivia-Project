@@ -14,12 +14,21 @@ private:
 	bool isValidDetails(Requests::SignupRequest signupReq);
 	bool isDateValid(const std::string& date);
 	bool isPasswordValid(const std::string& password);
-	bool isUsernameValid(const std::string& username);
 	bool isMailValid(const std::string& email);
 	bool isAdressValid(const Address& adress);
 	bool isPhoneValid(const std::string& phone);
-public:
+
 	LoginManager();
+
+	static LoginManager* instance;
+
+public:
+
+	LoginManager(LoginManager&) = delete;
+	LoginManager& operator=(const LoginManager&) = delete;
+
+	static LoginManager* getInstance();
+
 	~LoginManager();
 
 	void signup(Requests::SignupRequest signupReq);
