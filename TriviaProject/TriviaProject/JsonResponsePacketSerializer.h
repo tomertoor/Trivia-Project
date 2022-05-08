@@ -15,7 +15,15 @@ using json = nlohmann::json;
 
 class JsonResponsePacketSerializer
 {
+
+private:
+	static JsonResponsePacketSerializer* instance;
+
+	JsonResponsePacketSerializer() {};
 public:
+
+	static JsonResponsePacketSerializer* getInstance();
+
 	static Buffer serializeResponse(Responses::ErrorResponse response);
 	static Buffer serializeResponse(Responses::LoginResponse response);
 	static Buffer serializeResponse(Responses::SignupResponse response);

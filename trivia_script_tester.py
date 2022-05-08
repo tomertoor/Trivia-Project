@@ -34,27 +34,27 @@ def send_request(sock, request_code, json_data):
 def required_tests(sock):
     json_data = '{"username": "noUserNameLikeThat", "password": "1234"}'
     send_request(sock, LOGIN, json_data)
-    time.sleep(1.5)
+    time.sleep(1)
     print(get_string_data(sock))
     # user must be signed up to login
-    json_data = '{"username": "user1", "password": "1234", "email":"user1@gmail.com"}'
+    json_data = '{"username": "user2", "password": "1234@#fds", "email":"user1@gmail.com", "phone": "052-3333876", "birthDate": "04.08.2005", "apt": "45", "city": "Jerusalem", "street": "gdudHahamishi"}'
     send_request(sock, SIGN_UP, json_data)
-    time.sleep(1.5)
+    time.sleep(1)
     print(get_string_data(sock))
     # first sign up for user1
-    json_data = '{"username": "user1", "password": "1234", "email":"user1@gmail.com"}'
+    json_data = '{"username": "user1", "password": "1234", "email":"user1@gmail.com", "phone": "0523333876", "birthDate": "04.08.2005", "apt": "45", "city": "Jerusalem", "street": "gdudHahamishi"}'
     send_request(sock, SIGN_UP, json_data)
-    time.sleep(1.5)
+    time.sleep(1)
     print(get_string_data(sock))
     # cant be signed up twice with the same user name
-    json_data = '{"username": "user1", "password": "1234"}'
+    json_data = '{"username": "user2", "password": "1234@#fds"}'
     send_request(sock, LOGIN, json_data)
-    time.sleep(1.5)
+    time.sleep(1)
     print(get_string_data(sock))
     # user1 now logged in
     json_data = '{"username": "user1", "password": "1234"}'
     send_request(sock, LOGIN, json_data)
-    time.sleep(1.5)
+    time.sleep(1)
     print(get_string_data(sock))
     # cant be logged in twice
     # dont know what valid username is
@@ -63,7 +63,7 @@ def main():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((IP, PORT))
     
-    required_tests(sock)
+    #required_tests(sock)
 
     """
     while True:
@@ -83,6 +83,11 @@ def main():
         else:
             print("choose valid option\n")
     """
+
+    json_data = '{"username": "user3", "password": "1234Hj%$#", "email":"user1@gmail.com", "phone": "02-3333876", "birthDate": "04.08.2005", "apt": "45", "city": "Jerusalem", "street": "gdudHahamishi"}'
+    send_request(sock, SIGN_UP, json_data)
+    time.sleep(1)
+    print(get_string_data(sock))
 
     sock.close()
 

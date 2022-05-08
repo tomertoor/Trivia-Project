@@ -88,7 +88,9 @@ This function adds a new user to the data base
 input: username, password and email
 output: none
 */
-void SqliteDataBase::addNewUser(const std::string& username, const std::string& password, const std::string& email)
+void SqliteDataBase::addNewUser(const std::string& username, const std::string& password, const std::string& email,
+	const std::string& phone, const std::string& birthDate,
+	const std::string& apt, const std::string& city, const std::string& street)
 {
 	if (!this->doesUserExist(username))
 	{

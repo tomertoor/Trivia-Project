@@ -3,7 +3,6 @@
 #include <iostream>
 #include <cstdint>
 #include <vector>
-
 #include <bsoncxx/json.hpp>
 #include <mongocxx/client.hpp>
 #include <mongocxx/instance.hpp>
@@ -39,6 +38,7 @@ public:
 	MongoDataBase(const MongoDataBase&) = delete;
 	MongoDataBase& operator=(const MongoDataBase&) = delete;
 
+	//get instance for singleton
 	static std::shared_ptr<IDatabase> getInstance()
 	{
 		static std::shared_ptr<IDatabase> instance(new MongoDataBase());
@@ -49,5 +49,7 @@ public:
 
 	bool doesUserExist(const std::string& username) override;
 	bool doesPasswordMatch(const std::string& username, const std::string& password) override;
-	void addNewUser(const std::string& username, const std::string& password, const std::string& email) override;
+	void addNewUser(const std::string& username, const std::string& password, const std::string& email,
+		const std::string& phone, const std::string& birthDate,
+		const std::string& apt, const std::string& city, const std::string& street) override;
 };

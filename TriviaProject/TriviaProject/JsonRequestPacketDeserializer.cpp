@@ -1,9 +1,20 @@
 #include "JsonRequestPacketDeserializer.h"
 
+JsonRequestPacketDeserializer* JsonRequestPacketDeserializer::instance = nullptr;
+
 /*Desirializing a buffer to a login request object
 * Input - buffer: the buffer to desirialize
 * Output - the request desirialized
 */
+
+JsonRequestPacketDeserializer* JsonRequestPacketDeserializer::getInstance()
+{
+	if (instance == nullptr)
+	{
+		instance = new JsonRequestPacketDeserializer();
+	}
+	return instance;
+}
 Requests::LoginRequest JsonRequestPacketDeserializer::deserializeLoginRequest(Buffer buffer)
 {
 	Requests::LoginRequest request;
@@ -41,5 +52,10 @@ Requests::SignupRequest JsonRequestPacketDeserializer::deserializeSignupRequest(
 	request.username = json["username"];
 	request.password = json["password"];
 	request.email = json["email"];
+	request.phone = json["phone"];
+	request.birthDate = json["birthDate"];
+	request.address.apt = json["apt"];
+	request.address.city = json["city"];
+	request.address.street = json["street"];
 	return request;
 }
