@@ -7,6 +7,7 @@
 #include "JsonRequestPacketDeserializer.h"
 #include "MenuRequestHandler.h"
 #include <regex>
+#include "GlobalException.h"
 
 #define MIN_NAME_LENGTH 5
 #define MAX_NAME_LENGTH 15

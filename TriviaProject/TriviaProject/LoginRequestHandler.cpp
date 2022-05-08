@@ -34,33 +34,13 @@ Requests::RequestResult LoginRequestHandler::handleRequest(Requests::RequestInfo
 	{
 		if (request.id == SIGNIN_REQUEST)
 		{
-
 			Requests::LoginRequest loginRequest = JsonRequestPacketDeserializer::deserializeLoginRequest(request.buffer);
-			if (loginRequest.username != "")
-			{
-				if (loginRequest.password != "")
-				{
-					return this->login(loginRequest);
-				}
-			}
-
+			return this->login(loginRequest);
 		}
 		else if (request.id == SIGNUP_REQUEST)
 		{
 			Requests::SignupRequest signupRequest = JsonRequestPacketDeserializer::deserializeSignupRequest(request.buffer);
-
-			if (this->isEmailValid(signupRequest.email))
-			{
-				if (this->isValidUserName(signupRequest.username))
-				{
-					if (signupRequest.password != "")
-					{
-						return this->signup(signupRequest);
-					}
-				}
-			}
-
-
+			return this->signup(signupRequest);
 		}
 		Responses::ErrorResponse errorResponse = { "Error, incorrect state" };
 		result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
@@ -119,7 +99,7 @@ Requests::RequestResult LoginRequestHandler::signup(Requests::SignupRequest regi
 	Requests::RequestResult result;
 	try
 	{
-		this->m_loginManager->signup(registerDetails.email, registerDetails.username, registerDetails.password);
+		this->m_loginManager->signup(registerDetails);
 		Responses::SignupResponse response{ OK_STATUS };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
 		result.newHandler = this->m_handlerFactory->createMenuRequestHandler();
@@ -144,6 +124,12 @@ Requests::RequestResult LoginRequestHandler::signup(Requests::SignupRequest regi
 		}
 
 		}
+	}
+	catch (GlobalException& ge)
+	{
+		Responses::ErrorResponse errorResponse{ ge.what() };
+		result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
+		result.newHandler = this->m_handlerFactory->createLoginRequestHandler();
 	}
 	catch (...)
 	{

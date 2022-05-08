@@ -3,7 +3,6 @@
 #include <iostream>
 #include <cstdint>
 #include <vector>
-
 #include <bsoncxx/json.hpp>
 #include <mongocxx/client.hpp>
 #include <mongocxx/instance.hpp>
@@ -22,7 +21,7 @@ using bsoncxx::builder::stream::open_document;
 
 #define DB_NAME "USERS"
 #define COLLECTION_NAME "users"
-#define URI "mongodb+srv://tomertoor12:wYsZDmvUo^7*Vb@cluster0.g4kew.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+#define URI "mongodb+srv://profzak:nowicanknowhowtousemongodb@cluster0.oyn8b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 
 class MongoDataBase : public IDatabase
 {
@@ -49,5 +48,7 @@ public:
 
 	bool doesUserExist(const std::string& username) override;
 	bool doesPasswordMatch(const std::string& username, const std::string& password) override;
-	void addNewUser(const std::string& username, const std::string& password, const std::string& email) override;
+	void addNewUser(const std::string& username, const std::string& password, const std::string& email,
+		const std::string& phone, const std::string& birthDate,
+		const std::string& apt, const std::string& city, const std::string& street) override;
 };

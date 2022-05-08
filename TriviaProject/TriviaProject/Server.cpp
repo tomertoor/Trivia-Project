@@ -1,9 +1,5 @@
 #include "Server.h"
 
-Server& Server::get()
-{
-}
-
 //Takes care of the server itself.
 void Server::run()
 {

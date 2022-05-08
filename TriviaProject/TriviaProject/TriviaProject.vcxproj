@@ -147,9 +147,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Address.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Communicator.h" />
     <ClInclude Include="dbException.h" />
+    <ClInclude Include="GlobalException.h" />
     <ClInclude Include="IDatabase.h" />
     <ClInclude Include="IRequestHandler.h" />
     <ClInclude Include="JsonRequestPacketDeserializer.h" />

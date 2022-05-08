@@ -51,7 +51,9 @@ This function adds a new user to the data base
 input: username, password and email
 output: none
 */
-void MongoDataBase::addNewUser(const std::string& username, const std::string& password, const std::string& email)
+void MongoDataBase::addNewUser(const std::string& username, const std::string& password, const std::string& email,
+	const std::string& phone, const std::string& birthDate,
+	const std::string& apt, const std::string& city, const std::string& street)
 {
 	if (!doesUserExist(username))
 	{
@@ -61,6 +63,13 @@ void MongoDataBase::addNewUser(const std::string& username, const std::string& p
 			<< "username" << username 
 			<< "password" << password
 			<< "email" << email 
+			<< "phone" << phone
+			<< "address" << bsoncxx::builder::stream::open_document
+				<< "city" << city
+				<< "street" << street
+				<< "apt" << apt
+				<< bsoncxx::builder::stream::close_document
+			<< "birth date" << birthDate
 			<< bsoncxx::builder::stream::finalize;
 		coll.insert_one(newUser.view());
 	}

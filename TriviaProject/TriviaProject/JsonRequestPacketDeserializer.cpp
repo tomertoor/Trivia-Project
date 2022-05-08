@@ -41,5 +41,10 @@ Requests::SignupRequest JsonRequestPacketDeserializer::deserializeSignupRequest(
 	request.username = json["username"];
 	request.password = json["password"];
 	request.email = json["email"];
+	request.phone = json["phone"];
+	request.birthDate = json["birthDate"];
+	request.address.apt = json["apt"];
+	request.address.city = json["city"];
+	request.address.street = json["street"];
 	return request;
 }

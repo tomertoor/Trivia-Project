@@ -3,6 +3,7 @@
 #include "Buffer.h"
 #include "IRequestHandler.h"
 #include <ctime>
+#include "Address.h"
 
 #define SIGNUP_REQUEST 1
 
@@ -33,5 +34,8 @@ namespace Requests
 		std::string username;
 		std::string password;
 		std::string email;
+		Address address;
+		std::string phone;
+		std::string birthDate;
 	};
 };
