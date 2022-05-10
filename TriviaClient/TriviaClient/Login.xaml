@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:TriviaClient"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="380"
@@ -40,7 +41,7 @@
                     <TextBox Name="username"
                              FontFamily="Helvetica"
                              FontWeight="Light"
-                             Text="Username"
+                             materialDesign:HintAssist.Hint="Username"
                              FontSize="20"
                              HorizontalAlignment="Center"
                              Foreground="White"
@@ -63,7 +64,7 @@
                     <PasswordBox Name ="password"
                              FontFamily="Helvetica"
                              FontWeight="Light"
-                             Password="Password"
+                             materialDesign:HintAssist.Hint="Password"
                              FontSize="20"
                              HorizontalAlignment="Center"
                              Foreground="White"
@@ -83,7 +84,7 @@
             </StackPanel>
         </Grid>
         <TextBlock Name="message" Text="" FontSize="13" Height="40" TextWrapping="Wrap" Foreground="OrangeRed" Margin="45,148,45,262"/>
-        <Button Name="home" Width="40" Height="40" Content="🏠" Margin="315,24,25,386" Click="home_Click"/>
+        <Button Name="home" Height="40" Content="🏠" Margin="304,24,25,386" Click="home_Click"/>
         <Button Name="login" Width="100" Height="40" Content="LOGIN" Margin="140,346,140,64" Click="Login_Click"/>
     </Grid>
 </Window>

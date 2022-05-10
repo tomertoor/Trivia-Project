@@ -28,7 +28,12 @@ output: true if exsits, false otherwise
 */
 bool MongoDataBase::doesUserExist(const std::string& username)
 {
-	return bool(getUser(username));
+	return bool(db[COLLECTION_NAME].find_one(
+
+		document{}
+		<< "username" << username
+		<< finalize
+	));
 }
 
 /*

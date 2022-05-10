@@ -18,6 +18,7 @@ namespace TriviaClient
     /// </summary>
     public partial class Login : Window
     {
+        public static User loggedUser;
         public Login()
         {
             InitializeComponent();
@@ -40,7 +41,14 @@ namespace TriviaClient
             ServerMsg msg = user.GetData();
             if (msg.code == Consts.ERROR)
                 this.message.Text = msg.data;
-            //move to next window, and pass the user object
+            else
+            {
+                loggedUser = user;
+                loggedUser.passedWhat = Consts.LOG_IN;
+                Menu menu = new Menu();
+                this.Close();
+                menu.Show();
+            }
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)

@@ -18,7 +18,7 @@ using System.Text.Json;
 
 namespace TriviaClient
 {
-    struct User
+    public struct User
     {
         public Socket sock;
         public string username;
@@ -29,6 +29,7 @@ namespace TriviaClient
         public string apt;
         public string city;
         public string street;
+        public string passedWhat;
 
         public void Login()
         {
@@ -41,7 +42,13 @@ namespace TriviaClient
 
         public void Signup()
         {
-
+            string data = Consts.SIGN_UP;
+            string msg = "{\"username\": \"" + this.username + "\", \"password\": \"" + this.password + "\", \"email\": \"" + this.email + "\"" +
+                ", \"phone\": \"" + this.phone + "\", \"birthDate\": \"" + this.birthDate + "\", \"apt\": \"" + this.apt + "\"" +
+                ", \"city\": \"" + this.city + "\", \"street\": \"" + this.street + "\"}";
+            data += msg.Length.ToString().PadLeft(4, '0');
+            data += msg;
+            SendData(data, this.sock);
         }
 
         public static void SendData(string data, Socket sock)
@@ -75,7 +82,7 @@ namespace TriviaClient
         public const string ERROR = "3";
     }
 
-    struct ServerMsg
+    public struct ServerMsg
     {
         public string code;
         public string data;

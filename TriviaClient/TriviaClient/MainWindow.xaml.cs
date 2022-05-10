@@ -32,5 +32,25 @@ namespace TriviaClient
             this.Close();
             log.Show();
         }
+
+        private void Signup_Click(object sender, RoutedEventArgs e)
+        {
+            Signup sign = new Signup();
+            this.Close();
+            sign.Show();
+        }
+
+        private void info_Click(object sender, RoutedEventArgs e)
+        {
+            Info info = new Info();
+            this.Close();
+            info.Show();
+        }
+
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonDown(e);
+            this.DragMove();
+        }
     }
 }
