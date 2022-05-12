@@ -1,0 +1,61 @@
+#include "JsonRequestPacketDeserializer.h"
+
+JsonRequestPacketDeserializer* JsonRequestPacketDeserializer::instance = nullptr;
+
+/*Desirializing a buffer to a login request object
+* Input - buffer: the buffer to desirialize
+* Output - the request desirialized
+*/
+
+JsonRequestPacketDeserializer* JsonRequestPacketDeserializer::getInstance()
+{
+	if (instance == nullptr)
+	{
+		instance = new JsonRequestPacketDeserializer();
+	}
+	return instance;
+}
+Requests::LoginRequest JsonRequestPacketDeserializer::deserializeLoginRequest(Buffer buffer)
+{
+	Requests::LoginRequest request;
+
+	std::string str = "";
+	
+	for (auto it = buffer.buffer.begin(); it != buffer.buffer.end(); it++)
+	{
+		str += *it;
+	}
+
+	json json = json::parse(str);
+	request.username = json["username"];
+	request.password = json["password"];
+	return request;
+}
+
+/*Desirializing a buffer to a signup request object
+* Input - buffer: the buffer to desirialize
+* Output - the request desirialized
+*/
+Requests::SignupRequest JsonRequestPacketDeserializer::deserializeSignupRequest(Buffer buffer)
+{
+	Requests::SignupRequest request;
+	
+	std::string str = "";
+
+	for (auto it = buffer.buffer.begin(); it != buffer.buffer.end(); it++)
+	{
+		str += *it;
+	}
+
+
+	json json = json::parse(str);
+	request.username = json["username"];
+	request.password = json["password"];
+	request.email = json["email"];
+	request.phone = json["phone"];
+	request.birthDate = json["birthDate"];
+	request.address.apt = json["apt"];
+	request.address.city = json["city"];
+	request.address.street = json["street"];
+	return request;
+}
