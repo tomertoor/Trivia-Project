@@ -3,11 +3,42 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:TriviaClient"
         mc:Ignorable="d"
-        Title="Menu" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        ResizeMode="NoResize" WindowStyle="None"
+        AllowsTransparency="True" Background="Transparent">
     <Grid>
-        <TextBlock Name="username" Margin="96,131,534,248" TextWrapping="Wrap" />
-        <TextBlock Name="password" Margin="96,259,534,120" TextWrapping="Wrap"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Border CornerRadius="10" Grid.RowSpan="2">
+                <Border.Background>
+                    <LinearGradientBrush>
+                        <GradientStop Color="#7be9f6" Offset="0.0"/>
+                        <GradientStop Color="#f083da" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
+
+
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="Menu"
+                           FontWeight="Light"
+                           FontFamily="helvetica"
+                           FontSize="22"
+                           Foreground="White"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+            <TextBlock FontSize="15" Name="username" Text="" Foreground="Black" Margin="333,33,333,153"/>
+            <Button Name="exit" Content="Exit" Height="45" Margin="46,49,658,131" Click="exit_Click"/>
+            <Button Name="createRoom" Height="45" Content="Create room" Margin="598,46,47,134" Click="createRoom_Click" Grid.Row="1"/>
+            <Button Name="joinRoom" Content="Join room" Height="45" Margin="46,46,599,134" Click="joinRoom_Click" Grid.Row="1"/>
+            <Button Name="statistics" Height="45" Content="My statistics" Margin="322,46,322,134" Click="statistics_Click" Grid.Row="1"/>
+        </Grid>
+
     </Grid>
 </Window>

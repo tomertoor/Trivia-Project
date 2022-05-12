@@ -52,5 +52,10 @@ namespace TriviaClient
             base.OnMouseLeftButtonDown(e);
             this.DragMove();
         }
+
+        private void exit_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

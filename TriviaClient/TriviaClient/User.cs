@@ -16,8 +16,15 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Text.Json;
 
+
 namespace TriviaClient
 {
+
+    public struct Message
+    {
+        string code;
+        string data;
+    }
     public struct User
     {
         public Socket sock;
@@ -71,6 +78,7 @@ namespace TriviaClient
             c[0] = code[0];
             msg.code = Encoding.ASCII.GetString(c);
             msg.data = Encoding.ASCII.GetString(data);
+            msg.data = JsonSerializer.Deserialize<string>(msg.data);
             return msg;
         }
     }

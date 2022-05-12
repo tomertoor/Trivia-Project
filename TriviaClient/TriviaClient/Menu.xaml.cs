@@ -30,14 +30,33 @@ namespace TriviaClient
                 loggedUser.username = "none";
                 loggedUser.password = "none";
             }
-            this.password.Text = loggedUser.password;
-            this.username.Text = loggedUser.username;
+            this.username.Text = "Hello " + loggedUser.username + "!";
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
             this.DragMove();
+        }
+
+        private void exit_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void createRoom_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void joinRoom_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void statistics_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

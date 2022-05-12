@@ -33,5 +33,6 @@
         <Button Name="LogIn" Content="Login" Margin="54,200,622,155" Click="LogIn_Click" Height="45"/>
         <Button Name="Signup" Content="Signup" Height="45" Margin="51,288,619,67" Click="Signup_Click"/>
         <Button Name="info" Content="ℹ" Width="50" Height="50" Margin="700,32,50,318" Click="info_Click"/>
+        <Button Name="exit" Content="Exit" Height="45" Margin="51,37,653,318" Click="exit_Click"/>
     </Grid>
 </Window>
