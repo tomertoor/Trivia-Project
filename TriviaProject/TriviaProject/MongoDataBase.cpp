@@ -3,7 +3,7 @@
 //return 0 if no user with the name, 1 otherwise
 boost::optional<bsoncxx::v_noabi::document::value> MongoDataBase::getUser(std::string username)
 {
-	return db[COLLECTION_NAME].find_one(
+	return db[USER_COLLECTION].find_one(
 
 		document{}
 		<< "username" << username
@@ -38,7 +38,7 @@ output: true if matches, false otherwise
 */
 bool MongoDataBase::doesPasswordMatch(const std::string& username, const std::string& password)
 {
-	return bool(db[COLLECTION_NAME].find_one(
+	return bool(db[USER_COLLECTION].find_one(
 		document{}
 		<< "username" << username
 		<< "password" << password
@@ -57,7 +57,7 @@ void MongoDataBase::addNewUser(const std::string& username, const std::string& p
 {
 	if (!doesUserExist(username))
 	{
-		mongocxx::collection coll = db[COLLECTION_NAME];
+		mongocxx::collection coll = db[USER_COLLECTION];
 		auto builder = bsoncxx::builder::stream::document{};
 		bsoncxx::document::value newUser = builder 
 			<< "username" << username 

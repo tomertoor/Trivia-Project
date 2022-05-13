@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <vector>
 #include <bsoncxx/json.hpp>
-#include <mongocxx/client.hpp>
+#include <mongocxx/client.hpp>		
 #include <mongocxx/instance.hpp>
 #include <mongocxx/stdx.hpp>
 #include <mongocxx/uri.hpp>
@@ -20,7 +20,8 @@ using bsoncxx::builder::stream::open_array;
 using bsoncxx::builder::stream::open_document;
 
 #define DB_NAME "USERS"
-#define COLLECTION_NAME "users"
+#define USER_COLLECTION "users"
+#define QUESTION_COLLECTION "questions"
 #define URI "mongodb+srv://tomertoor12:wYsZDmvUo^7*Vb@cluster0.g4kew.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 
 class MongoDataBase : public IDatabase
@@ -52,4 +53,5 @@ public:
 	void addNewUser(const std::string& username, const std::string& password, const std::string& email,
 		const std::string& phone, const std::string& birthDate,
 		const std::string& apt, const std::string& city, const std::string& street) override;
+	void addQuestion(const std::string& name);
 };

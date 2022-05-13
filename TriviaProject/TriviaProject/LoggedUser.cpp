@@ -22,3 +22,9 @@ std::string LoggedUser::getName() const
 {
 	return m_username;
 }
+
+bool LoggedUser::operator==(const LoggedUser& other)
+{
+
+	return other.getName() == this->getName();
+}
