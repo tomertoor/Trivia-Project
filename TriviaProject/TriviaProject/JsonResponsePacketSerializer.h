@@ -4,6 +4,7 @@
 #include "Buffer.h"
 #include "json.hpp"
 
+
 using json = nlohmann::json;
 
 #define MAX_FILLING_LENGTH 4
@@ -11,12 +12,16 @@ using json = nlohmann::json;
 #define SIGNUP_CODE 1
 #define LOGIN_CODE 5
 #define ERROR_CODE 3
-
+#define LOGOUT_CODE 2
+#define CREATE_ROOM_CODE 4
+#define JOIN_ROOM_CODE 6
+#define GET_ROOM_CODE 7
 
 class JsonResponsePacketSerializer
 {
 
 private:
+	static Buffer serializeStatusResponse(const unsigned int& code, const unsigned int& status);
 	static JsonResponsePacketSerializer* instance;
 
 	JsonResponsePacketSerializer() {};
@@ -27,5 +32,11 @@ public:
 	static Buffer serializeResponse(Responses::ErrorResponse response);
 	static Buffer serializeResponse(Responses::LoginResponse response);
 	static Buffer serializeResponse(Responses::SignupResponse response);
+	static Buffer serializeResponse(Responses::LogoutResponse response);
+	static Buffer serializeResponse(Responses::GetRoomsResponse response);
+	static Buffer serializeResponse(Responses::GetPlayersInRoomResponse response);
+	static Buffer serializeResponse(Responses::JoinRoomResponse response);
+	static Buffer serializeResponse(Responses::CreateRoomResponse response);
+	static Buffer serializeResponse(Responses::GetPersonalStatsResponse response);
 
 };
