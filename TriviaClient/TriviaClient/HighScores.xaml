@@ -1,4 +1,4 @@
-﻿<Window x:Class="TriviaClient.Menu"
+﻿<Window x:Class="TriviaClient.HighScores"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -15,7 +15,7 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <Border CornerRadius="10" Grid.RowSpan="2">
+            <Border CornerRadius="10" Grid.RowSpan="2" RenderTransformOrigin="0.523,0.623">
                 <Border.Background>
                     <LinearGradientBrush>
                         <GradientStop Color="#7be9f6" Offset="0.0"/>
@@ -26,18 +26,17 @@
 
 
             <StackPanel VerticalAlignment="Center">
-                <TextBlock Text="Menu"
+                <TextBlock Text="High Scores"
                            FontWeight="Light"
                            FontFamily="helvetica"
                            FontSize="22"
                            Foreground="White"
                            HorizontalAlignment="Center"/>
             </StackPanel>
-            <TextBlock FontSize="15" Name="username" Text="" Foreground="Black" Margin="333,33,333,153"/>
-            <Button Name="exit" Content="Exit" Height="45" Margin="46,49,658,131" Click="exit_Click"/>
-            <Button Name="createRoom" Height="45" Content="Create room" Margin="598,46,47,134" Click="createRoom_Click" Grid.Row="1"/>
-            <Button Name="joinRoom" Content="Join room" Height="45" Margin="46,46,599,134" Click="joinRoom_Click" Grid.Row="1"/>
-            <Button Name="statistics" Height="45" Content="Statistics" Margin="322,46,322,134" Click="statistics_Click" Grid.Row="1"/>
+            <Button Name="menu" Content="Return to menu" Height="45" Margin="10,34,483,146" Click="menu_Click"/>
+            <TextBlock Name="user1" Text="First: " TextWrapping="Wrap" FontSize="17" Margin="541,207,69,163" Foreground="Black" Grid.RowSpan="2"/>
+            <TextBlock Name="user2" Text="Second: " TextWrapping="Wrap" FontSize="17" Margin="324,207,324,163" Foreground="Black" Grid.RowSpan="2"/>
+            <TextBlock Name="user3" Text="Third: " TextWrapping="Wrap" FontSize="17" Margin="69,207,578,163" Foreground="Black" Grid.RowSpan="2"/>
         </Grid>
 
     </Grid>

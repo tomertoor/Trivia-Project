@@ -17,7 +17,7 @@ namespace TriviaClient
     /// </summary>
     public partial class Menu : Window
     {
-        private static User loggedUser;
+        public static User loggedUser;
         public Menu()
         {
             InitializeComponent();
@@ -46,7 +46,9 @@ namespace TriviaClient
 
         private void createRoom_Click(object sender, RoutedEventArgs e)
         {
-
+            CreateRoom create = new CreateRoom();
+            this.Close();
+            create.Show();
         }
 
         private void joinRoom_Click(object sender, RoutedEventArgs e)
@@ -56,7 +58,9 @@ namespace TriviaClient
 
         private void statistics_Click(object sender, RoutedEventArgs e)
         {
-
+            Stats stats = new Stats();
+            this.Close();
+            stats.Show();
         }
     }
 }
