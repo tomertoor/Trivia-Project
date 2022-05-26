@@ -22,6 +22,7 @@ using bsoncxx::builder::stream::open_document;
 #define DB_NAME "USERS"
 #define USER_COLLECTION "users"
 #define QUESTION_COLLECTION "questions"
+#define STATS_COLLECTION "statistics"
 #define URI "mongodb+srv://tomertoor12:wYsZDmvUo^7*Vb@cluster0.g4kew.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 
 class MongoDataBase : public IDatabase
@@ -53,5 +54,16 @@ public:
 	void addNewUser(const std::string& username, const std::string& password, const std::string& email,
 		const std::string& phone, const std::string& birthDate,
 		const std::string& apt, const std::string& city, const std::string& street) override;
+
+	float getPlayerAverageAnswerTime(std::string name) override;
+	int getNumOfCorrectAnswers(std::string name) override;
+	int getNumOfTotalAnswers(std::string name) override;
+	int getNumOfPlayerGames(std::string name) override;
+
+	std::vector<int> getHighestScores(std::string name) override;
+
+
 	void addQuestion(const std::string& name);
+
+
 };
