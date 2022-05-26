@@ -19,8 +19,6 @@ MongoDataBase::MongoDataBase() :
 	uri = mongocxx::uri(URI);
 	client = mongocxx::client(uri);
 	db = client[DB_NAME];
-
-	auto high = getHighestScores("Tomer");
 }
 
 /*
