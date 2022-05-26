@@ -12,6 +12,27 @@ boost::optional<bsoncxx::v_noabi::document::value> MongoDataBase::getUser(std::s
 
 }
 
+/*The point calculator function
+* Input - the name to calculate for
+* Output - the points
+*/
+double MongoDataBase::calculatePoints(const std::string& name)
+{
+	try
+	{
+		double correctAns = (this->getNumOfCorrectAnswers(name));
+		double totalAns = (this->getNumOfTotalAnswers(name));
+		double gameCount(this->getNumOfPlayerGames(name));
+		double result = (correctAns / (2*totalAns)) * 1000 * (gameCount * 0.1);
+		return result < 0 ? 0 : result;
+	}
+	catch (...)
+	{
+		return 0;
+	}
+	return 0	;
+}
+
 //constructor
 MongoDataBase::MongoDataBase() :
 	ins()
@@ -19,6 +40,8 @@ MongoDataBase::MongoDataBase() :
 	uri = mongocxx::uri(URI);
 	client = mongocxx::client(uri);
 	db = client[DB_NAME];
+	
+	auto test =  this->getHighestScores();
 }
 
 /*
@@ -144,21 +167,34 @@ int MongoDataBase::getNumOfPlayerGames(std::string name)
 * Input - the name to look for
 * Output - vector of all of the highest scores
 */
-std::vector<int> MongoDataBase::getHighestScores(std::string name)
+std::vector<std::string> MongoDataBase::getHighestScores()
 {
-	bsoncxx::stdx::optional<bsoncxx::document::value> row = db[STATS_COLLECTION].find_one(
-		document{}
-		<< "name" << name
-		<< finalize
-	);
-	auto view = row.value().view();
-	auto bsonVec = view["highestScores"].get_array().value;
-	std::vector<int> scoreVector;
-	for (auto& iter : bsonVec)
+	std::vector<std::pair<std::string, double>> vec;
+
+	for (auto& user : this->db[USER_COLLECTION].find({}))
 	{
-		scoreVector.push_back(iter.get_int32().value);
+		auto username = user["username"].get_utf8().value.to_string();
+		vec.push_back(std::make_pair(username, this->calculatePoints(username)));
 	}
-	return scoreVector;
+	std::sort(vec.begin(), vec.end(), [](const std::pair<std::string, double>& p1, const std::pair<std::string, double>& p2)
+		{
+			return p1.second > p2.second;
+		});
+
+	std::vector<std::string> finalVec;
+	if (vec.size() < TOP_SCORE_AMOUNT)
+	{
+		for (int i = 0; i < vec.size(); i++)
+		{
+			finalVec.push_back(vec[i].first);
+		}
+		return finalVec;
+	}
+	for (int i = 0; i < TOP_SCORE_AMOUNT; i++)
+	{
+		finalVec.push_back(vec[i].first);
+	}
+	return finalVec;
 }
 
 

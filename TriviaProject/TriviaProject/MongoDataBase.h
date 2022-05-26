@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cstdint>
 #include <vector>
+#include <set>
 #include <bsoncxx/json.hpp>
 #include <mongocxx/client.hpp>		
 #include <mongocxx/instance.hpp>
@@ -19,6 +20,8 @@ using bsoncxx::builder::stream::finalize;
 using bsoncxx::builder::stream::open_array;
 using bsoncxx::builder::stream::open_document;
 
+#define TOP_SCORE_AMOUNT 5
+
 #define DB_NAME "USERS"
 #define USER_COLLECTION "users"
 #define QUESTION_COLLECTION "questions"
@@ -33,6 +36,8 @@ private:
 	mongocxx::client client;
 	mongocxx::database db;
 	boost::optional<bsoncxx::v_noabi::document::value> getUser(std::string username);
+
+	double calculatePoints(const std::string& username);
 public:
 	MongoDataBase();
 	virtual ~MongoDataBase() = default;
@@ -60,8 +65,9 @@ public:
 	int getNumOfTotalAnswers(std::string name) override;
 	int getNumOfPlayerGames(std::string name) override;
 
-	std::vector<int> getHighestScores(std::string name) override;
+	std::vector<std::string> getHighestScores() override;
 
+	
 
 	void addQuestion(const std::string& name);
 
