@@ -26,7 +26,8 @@
 
 
             <StackPanel VerticalAlignment="Center">
-                <TextBlock Text="High Scores"
+                <TextBlock Text=""
+                           Name="message"
                            FontWeight="Light"
                            FontFamily="helvetica"
                            FontSize="22"
@@ -34,7 +35,10 @@
                            HorizontalAlignment="Center"/>
             </StackPanel>
             <Button Name="menu" Content="Return to menu" Height="45" Margin="10,34,483,146" Click="menu_Click"/>
-            <TextBlock Name="myStats" Text="My stats: " TextWrapping="Wrap" FontSize="17" Margin="69,207,79,124" Foreground="Black" Grid.RowSpan="2"/>
+            <TextBlock Name="correctAnswers" Text="Correct answers: " TextWrapping="Wrap" FontSize="17" Margin="438,102,172,49" Foreground="Black" Grid.Row="1"/>
+            <TextBlock Name="noOfGames" Text="Number of games: " TextWrapping="Wrap" FontSize="17" Margin="62,101,548,49" Foreground="Black" Grid.Row="1"/>
+            <TextBlock Name="totalAnswers" Text="Total answers: " TextWrapping="Wrap" FontSize="17" Margin="438,0,172,154" Foreground="Black" Grid.Row="1"/>
+            <TextBlock Name="avgTime" Text="Average time per answer: " TextWrapping="Wrap" FontSize="17" Margin="62,0,548,148" Foreground="Black" Grid.Row="1"/>
         </Grid>
 
     </Grid>

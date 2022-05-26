@@ -22,6 +22,7 @@ namespace TriviaClient
         {
             InitializeComponent();
             loggedUser = Stats.loggedUser;
+            message.Text = loggedUser.username + " statistics";
             //show the user stats
         }
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)

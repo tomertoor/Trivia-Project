@@ -53,7 +53,7 @@ namespace TriviaClient
 
         private void joinRoom_Click(object sender, RoutedEventArgs e)
         {
-
+            
         }
 
         private void statistics_Click(object sender, RoutedEventArgs e)
