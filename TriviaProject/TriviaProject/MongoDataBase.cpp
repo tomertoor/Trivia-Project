@@ -33,6 +33,25 @@ double MongoDataBase::calculatePoints(const std::string& name)
 	return 0	;
 }
 
+
+//helper function to test questions by adding to db, uses question api
+void MongoDataBase::testQuestions()
+{
+	auto res = cpr::Get(cpr::Url("https://opentdb.com/api.php?amount=10"));
+	nlohmann::json json = nlohmann::json::parse(res.text);
+	for (auto& iter : json["results"])
+	{
+		Question question;
+		question.content = iter["question"];
+		question.correctAnswer = iter["correct_answer"];
+		for (auto& it : iter["incorrect_answers"])
+		{
+			question.incorrectAnswers.push_back(it);
+		}
+		this->addQuestion(question);
+	}
+}
+
 //constructor
 MongoDataBase::MongoDataBase() :
 	ins()
@@ -41,7 +60,6 @@ MongoDataBase::MongoDataBase() :
 	client = mongocxx::client(uri);
 	db = client[DB_NAME];
 	
-	auto test =  this->getHighestScores();
 }
 
 /*
@@ -195,6 +213,52 @@ std::vector<std::string> MongoDataBase::getHighestScores()
 		finalVec.push_back(vec[i].first);
 	}
 	return finalVec;
+}
+/*Adds a question
+* Input - the question to add
+* Output - none.
+*/
+void MongoDataBase::addQuestion(const Question& question)
+{
+	mongocxx::collection coll = db[QUESTION_COLLECTION];
+
+	bsoncxx::builder::stream::array bsonArr;
+
+	for (auto& iter : question.incorrectAnswers)
+	{
+		bsonArr << iter;
+	}
+	auto builder = bsoncxx::builder::stream::document{};
+	bsoncxx::document::value newQuestion = builder
+		<< "content" << question.content
+		<< "correctAnswer" << question.correctAnswer
+		<< "incorrectAnswers" << bsonArr 
+		<< bsoncxx::builder::stream::finalize;
+	coll.insert_one(newQuestion.view());
+}
+
+/*Returns x amount of questions from the db
+* Input - the amount of questions to get
+* Output - The list of questions
+*/
+std::list<Question> MongoDataBase::getQuestions(int amount)
+{
+	mongocxx::collection coll = db[QUESTION_COLLECTION];
+	std::list<Question> questions;
+	mongocxx::cursor cursor = coll.find({});
+	int count = 0;
+	for (auto& doc : cursor)
+	{
+		if (count == amount)
+		{
+			break;
+		}
+		Question question;
+		question.operator=(doc);
+		questions.push_back(question);
+		count++;
+	}
+	return questions;
 }
 
 
