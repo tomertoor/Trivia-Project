@@ -12,6 +12,9 @@
 #include <bsoncxx/builder/stream/helpers.hpp>
 #include <bsoncxx/builder/stream/array.hpp>
 #include <bsoncxx/builder/stream/document.hpp>
+#include "Question.h"
+#include <cpr/cpr.h>
+#include "json.hpp"
 
 using bsoncxx::builder::stream::close_array;
 using bsoncxx::builder::stream::close_document;
@@ -38,6 +41,8 @@ private:
 	boost::optional<bsoncxx::v_noabi::document::value> getUser(std::string username);
 
 	double calculatePoints(const std::string& username);
+	void testQuestions();
+
 public:
 	MongoDataBase();
 	virtual ~MongoDataBase() = default;
@@ -69,7 +74,8 @@ public:
 
 	
 
-	void addQuestion(const std::string& name);
+	void addQuestion(const Question& question);
+	std::list<Question> getQuestions(int amount);
 
 
 };
