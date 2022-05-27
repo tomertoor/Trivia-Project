@@ -26,28 +26,36 @@ namespace TriviaClient
 
         private void register_Click(object sender, RoutedEventArgs e)
         {
-            User user = new User();
-            user.sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            user.sock.Connect("127.0.0.1", 42069);
-            user.username = this.username.Text;
-            user.password = this.password.Password;
-            user.email = this.email.Text;
-            user.phone = this.phone.Text;
-            user.birthDate = this.birthDate.Text;
-            user.apt = this.apt.Text;
-            user.city = this.city.Text;
-            user.street = this.street.Text;
-            user.Signup();
-            ServerMsg msg = user.GetData();
-            if (msg.code == Consts.ERROR)
-                this.message.Text = msg.data;
-            else
+            try
             {
-                loggedUser = user;
-                loggedUser.passedWhat = Consts.SIGN_UP;
-                Menu menu = new Menu();
-                this.Close();
-                menu.Show();
+                User user = new User();
+                user.sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                user.sock.Connect("127.0.0.1", 42069);
+                user.username = this.username.Text;
+                user.password = this.password.Password;
+                user.email = this.email.Text;
+                user.phone = this.phone.Text;
+                user.birthDate = this.birthDate.Text;
+                user.apt = this.apt.Text;
+                user.city = this.city.Text;
+                user.street = this.street.Text;
+                user.Signup();
+                ServerMsg msg = user.GetData();
+                if (msg.code == Consts.ERROR)
+                    this.message.Text = msg.data;
+                else
+                {
+                    loggedUser = user;
+                    loggedUser.passedWhat = Consts.SIGN_UP;
+                    Menu menu = new Menu();
+                    this.Close();
+                    menu.Show();
+                }
+            }
+            catch(Exception)
+            {
+                this.message.FontSize = 25;
+                this.message.Text = "Error occured";
             }
         }
 

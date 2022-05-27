@@ -32,22 +32,30 @@ namespace TriviaClient
         }
         private void Login_Click(object sender, RoutedEventArgs e)
         {
-            User user = new User();
-            user.sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            user.sock.Connect("127.0.0.1", 42069);
-            user.username = this.username.Text;
-            user.password = this.password.Password;
-            user.Login();
-            ServerMsg msg = user.GetData();
-            if (msg.code == Consts.ERROR)
-                this.message.Text = msg.data;
-            else
+            try
             {
-                loggedUser = user;
-                loggedUser.passedWhat = Consts.LOG_IN;
-                Menu menu = new Menu();
-                this.Close();
-                menu.Show();
+                User user = new User();
+                user.sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                user.sock.Connect("127.0.0.1", 42069);
+                user.username = this.username.Text;
+                user.password = this.password.Password;
+                user.Login();
+                ServerMsg msg = user.GetData();
+                if (msg.code == Consts.ERROR)
+                    this.message.Text = msg.data;
+                else
+                {
+                    loggedUser = user;
+                    loggedUser.passedWhat = Consts.LOG_IN;
+                    Menu menu = new Menu();
+                    this.Close();
+                    menu.Show();
+                }
+            }
+            catch(Exception)
+            {
+                this.message.FontSize = 25;
+                this.message.Text = "Error occured";
             }
         }
 
