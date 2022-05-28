@@ -16,7 +16,11 @@ void Room::addUser(const LoggedUser& user)
 //Removes user, finding and erasing
 void Room::removeUser(const LoggedUser& user)
 {
-	this->m_users.erase(std::find(m_users.begin(), m_users.end(), user));
+	if (std::find(m_users.begin(), m_users.end(), user) != m_users.end())
+	{
+		this->m_users.erase(std::find(m_users.begin(), m_users.end(), user));
+
+	}
 }
 
 //Returns a copy of the vector of the logged users

@@ -10,6 +10,7 @@ void RoomManager::createRoom(const LoggedUser& user, const RoomData& data)
 	room.addUser(user);
 	std::pair<unsigned int, Room> cell(data.id, room);
 	this->m_rooms.insert(cell);
+	this->currentId++;
 }
 
 /*Just deleting a room
@@ -29,11 +30,25 @@ unsigned int RoomManager::getRoomState(const int& id)
 	return this->m_rooms.find(id)->second.getData().isActive;
 }
 
+/*Returns all the rooms by their obj
+* Input: None
+* Output - All the rooms
+*/
+std::vector<Room> RoomManager::getRooms()
+{
+	std::vector<Room> rooms;
+	for (auto iter = this->m_rooms.begin(); iter != this->m_rooms.end(); iter++)
+	{
+		rooms.push_back(iter->second);
+	}
+	return rooms;
+}
+
 /*Returns all the rooms by their data
 * Input: None
 * Output - All the rooms
 */
-std::vector<RoomData> RoomManager::getRooms()
+std::vector<RoomData> RoomManager::getRoomsData()
 {
 	std::vector<RoomData> rooms;
 	for (auto iter = this->m_rooms.begin(); iter != this->m_rooms.end(); iter++)
@@ -41,4 +56,9 @@ std::vector<RoomData> RoomManager::getRooms()
 		rooms.push_back(iter->second.getData());
 	}
 	return rooms;
+}
+
+unsigned int RoomManager::getCurrentId() const
+{
+	return this->currentId;
 }
