@@ -8,20 +8,12 @@ JsonResponsePacketSerializer* JsonResponsePacketSerializer::instance = nullptr;
 */
 Buffer JsonResponsePacketSerializer::serializeStatusResponse(const unsigned int& code, const unsigned int& status)
 {
-    Buffer buffer;
     std::stringstream message;
     std::string jsonMessage = R"("{"status":")" + std::to_string(status) + R"("}")";
     std::string length = std::to_string(jsonMessage.length());
     message << std::to_string(code) << std::setfill('0') << std::setw(MAX_FILLING_LENGTH) << length << jsonMessage;
 
-    std::string messageStr = message.str();
-
-    for (auto it = messageStr.begin(); it != messageStr.end(); it++)
-    {
-        buffer.buffer.push_back(*it);
-    }
-
-    return buffer;
+    return stringToBuffer(message.str());
 }
 
 /*Helper function to avoid code duplication, serializes based on json
