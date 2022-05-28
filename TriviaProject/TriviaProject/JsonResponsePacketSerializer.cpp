@@ -109,6 +109,10 @@ Buffer JsonResponsePacketSerializer::serializeResponse(Responses::LogoutResponse
     return serializeStatusResponse(LOGOUT_CODE, response.status);
 }
 
+/*Function serializing getroomsresponse, converts room to just room names into json.
+* Input - the response
+* Output - the serialized message
+*/
 Buffer JsonResponsePacketSerializer::serializeResponse(Responses::GetRoomsResponse response)
 {
     nlohmann::json json;
