@@ -16,12 +16,16 @@ using json = nlohmann::json;
 #define CREATE_ROOM_CODE 4
 #define JOIN_ROOM_CODE 6
 #define GET_ROOM_CODE 7
+#define STATISTICS_CODE 8
+#define GET_PLAYERS_CODE 9
 
 class JsonResponsePacketSerializer
 {
 
 private:
 	static Buffer serializeStatusResponse(const unsigned int& code, const unsigned int& status);
+	static Buffer serializeJsonResponse(const unsigned int& code, const nlohmann::json& json);
+	static Buffer stringToBuffer(std::string str);
 	static JsonResponsePacketSerializer* instance;
 
 	JsonResponsePacketSerializer() {};
@@ -37,6 +41,6 @@ public:
 	static Buffer serializeResponse(Responses::GetPlayersInRoomResponse response);
 	static Buffer serializeResponse(Responses::JoinRoomResponse response);
 	static Buffer serializeResponse(Responses::CreateRoomResponse response);
-	static Buffer serializeResponse(Responses::GetPersonalStatsResponse response);
+	static Buffer serializeResponse(Responses::GetStatisticsResponse response);
 
 };
