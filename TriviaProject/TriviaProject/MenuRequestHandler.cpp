@@ -30,6 +30,10 @@ bool MenuRequestHandler::isRequestRelevant(Requests::RequestInfo request)
 	return false;
 }
 
+/*Responsible on hnadling request by sending it to private function
+* Input - the request to handle
+* Output - the request result
+*/
 Requests::RequestResult MenuRequestHandler::handleRequest(Requests::RequestInfo request)
 {
 	Requests::RequestResult	result;
@@ -59,6 +63,10 @@ Requests::RequestResult MenuRequestHandler::handleRequest(Requests::RequestInfo 
 	return Requests::RequestResult();
 }
 
+/*Responsible on handling signout, just goes through all rooms and signs him out
+* Input - the request to handle
+* Output - the request result
+*/
 Requests::RequestResult MenuRequestHandler::signout(Requests::RequestInfo info)
 {
 	Requests::RequestResult result;
@@ -85,6 +93,10 @@ Requests::RequestResult MenuRequestHandler::signout(Requests::RequestInfo info)
 	return result;
 }
 
+/*Responsible on handling getting rooms
+* Input - the request to handle
+* Output - the request result
+*/
 Requests::RequestResult MenuRequestHandler::getRooms(Requests::RequestInfo info)
 {
 	Requests::RequestResult result;
@@ -109,6 +121,10 @@ Requests::RequestResult MenuRequestHandler::getRooms(Requests::RequestInfo info)
 	return result;
 }
 
+/*Responsible on handling getPlayersInroom request.
+* Input - the request to handle
+* Output - the request result
+*/
 Requests::RequestResult MenuRequestHandler::getPlayersInRoom(Requests::RequestInfo info)
 {
 	Requests::RequestResult result;
@@ -136,16 +152,19 @@ Requests::RequestResult MenuRequestHandler::getPlayersInRoom(Requests::RequestIn
 	return result;
 }
 
+/*Responsible on handling personal stats
+* Input - the request to handle
+* Output - the request result
+*/
 Requests::RequestResult MenuRequestHandler::getPersonalStats(Requests::RequestInfo info)
 {
 	Requests::RequestResult result;
 
 	try
 	{
-		Requests::CreateRoomRequest request = JsonRequestPacketDeserializer::deserializeCreateRoomRequest(info.buffer);
-		this->m_roomManager.createRoom(this->m_user, { 0, request.roomName, request.maxUsers, request.questionCount, request.questionTimeout });
 
-		Responses::CreateRoomResponse response;
+		Responses::GetPersonalStatsResponse response;
+		response.statistics = this->m_statisticsManager.getUserStatistics(this->m_user.getName());
 		response.status = OK_STATUS;
 
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
@@ -159,6 +178,10 @@ Requests::RequestResult MenuRequestHandler::getPersonalStats(Requests::RequestIn
 	}
 }
 
+/*Responsible on handling getting the highest score
+* Input - the request to handle
+* Output - the request result
+*/
 Requests::RequestResult MenuRequestHandler::getHighScore(Requests::RequestInfo info)
 {
 	Requests::RequestResult result;
@@ -183,6 +206,10 @@ Requests::RequestResult MenuRequestHandler::getHighScore(Requests::RequestInfo i
 	}
 }
 
+/*Responsible on handling join room
+* Input - the request to handle
+* Output - the request result
+*/
 Requests::RequestResult MenuRequestHandler::joinRoom(Requests::RequestInfo info)
 {
 	Requests::RequestResult result;
@@ -206,6 +233,10 @@ Requests::RequestResult MenuRequestHandler::joinRoom(Requests::RequestInfo info)
 	}
 }
 
+/*Responsible on handling create room
+* Input - the request to handle
+* Output - the request result
+*/
 Requests::RequestResult MenuRequestHandler::createRoom(Requests::RequestInfo info)
 {
 	Requests::RequestResult result;

@@ -52,11 +52,15 @@ namespace Responses
 	{
 		unsigned int status;
 	};
-	struct GetStatisticsResponse
+	struct GetHighScoreResponse
 	{
 		unsigned int status;
-		std::vector<std::string> highScores;
-		std::vector<std::string> userStats;
+		std::vector<std::string> statistics;
+	};
+	struct GetPersonalStatsResponse
+	{
+		unsigned int status;
+		std::vector<std::string> statistics;
 	};
 
 }

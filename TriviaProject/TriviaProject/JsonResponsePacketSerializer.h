@@ -16,9 +16,14 @@ using json = nlohmann::json;
 #define CREATE_ROOM_CODE 4
 #define JOIN_ROOM_CODE 6
 #define GET_ROOM_CODE 7
-#define STATISTICS_CODE 8
+#define PERSONAL_STATS_CODE 8
 #define GET_PLAYERS_CODE 9
+#define HIGH_SCORE_CODE 'A'
 
+#define AVERAGE_ANSWER 0
+#define CORRECT_ANSWER 1
+#define TOTAL_ANSWERS 2
+#define GAME_COUNT 3
 class JsonResponsePacketSerializer
 {
 
@@ -41,6 +46,9 @@ public:
 	static Buffer serializeResponse(Responses::GetPlayersInRoomResponse response);
 	static Buffer serializeResponse(Responses::JoinRoomResponse response);
 	static Buffer serializeResponse(Responses::CreateRoomResponse response);
-	static Buffer serializeResponse(Responses::GetStatisticsResponse response);
+
+	static Buffer serializeResponse(Responses::GetHighScoreResponse response);
+	static Buffer serializeResponse(Responses::GetPersonalStatsResponse response);
+
 
 };

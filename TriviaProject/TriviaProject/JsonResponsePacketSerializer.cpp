@@ -147,21 +147,34 @@ Buffer JsonResponsePacketSerializer::serializeResponse(Responses::CreateRoomResp
     return serializeStatusResponse(CREATE_ROOM_CODE, response.status);
 }
 
+/*Serializes highscore response, json type serialize
+* Input - the response to serialize
+* Output - the buffer
+*/
+Buffer JsonResponsePacketSerializer::serializeResponse(Responses::GetHighScoreResponse response)
+{
+    nlohmann::json json;
+    json["UserStatistics"]["averageAnswerTime"] = response.statistics[AVERAGE_ANSWER];
+    json["UserStatistics"]["correctAnswers"] = response.statistics[CORRECT_ANSWER];
+    json["UserStatistics"]["totalAnswers"] = response.statistics[TOTAL_ANSWERS];
+    json["UserStatistics"]["gameCount"] = response.statistics[GAME_COUNT];
+
+
+    return serializeJsonResponse(HIGH_SCORE_CODE, json);
+}
+
 /*Serializes statistics response, json type serialize
 * Input - the response to serialize
 * Output - the buffer
 */
-Buffer JsonResponsePacketSerializer::serializeResponse(Responses::GetStatisticsResponse response)
+Buffer JsonResponsePacketSerializer::serializeResponse(Responses::GetPersonalStatsResponse response)
 {
-
     nlohmann::json json;
-    json["UserStatistics"]["averageAnswerTime"] = response.userStats[0];
-    json["UserStatistics"]["correctAnswers"] = response.userStats[1];
-    json["UserStatistics"]["totalAnswers"] = response.userStats[2];
-    json["UserStatistics"]["gameCount"] = response.userStats[3];
-    json["HighScores"] = response.highScores;
-    
 
-    return serializeJsonResponse(STATISTICS_CODE, json);
+
+    json["HighScores"] = response.statistics;
+
+    return serializeJsonResponse(PERSONAL_STATS_CODE, json);
+
+
 }
-    
