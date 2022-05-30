@@ -38,25 +38,26 @@ Requests::RequestResult MenuRequestHandler::handleRequest(Requests::RequestInfo 
 
 	switch (request.id)
 	{
-	case CREATE_ROOM_CODE:
-		return this->createRoom(request);
-		break;
-	case GET_PLAYERS_CODE:
-		return this->getPlayersInRoom(request);
-		break;
-	case GET_ROOM_CODE:
-		return this->getRooms(request);
-		break;
-	case JOIN_ROOM_CODE:
-		return this->joinRoom(request);
-		break;
-	case LOGOUT_CODE:
-		return this->signout(request);
-		break;
-	case STATISTICS_CODE:
-		return this->getPersonalStats(request);
-		break;
-	default:
+		case CREATE_ROOM_CODE:
+			return this->createRoom(request);
+			break;
+		case GET_PLAYERS_CODE:
+			return this->getPlayersInRoom(request);
+			break;
+		case GET_ROOM_CODE:
+			return this->getRooms(request);
+			break;
+		case JOIN_ROOM_CODE:
+			return this->joinRoom(request);
+			break;
+		case LOGOUT_CODE:
+			return this->signout(request);
+			break;
+		case STATISTICS_CODE:
+			return this->getPersonalStats(request);
+			break;
+		default:
+			return Requests::RequestResult();
 	}
 	return Requests::RequestResult();
 }
@@ -174,6 +175,7 @@ Requests::RequestResult MenuRequestHandler::getPersonalStats(Requests::RequestIn
 		result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
 		result.newHandler = nullptr;
 	}
+	return result;
 }
 
 /*Responsible on handling getting the highest score
@@ -202,6 +204,7 @@ Requests::RequestResult MenuRequestHandler::getHighScore(Requests::RequestInfo i
 		result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
 		result.newHandler = nullptr;
 	}
+	return result;
 }
 
 /*Responsible on handling join room
@@ -229,6 +232,7 @@ Requests::RequestResult MenuRequestHandler::joinRoom(Requests::RequestInfo info)
 		result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
 		result.newHandler = nullptr;
 	}
+	return result;
 }
 
 /*Responsible on handling create room
