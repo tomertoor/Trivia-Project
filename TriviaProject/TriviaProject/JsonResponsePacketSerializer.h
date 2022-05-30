@@ -19,6 +19,7 @@ using json = nlohmann::json;
 #define PERSONAL_STATS_CODE 8
 #define GET_PLAYERS_CODE 9
 #define HIGH_SCORE_CODE 'A'
+#define STATISTICS_CODE 'B'
 
 #define AVERAGE_ANSWER 0
 #define CORRECT_ANSWER 1

@@ -1,6 +1,12 @@
 ﻿#include "StatisticsManager.h"
+#include "MongoDataBase.h"
 
 StatisticsManager* StatisticsManager::instance = nullptr;
+
+StatisticsManager::StatisticsManager() :
+	m_database(MongoDataBase::getInstance())
+{
+}
 
 /*Sends the top 5 highest scores
 * Input - None

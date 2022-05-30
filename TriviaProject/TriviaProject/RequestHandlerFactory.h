@@ -3,9 +3,10 @@
 #include "LoginRequestHandler.h"
 #include "StatisticsManager.h"
 #include "RoomManager.h"
+#include "MenuRequestHandler.h"
 
-class LoginRequestHandler;
 class MenuRequestHandler;
+class LoginRequestHandler;
 
 class RequestHandlerFactory
 {

@@ -4,13 +4,15 @@
 #include "StatisticsManager.h"
 #include "RequestHandlerFactory.h"
 
+class RequestHandlerFactory;
+
 class MenuRequestHandler : public IRequestHandler
 {
 private:
 	LoggedUser m_user;
-	RoomManager& m_roomManager;
-	StatisticsManager& m_statisticsManager;
-	RequestHandlerFactory& m_handlerFactory;
+	RoomManager m_roomManager;
+	StatisticsManager* m_statisticsManager;
+	RequestHandlerFactory* m_handlerFactory;
 
 	Requests::RequestResult signout(Requests::RequestInfo info);
 	Requests::RequestResult getRooms(Requests::RequestInfo info);
@@ -22,7 +24,7 @@ private:
 
 public:
 	MenuRequestHandler();
-	~MenuRequestHandler();
+	~MenuRequestHandler() = default;
 
 	bool isRequestRelevant(Requests::RequestInfo request) override;
 	Requests::RequestResult handleRequest(Requests::RequestInfo request) override;

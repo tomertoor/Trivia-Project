@@ -1,12 +1,10 @@
 #include "MenuRequestHandler.h"
 
-MenuRequestHandler::MenuRequestHandler()
+MenuRequestHandler::MenuRequestHandler() :
+	m_handlerFactory(RequestHandlerFactory::getInstance()), m_statisticsManager(StatisticsManager::getInstance())
 {
 }
 
-MenuRequestHandler::~MenuRequestHandler()
-{
-}
 
 /*Checks if the request is relevant
 * Input - request: the request info
@@ -82,13 +80,13 @@ Requests::RequestResult MenuRequestHandler::signout(Requests::RequestInfo info)
 		response.status = OK_STATUS;
 
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = this->m_handlerFactory.createLoginRequestHandler();
+		result.newHandler = this->m_handlerFactory->createLoginRequestHandler();
 	}
 	catch (...)
 	{
 		Responses::ErrorResponse errorResponse{ "Error, Unexpected behaviour." };
 		result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
-		result.newHandler = this->m_handlerFactory.createMenuRequestHandler();
+		result.newHandler = this->m_handlerFactory->createMenuRequestHandler();
 	}
 	return result;
 }
@@ -110,13 +108,13 @@ Requests::RequestResult MenuRequestHandler::getRooms(Requests::RequestInfo info)
 		response.status = OK_STATUS;
 
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = this->m_handlerFactory.createMenuRequestHandler();
+		result.newHandler = this->m_handlerFactory->createMenuRequestHandler();
 	}
 	catch (...)
 	{
 		Responses::ErrorResponse errorResponse{ "Error, Unexpected behaviour." };
 		result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
-		result.newHandler = this->m_handlerFactory.createMenuRequestHandler();
+		result.newHandler = this->m_handlerFactory->createMenuRequestHandler();
 	}
 	return result;
 }
@@ -141,13 +139,13 @@ Requests::RequestResult MenuRequestHandler::getPlayersInRoom(Requests::RequestIn
 		}
 
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = this->m_handlerFactory.createMenuRequestHandler();
+		result.newHandler = this->m_handlerFactory->createMenuRequestHandler();
 	}
 	catch (...)
 	{
 		Responses::ErrorResponse errorResponse{ "Error, Unexpected behaviour." };
 		result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
-		result.newHandler = this->m_handlerFactory.createMenuRequestHandler();
+		result.newHandler = this->m_handlerFactory->createMenuRequestHandler();
 	}
 	return result;
 }
@@ -164,7 +162,7 @@ Requests::RequestResult MenuRequestHandler::getPersonalStats(Requests::RequestIn
 	{
 
 		Responses::GetPersonalStatsResponse response;
-		response.statistics = this->m_statisticsManager.getUserStatistics(this->m_user.getName());
+		response.statistics = this->m_statisticsManager->getUserStatistics(this->m_user.getName());
 		response.status = OK_STATUS;
 
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
@@ -191,7 +189,7 @@ Requests::RequestResult MenuRequestHandler::getHighScore(Requests::RequestInfo i
 
 
 		Responses::GetHighScoreResponse response;
-		response.statistics = this->m_statisticsManager.getHighScore();
+		response.statistics = this->m_statisticsManager->getHighScore();
 
 		response.status = OK_STATUS;
 
