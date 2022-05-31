@@ -130,10 +130,14 @@ void Communicator::handleNewClient(SOCKET sock)
     }
     catch (...)
     {
-        delete this->m_clients.find(sock)->second;
-        this->m_clients.erase(sock);
-
+        if (this->m_clients.find(sock) != this->m_clients.end())
+        {
+            delete (this->m_clients.find(sock)->second);
+            this->m_clients.erase(sock);
+        }
         std::cout << "User at socket " << sock << " disconnected." << std::endl;
+
+
 
     }
 }

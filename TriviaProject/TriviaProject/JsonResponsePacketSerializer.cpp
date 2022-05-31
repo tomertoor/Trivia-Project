@@ -37,8 +37,7 @@ Buffer JsonResponsePacketSerializer::serializeJsonResponse(const unsigned int& c
 Buffer JsonResponsePacketSerializer::stringToBuffer(std::string str)
 {
     Buffer buffer;
-    std::string messageStr;
-    for (auto it = messageStr.begin(); it != messageStr.end(); it++)
+    for (auto it = str.begin(); it != str.end(); it++)
     {
         buffer.buffer.push_back(*it);
     }

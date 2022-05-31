@@ -1,5 +1,7 @@
 #include "MongoDataBase.h"
 
+MongoDataBase* MongoDataBase::instance = nullptr;
+
 //return 0 if no user with the name, 1 otherwise
 boost::optional<bsoncxx::v_noabi::document::value> MongoDataBase::getUser(std::string username)
 {

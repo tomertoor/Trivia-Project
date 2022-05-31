@@ -43,6 +43,9 @@ private:
 	double calculatePoints(const std::string& username);
 	void testQuestions();
 
+	static MongoDataBase* instance;
+
+
 public:
 	MongoDataBase();
 	virtual ~MongoDataBase() = default;
@@ -51,12 +54,15 @@ public:
 	MongoDataBase& operator=(const MongoDataBase&) = delete;
 
 	//get instance for singleton
-	static std::shared_ptr<IDatabase> getInstance()
+	static MongoDataBase* getInstance()
 	{
-		static std::shared_ptr<IDatabase> instance(new MongoDataBase());
-
+		if (instance == nullptr)
+		{
+			instance = new MongoDataBase();
+		}
 		return instance;
 	}
+
 
 
 	bool doesUserExist(const std::string& username) override;

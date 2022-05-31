@@ -15,7 +15,7 @@ private:
 	StatisticsManager* m_StatisticsManager;
 	RoomManager* m_roomManager;
 
-	std::shared_ptr<IDatabase> m_database;
+	IDatabase* m_database;
 
 	RequestHandlerFactory();
 

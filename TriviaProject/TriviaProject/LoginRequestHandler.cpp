@@ -8,8 +8,6 @@ LoginRequestHandler::LoginRequestHandler()
 
 LoginRequestHandler::~LoginRequestHandler()
 {
-	delete m_handlerFactory;
-	delete m_loginManager;
 }
 
 LoginRequestHandler::LoginRequestHandler(LoginManager* manager, RequestHandlerFactory* factory) : m_handlerFactory(factory), m_loginManager(manager)
