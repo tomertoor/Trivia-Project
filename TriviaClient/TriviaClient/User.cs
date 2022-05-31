@@ -20,6 +20,14 @@ using System.Text.Json;
 namespace TriviaClient
 {
 
+
+    class Consts
+    {
+        public const string LOG_IN = "5";
+        public const string SIGN_UP = "1";
+        public const string ERROR = "3";
+    }
+    
     public struct Message
     {
         string code;
@@ -78,17 +86,13 @@ namespace TriviaClient
             c[0] = code[0];
             msg.code = Encoding.ASCII.GetString(c);
             msg.data = Encoding.ASCII.GetString(data);
-            msg.data = JsonSerializer.Deserialize<string>(msg.data);
+
             return msg;
         }
     }
 
-    class Consts
-    {
-        public const string LOG_IN = "5";
-        public const string SIGN_UP = "1";
-        public const string ERROR = "3";
-    }
+    
+    
 
     public struct ServerMsg
     {

@@ -10,12 +10,34 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Net.Sockets;
+using System.Text.Json;
+
 
 namespace TriviaClient
 {
     /// <summary>
     /// Interaction logic for Login.xaml
     /// </summary>
+    /// 
+
+    public class LoginResponse
+    {
+        public LoginResponse()
+        {
+            this.status = "";
+        }
+        public string status { get; set; }
+    }
+
+
+    public class ErrorResponse
+    {
+        public ErrorResponse()
+        {
+            this.message = "";
+        }
+        public string message { get; set; }
+    }
     public partial class Login : Window
     {
         public static User loggedUser;
@@ -41,8 +63,27 @@ namespace TriviaClient
                 user.password = this.password.Password;
                 user.Login();
                 ServerMsg msg = user.GetData();
-                if (msg.code == Consts.ERROR)
-                    this.message.Text = msg.data;
+                LoginResponse response = new LoginResponse();
+                switch (msg.code)
+                {
+                    case Consts.LOG_IN:
+                        this.message.Text = msg.data;
+                        msg.data = msg.data.Remove(0, 1);
+                        msg.data = msg.data.Remove(msg.data.Length - 1, 1);
+                        response = JsonSerializer.Deserialize<LoginResponse>(msg.data);
+                        break;
+                    case Consts.ERROR:
+                        this.message.Text = msg.data;
+                        break;
+                }
+                if (!response.status.Equals("1"))
+                {
+                    ErrorResponse errorResponse = new ErrorResponse();
+                    msg.data = msg.data.Remove(0, 1);
+                    errorResponse = JsonSerializer.Deserialize<ErrorResponse>(msg.data);
+
+                    this.message.Text = errorResponse.message;
+                }
                 else
                 {
                     loggedUser = user;
