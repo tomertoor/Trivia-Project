@@ -8,8 +8,6 @@ LoginRequestHandler::LoginRequestHandler()
 
 LoginRequestHandler::~LoginRequestHandler()
 {
-	delete m_handlerFactory;
-	delete m_loginManager;
 }
 
 LoginRequestHandler::LoginRequestHandler(LoginManager* manager, RequestHandlerFactory* factory) : m_handlerFactory(factory), m_loginManager(manager)
@@ -60,7 +58,7 @@ Requests::RequestResult LoginRequestHandler::login(Requests::LoginRequest loginD
 		this->m_loginManager->login(loginDetails.username, loginDetails.password);
 		Responses::LoginResponse response{ OK_STATUS };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = this->m_handlerFactory->createMenuRequestHandler();
+		result.newHandler = (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler();
 	}
 	catch (dbException ex)
 	{
@@ -70,7 +68,7 @@ Requests::RequestResult LoginRequestHandler::login(Requests::LoginRequest loginD
 		{
 			Responses::ErrorResponse errorResponse{ "Error, wrong password or user doesn't exist." };
 			result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
-			result.newHandler = this->m_handlerFactory->createLoginRequestHandler();
+			result.newHandler = (IRequestHandler*)this->m_handlerFactory->createLoginRequestHandler();
 			break;
 		}
 		default:
@@ -102,7 +100,7 @@ Requests::RequestResult LoginRequestHandler::signup(Requests::SignupRequest regi
 		this->m_loginManager->signup(registerDetails);
 		Responses::SignupResponse response{ OK_STATUS };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = this->m_handlerFactory->createMenuRequestHandler();
+		result.newHandler = (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler();
 	}
 	catch (dbException ex)
 	{
@@ -112,7 +110,7 @@ Requests::RequestResult LoginRequestHandler::signup(Requests::SignupRequest regi
 		{
 			Responses::ErrorResponse errorResponse{ "Error, user exists." };
 			result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
-			result.newHandler = this->m_handlerFactory->createLoginRequestHandler();
+			result.newHandler = (IRequestHandler*)this->m_handlerFactory->createLoginRequestHandler();
 			break;
 		}
 
@@ -129,7 +127,7 @@ Requests::RequestResult LoginRequestHandler::signup(Requests::SignupRequest regi
 	{
 		Responses::ErrorResponse errorResponse{ ge.what() };
 		result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
-		result.newHandler = this->m_handlerFactory->createLoginRequestHandler();
+		result.newHandler = (IRequestHandler*)this->m_handlerFactory->createLoginRequestHandler();
 	}
 	catch (...)
 	{

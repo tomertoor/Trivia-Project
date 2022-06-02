@@ -8,7 +8,7 @@
 class LoginManager
 {
 private:
-	std::shared_ptr<IDatabase> m_database;
+	IDatabase* m_database;
 	std::vector<LoggedUser> m_loggedUsers;
 
 	bool isValidDetails(Requests::SignupRequest signupReq);

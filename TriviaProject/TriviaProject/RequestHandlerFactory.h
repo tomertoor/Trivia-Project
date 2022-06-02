@@ -1,15 +1,21 @@
 #pragma once
 #include "LoginManager.h"
 #include "LoginRequestHandler.h"
+#include "StatisticsManager.h"
+#include "RoomManager.h"
+#include "MenuRequestHandler.h"
 
-class LoginRequestHandler;
 class MenuRequestHandler;
+class LoginRequestHandler;
 
 class RequestHandlerFactory
 {
 private:
 	LoginManager* m_loginManager;
-	std::shared_ptr<IDatabase> m_database;
+	StatisticsManager* m_StatisticsManager;
+	RoomManager* m_roomManager;
+
+	IDatabase* m_database;
 
 	RequestHandlerFactory();
 
@@ -28,5 +34,8 @@ public:
 	MenuRequestHandler* createMenuRequestHandler();
 
 	LoginManager& getLoginManager();
+	StatisticsManager& getStatisticsManager();
+	RoomManager& getRoomManager();
+
 
 };

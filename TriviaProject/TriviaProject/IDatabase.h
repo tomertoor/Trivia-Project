@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 
 class IDatabase
 {
@@ -10,4 +11,11 @@ public:
 	virtual void addNewUser(const std::string& username, const std::string& password, const std::string& email,
 		const std::string& phone, const std::string& birthDate,
 		const std::string& apt, const std::string& city, const std::string& street) = 0;
+
+	virtual float getPlayerAverageAnswerTime(std::string name) = 0;
+	virtual int getNumOfCorrectAnswers(std::string name) = 0;
+	virtual int getNumOfTotalAnswers(std::string name) = 0;
+	virtual int getNumOfPlayerGames(std::string name) = 0;
+
+	virtual std::vector<std::string> getHighestScores() = 0;
 };

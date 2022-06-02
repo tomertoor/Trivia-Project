@@ -11,4 +11,5 @@ public:
 	~LoggedUser();
 	void setName(const std::string& username);
 	std::string getName() const;
+	bool operator==(const LoggedUser& other);
 };
