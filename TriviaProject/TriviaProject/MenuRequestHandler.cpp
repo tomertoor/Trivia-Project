@@ -19,7 +19,7 @@ bool MenuRequestHandler::isRequestRelevant(Requests::RequestInfo request)
 	case GET_ROOM_CODE:
 	case JOIN_ROOM_CODE:
 	case LOGOUT_CODE:
-	case STATISTICS_CODE:
+	case PERSONAL_STATS_CODE:
 		return true;
 		break;
 	default:
@@ -53,7 +53,7 @@ Requests::RequestResult MenuRequestHandler::handleRequest(Requests::RequestInfo 
 		case LOGOUT_CODE:
 			return this->signout(request);
 			break;
-		case STATISTICS_CODE:
+		case PERSONAL_STATS_CODE:
 			return this->getPersonalStats(request);
 			break;
 		default:
