@@ -104,7 +104,7 @@ namespace TriviaClient
                 try
                 {
                     string data = Consts.JOIN_ROOM;
-                    string m = "{\"roomName\": \"" + btn.Name + "\"}";
+                    string m = "{\"roomName\": \"" + rooms.IndexOf(btn.Name) + "\"}";
                     data += m.Length.ToString().PadLeft(4, '0');
                     data += m;
                     loggedUser.SendData(data, loggedUser.sock);
