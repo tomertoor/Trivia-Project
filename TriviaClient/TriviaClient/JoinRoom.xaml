@@ -30,7 +30,8 @@
                            FontFamily="helvetica"
                            FontSize="22"
                            Foreground="Black" Margin="332,43,332,124"/>
+            <TextBlock Name="message" Text="" Margin="223,76,223,54" Foreground="Black" TextWrapping="Wrap"/>
         </Grid>
-        
+
     </Grid>
 </Window>

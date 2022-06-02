@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using System.Text.Json;
+using System.Threading;
 
 namespace TriviaClient
 {
@@ -22,8 +18,47 @@ namespace TriviaClient
         public JoinRoom()
         {
             InitializeComponent();
-            loggedUser = Menu.loggedUser;
-            //get available rooms and adds buttons for each one
+            while (true)
+            {
+
+                loggedUser = Menu.loggedUser;
+                //get available rooms and adds buttons for each one
+                try
+                {
+                    string data = Consts.GET_ROOM + "0000";
+                    loggedUser.SendData(data, loggedUser.sock);
+                    ServerMsg msg = loggedUser.GetData();
+                    GetroomsResponse res = new GetroomsResponse();
+                    switch (msg.code)
+                    {
+                        case Consts.PERSONAL_STATS:
+                            msg.data = msg.data.Remove(0, 1);
+                            msg.data = msg.data.Remove(msg.data.Length - 1, 1);
+                            res = JsonSerializer.Deserialize<GetroomsResponse>(msg.data);
+                            break;
+                        case Consts.ERROR:
+                            this.message.Text = msg.data;
+                            break;
+                    }
+                    if (res.status.Equals("1"))
+                    {
+                        AddButtonsForEachRoom(res.rooms);
+                    }
+                    else
+                    {
+                        ErrorResponse errorResponse = new ErrorResponse();
+                        msg.data = msg.data.Remove(0, 1);
+                        errorResponse = JsonSerializer.Deserialize<ErrorResponse>(msg.data);
+                        this.message.Text = errorResponse.message;
+                    }
+                }
+                catch (Exception)
+                {
+                    this.message.FontSize = 25;
+                    this.message.Text = "Error occured";
+                }
+                Thread.Sleep(3000);
+            }
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -63,12 +98,66 @@ namespace TriviaClient
 
         public void joinRoom(object sender, RoutedEventArgs e)
         {
-            //join the room by the button name
             Button btn = (Button)sender;
             if(btn != null)
             {
-                //request to join to the room and then move to next window
+                try
+                {
+                    string data = Consts.JOIN_ROOM;
+                    string m = "{\"roomName\": \"" + btn.Name + "\"}";
+                    data += m.Length.ToString().PadLeft(4, '0');
+                    data += m;
+                    loggedUser.SendData(data, loggedUser.sock);
+                    ServerMsg msg = loggedUser.GetData();
+                    JoinroomResponse res = new JoinroomResponse();
+                    switch (msg.code)
+                    {
+                        case Consts.PERSONAL_STATS:
+                            msg.data = msg.data.Remove(0, 1);
+                            msg.data = msg.data.Remove(msg.data.Length - 1, 1);
+                            res = JsonSerializer.Deserialize<JoinroomResponse>(msg.data);
+                            break;
+                        case Consts.ERROR:
+                            this.message.Text = msg.data;
+                            break;
+                    }
+                    if (res.status.Equals("1"))
+                    {
+                        //move to the room window
+                    }
+                    else
+                    {
+                        ErrorResponse errorResponse = new ErrorResponse();
+                        msg.data = msg.data.Remove(0, 1);
+                        errorResponse = JsonSerializer.Deserialize<ErrorResponse>(msg.data);
+                        this.message.Text = errorResponse.message;
+                    }
+                }
+                catch (Exception)
+                {
+                    this.message.FontSize = 25;
+                    this.message.Text = "Error occured";
+                }
             }
+        }
+    }
+
+    public class GetroomsResponse
+    {
+        public string status;
+        public List<string> rooms;
+        public GetroomsResponse()
+        {
+            status = "";
+        }
+    }
+
+    public class JoinroomResponse
+    {
+        public string status;
+        public JoinroomResponse()
+        {
+            status = "";
         }
     }
 }
