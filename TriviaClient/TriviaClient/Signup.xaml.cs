@@ -19,17 +19,7 @@ namespace TriviaClient
     /// Interaction logic for Signup.xaml
     /// </summary>
     /// 
-    public class SignupResponse
-    {
-        public SignupResponse()
-        {
-            this.status = "";
-        }
-        public string status { get; set; }
-    }
-
-
-
+    
     public partial class Signup : Window
     {
         public static User loggedUser;

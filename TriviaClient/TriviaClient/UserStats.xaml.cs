@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Text.Json;
 
 namespace TriviaClient
 {
@@ -24,6 +25,43 @@ namespace TriviaClient
             loggedUser = Stats.loggedUser;
             message.Text = loggedUser.username + " statistics";
             //show the user stats
+            try
+            {
+                string data = Consts.PERSONAL_STATS + "0000";
+                loggedUser.SendData(data, loggedUser.sock);
+                ServerMsg msg = loggedUser.GetData();
+                MystatsResponse res = new MystatsResponse();
+                switch (msg.code)
+                {
+                    case Consts.PERSONAL_STATS:
+                        msg.data = msg.data.Remove(0, 1);
+                        msg.data = msg.data.Remove(msg.data.Length - 1, 1);
+                        res = JsonSerializer.Deserialize<MystatsResponse>(msg.data);
+                        break;
+                    case Consts.ERROR:
+                        this.message.Text = msg.data;
+                        break;
+                }
+                if(res.status.Equals("1"))
+                {
+                    this.correctAnswers.Text = res.correctAnswers;
+                    this.avgTime.Text = res.averageAnswerTime;
+                    this.noOfGames.Text = res.gameCount;
+                    this.totalAnswers.Text = res.totalAnswers;
+                }
+                else
+                {
+                    ErrorResponse errorResponse = new ErrorResponse();
+                    msg.data = msg.data.Remove(0, 1);
+                    errorResponse = JsonSerializer.Deserialize<ErrorResponse>(msg.data);
+                    this.message.Text = errorResponse.message;
+                }
+            }
+            catch(Exception)
+            {
+                this.message.FontSize = 25;
+                this.message.Text = "Error occured";
+            }
         }
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
@@ -37,5 +75,14 @@ namespace TriviaClient
             this.Close();
             menu.Show();
         }
+    }
+
+    public class MystatsResponse
+    {
+        public string status { get; set; }
+        public string gameCount { get; set; }
+        public string totalAnswers { get; set; }
+        public string correctAnswers { get; set; }
+        public string averageAnswerTime { get; set; }
     }
 }

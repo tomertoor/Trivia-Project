@@ -19,13 +19,44 @@ using System.Text.Json;
 
 namespace TriviaClient
 {
+    public class SignupResponse
+    {
+        public SignupResponse()
+        {
+            this.status = "";
+        }
+        public string status { get; set; }
+    }
 
+    public class LoginResponse
+    {
+        public LoginResponse()
+        {
+            this.status = "";
+        }
+        public string status { get; set; }
+    }
 
+    public class ErrorResponse
+    {
+        public ErrorResponse()
+        {
+            this.message = "";
+        }
+        public string message { get; set; }
+    }
     class Consts
     {
-        public const string LOG_IN = "5";
         public const string SIGN_UP = "1";
+        public const string LOG_OUT = "2";
         public const string ERROR = "3";
+        public const string CREATE_ROOM = "4";
+        public const string LOG_IN = "5";
+        public const string JOIN_ROOM = "6";
+        public const string GET_ROOM = "7";
+        public const string PERSONAL_STATS = "8";
+        public const string GET_PLAYERS = "9";
+        public const string HIGH_SCORES = "A";
     }
     
     public struct Message
@@ -66,7 +97,16 @@ namespace TriviaClient
             SendData(data, this.sock);
         }
 
-        public static void SendData(string data, Socket sock)
+        public void Logout()
+        {
+            string data = Consts.LOG_OUT;
+            string msg = "{\"username\": \"" + this.username + "\"}";
+            data += msg.Length.ToString().PadLeft(4, '0');
+            data += msg;
+            SendData(data, this.sock);
+        }
+
+        public void SendData(string data, Socket sock)
         {
             byte[] msg = new byte[data.Length];
             for (int i = 0; i < data.Length; i++)

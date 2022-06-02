@@ -41,6 +41,8 @@ namespace TriviaClient
 
         private void exit_Click(object sender, RoutedEventArgs e)
         {
+            loggedUser.Logout();
+            ServerMsg msg = loggedUser.GetData();
             this.Close();
         }
 
@@ -53,7 +55,9 @@ namespace TriviaClient
 
         private void joinRoom_Click(object sender, RoutedEventArgs e)
         {
-            
+            JoinRoom join = new JoinRoom();
+            this.Close();
+            join.Show();
         }
 
         private void statistics_Click(object sender, RoutedEventArgs e)

@@ -29,7 +29,7 @@ using bsoncxx::builder::stream::open_document;
 #define USER_COLLECTION "users"
 #define QUESTION_COLLECTION "questions"
 #define STATS_COLLECTION "statistics"
-#define URI "mongodb+srv://tomertoor12:wYsZDmvUo^7*Vb@cluster0.g4kew.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+#define URI "mongodb+srv://profzak:nowicanknowhowtousemongodb@cluster0.g4kew.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 
 class MongoDataBase : public IDatabase
 {

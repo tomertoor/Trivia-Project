@@ -19,25 +19,6 @@ namespace TriviaClient
     /// Interaction logic for Login.xaml
     /// </summary>
     /// 
-
-    public class LoginResponse
-    {
-        public LoginResponse()
-        {
-            this.status = "";
-        }
-        public string status { get; set; }
-    }
-
-
-    public class ErrorResponse
-    {
-        public ErrorResponse()
-        {
-            this.message = "";
-        }
-        public string message { get; set; }
-    }
     public partial class Login : Window
     {
         public static User loggedUser;
