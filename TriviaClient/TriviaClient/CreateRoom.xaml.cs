@@ -51,7 +51,7 @@ namespace TriviaClient
                     questionTimeout = this.timeForQ.Text,
                     questionCount = this.questionCount.Text
                 };
-                string data = Consts.CREATE_ROOM;
+                string data = Consts.CREATE_ROOM.PadLeft(2, '0');
                 string msg = JsonSerializer.Serialize(createRoom);
                 data += msg.Length.ToString().PadLeft(4, '0');
                 data += msg;

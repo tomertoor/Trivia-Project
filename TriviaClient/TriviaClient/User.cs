@@ -58,7 +58,7 @@ namespace TriviaClient
         public const string GET_ROOM = "7";
         public const string PERSONAL_STATS = "8";
         public const string GET_PLAYERS = "9";
-        public const string HIGH_SCORES = "A";
+        public const string HIGH_SCORES = "10";
     }
     
     public struct Message
@@ -81,7 +81,7 @@ namespace TriviaClient
 
         public void Login()
         {
-            string data = Consts.LOG_IN;
+            string data = Consts.LOG_IN.PadLeft(2, '0');
             string msg = "{\"username\": \"" + this.username + "\", \"password\": \"" + this.password + "\"}";
             data += msg.Length.ToString().PadLeft(4, '0');
             data += msg;
@@ -90,7 +90,7 @@ namespace TriviaClient
 
         public void Signup()
         {
-            string data = Consts.SIGN_UP;
+            string data = Consts.SIGN_UP.PadLeft(2, '0');
             string msg = "{\"username\": \"" + this.username + "\", \"password\": \"" + this.password + "\", \"email\": \"" + this.email + "\"" +
                 ", \"phone\": \"" + this.phone + "\", \"birthDate\": \"" + this.birthDate + "\", \"apt\": \"" + this.apt + "\"" +
                 ", \"city\": \"" + this.city + "\", \"street\": \"" + this.street + "\"}";
@@ -101,7 +101,7 @@ namespace TriviaClient
 
         public void Logout()
         {
-            string data = Consts.LOG_OUT;
+            string data = Consts.LOG_OUT.PadLeft(2, '0');
             string msg = "{\"username\": \"" + this.username + "\"}";
             data += msg.Length.ToString().PadLeft(4, '0');
             data += msg;
@@ -119,22 +119,19 @@ namespace TriviaClient
         public ServerMsg GetData()
         {
             ServerMsg msg;
-            byte[] code = new byte[5];
-            byte[] c = new byte[1];
-            this.sock.Receive(code, 5, 0);
-            int size = Int32.Parse(Encoding.ASCII.GetString(code, 1, 4));
+            byte[] code = new byte[2];
+            this.sock.Receive(code, 2, 0);
+            msg.code = Encoding.ASCII.GetString(code);
+            byte[] len = new byte[4];
+            this.sock.Receive(len, 4, 0);
+            int size = Int32.Parse(Encoding.ASCII.GetString(len, 0, 4));
             byte[] data = new byte[size];
             this.sock.Receive(data, size, 0);
-            c[0] = code[0];
-            msg.code = Encoding.ASCII.GetString(c);
             msg.data = Encoding.ASCII.GetString(data);
 
             return msg;
         }
     }
-
-    
-    
 
     public struct ServerMsg
     {

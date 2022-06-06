@@ -19,14 +19,13 @@ namespace TriviaClient
         {
             InitializeComponent();
             JoinRoom.rooms = new List<string>();
-           // while (true)
-            //{
-
+            while (true)
+            {
                 loggedUser = Menu.loggedUser;
                 //get available rooms and adds buttons for each one
                 try
                 {
-                    string data = Consts.GET_ROOM + "0000";
+                    string data = Consts.GET_ROOM.PadLeft(2, '0') + "0000";
                     loggedUser.SendData(data, loggedUser.sock);
                     ServerMsg msg = loggedUser.GetData();
                     GetroomsResponse res = new GetroomsResponse();
@@ -58,10 +57,15 @@ namespace TriviaClient
                     this.message.FontSize = 25;
                     this.message.Text = "Error occured";
                 }
-                //Thread.Sleep(3000);
-           // }
+                Thread thread = new Thread(SleepThread);
+                thread.Join();
+           }
         }
 
+        private void SleepThread()
+        {
+            Thread.Sleep(3000);
+        }
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
@@ -108,7 +112,7 @@ namespace TriviaClient
             {
                 try
                 {
-                    string data = Consts.JOIN_ROOM;
+                    string data = Consts.JOIN_ROOM.PadLeft(2, '0');
                     string m = "{\"roomName\": \"" + rooms.IndexOf(btn.Name) + "\"}";
                     data += m.Length.ToString().PadLeft(4, '0');
                     data += m;

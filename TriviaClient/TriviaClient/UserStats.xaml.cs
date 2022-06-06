@@ -27,7 +27,7 @@ namespace TriviaClient
             //show the user stats
             try
             {
-                string data = Consts.PERSONAL_STATS + "0000";
+                string data = Consts.PERSONAL_STATS.PadLeft(2, '0') + "0000";
                 loggedUser.SendData(data, loggedUser.sock);
                 ServerMsg msg = loggedUser.GetData();
                 MystatsResponse res = new MystatsResponse();

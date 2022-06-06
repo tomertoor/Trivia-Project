@@ -26,7 +26,7 @@ namespace TriviaClient
             //request the high scores
             try
             {
-                string data = Consts.HIGH_SCORES + "0000";
+                string data = Consts.HIGH_SCORES.PadLeft(2, '0') + "0000";
                 loggedUser.SendData(data, loggedUser.sock);
                 ServerMsg msg = loggedUser.GetData();
                 HighscoresResponse res = new HighscoresResponse();
