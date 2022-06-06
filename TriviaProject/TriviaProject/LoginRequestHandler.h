@@ -23,7 +23,7 @@ private:
 public:
 	LoginRequestHandler();
 	LoginRequestHandler(LoginManager* manager, RequestHandlerFactory* factory);
-	~LoginRequestHandler();
+	virtual ~LoginRequestHandler();
 
 	bool isRequestRelevant(Requests::RequestInfo request) override;
 	Requests::RequestResult handleRequest(Requests::RequestInfo request) override;

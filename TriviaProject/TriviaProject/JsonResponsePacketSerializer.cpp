@@ -63,7 +63,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(Responses::ErrorResponse 
     std::stringstream message;
     std::string jsonMessage = R"("{"message":")" + response.message + R"("})";
     std::string length = std::to_string(jsonMessage.length());
-    message << std::to_string(ERROR_CODE) << std::setfill('0') << std::setw(MAX_FILLING_LENGTH) << length << jsonMessage;
+    message << ERROR_CODE << std::setfill('0') << std::setw(MAX_FILLING_LENGTH) << length << jsonMessage;
 
     return stringToBuffer(message.str());
 }
@@ -74,12 +74,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(Responses::ErrorResponse 
 */
 Buffer JsonResponsePacketSerializer::serializeResponse(Responses::LoginResponse response)
 {
-    std::stringstream message;
-    std::string jsonMessage = R"("{"status":")" + std::to_string(response.status) + R"("}")";
-    std::string length = std::to_string(jsonMessage.length());
-    message << std::to_string(LOGIN_CODE) << std::setfill('0') << std::setw(MAX_FILLING_LENGTH) << length << jsonMessage;
-
-    return stringToBuffer(message.str());
+    return serializeStatusResponse(LOGIN_CODE, response.status);
 }
 
 /*Serializing signup response
@@ -108,6 +103,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(Responses::GetRoomsRespon
 {
     nlohmann::json json;
     std::vector<std::string> names;
+    json["status"] = response.status;
     for (auto& iter : response.rooms) //Sorts it for easier json parsing
     {
         names.push_back(iter.name);
@@ -165,7 +161,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(Responses::GetPersonalSta
     json["gameCount"] = response.statistics[GAME_COUNT];
 
 
-    return serializeJsonResponse(HIGH_SCORE_CODE, json);
+    return serializeJsonResponse(PERSONAL_STATS_CODE, json);
 }
 
 /*Serializes statistics response, json type serialize
@@ -179,7 +175,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(Responses::GetHighScoreRe
 
     json["HighScores"] = response.statistics;
 
-    return serializeJsonResponse(PERSONAL_STATS_CODE, json);
+    return serializeJsonResponse(HIGH_SCORE_CODE, json);
 
 
 }

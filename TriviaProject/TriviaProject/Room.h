@@ -4,6 +4,7 @@
 #include "LoggedUser.h"
 #include <vector>
 
+#define GAME_STARTED 1
 
 class Room
 {
@@ -16,5 +17,6 @@ public:
 	void addUser(const LoggedUser& user);
 	void removeUser(const LoggedUser& user);
 	std::vector<LoggedUser> getAllUsers() const;
+	void startRoom();
 
 };

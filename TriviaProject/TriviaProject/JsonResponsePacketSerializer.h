@@ -25,10 +25,10 @@ using json = nlohmann::json;
 #define LEAVE_ROOM_CODE 'E'
 
 //Positions for json
-#define AVERAGE_ANSWER 0
-#define CORRECT_ANSWER 1
-#define TOTAL_ANSWERS 2
-#define GAME_COUNT 3
+#define AVERAGE_ANSWER 3
+#define CORRECT_ANSWER 0
+#define TOTAL_ANSWERS 1
+#define GAME_COUNT 2
 
 class JsonResponsePacketSerializer
 {

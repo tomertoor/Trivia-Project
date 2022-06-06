@@ -28,3 +28,8 @@ std::vector<LoggedUser> Room::getAllUsers() const
 {
 	return std::vector<LoggedUser>(this->m_users);
 }
+
+void Room::startRoom()
+{
+	this->m_metadata.isActive = GAME_STARTED;
+}

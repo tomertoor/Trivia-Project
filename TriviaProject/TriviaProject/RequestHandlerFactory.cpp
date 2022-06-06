@@ -8,6 +8,8 @@ RequestHandlerFactory::RequestHandlerFactory()
 {
 	m_loginManager = LoginManager::getInstance();
 	m_database = MongoDataBase::getInstance();
+	m_StatisticsManager = StatisticsManager::getInstance();
+	m_roomManager = RoomManager::getInstance();
 }
 
 //get instance for singleton
@@ -41,7 +43,17 @@ RoomManager& RequestHandlerFactory::getRoomManager()
 	return *this->m_roomManager;
 }
 
-MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler()
+MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler(LoggedUser user)
 {
-	return new MenuRequestHandler(); // to be changed next version
+	return new MenuRequestHandler(user); 
+}
+
+RoomMemberRequestHandler* RequestHandlerFactory::createMemberRequestHandler(LoggedUser user, Room room)
+{
+	return new RoomMemberRequestHandler(room, user);
+}
+
+RoomAdminRequestHandler* RequestHandlerFactory::createAdminRequestHandler(LoggedUser user, Room room)
+{
+	return new RoomAdminRequestHandler(room, user);
 }

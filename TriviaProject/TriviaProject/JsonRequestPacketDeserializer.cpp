@@ -104,10 +104,9 @@ Requests::CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoom
 	std::string str = vectorToString(buffer.buffer);
 
 	json json = json::parse(str);
-
-	request.maxUsers = json["maxUsers"];
-	request.questionCount = json["questionCount"];
-	request.questionTimeout = json["questionTimeout"];
+	request.maxUsers = std::stoi((std::string)json["maxUsers"]);
+	request.questionCount = std::stoi((std::string)json["questionCount"]);
+	request.questionTimeout = std::stoi((std::string)json["questionTimeout"]);
 	request.roomName = json["roomName"];
 
 	return request;

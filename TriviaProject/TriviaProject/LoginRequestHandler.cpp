@@ -56,9 +56,10 @@ Requests::RequestResult LoginRequestHandler::login(Requests::LoginRequest loginD
 	try
 	{
 		this->m_loginManager->login(loginDetails.username, loginDetails.password);
+		LoggedUser user(loginDetails.username);
 		Responses::LoginResponse response{ OK_STATUS };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler();
+		result.newHandler = (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler(user);
 	}
 	catch (dbException ex)
 	{
@@ -100,7 +101,10 @@ Requests::RequestResult LoginRequestHandler::signup(Requests::SignupRequest regi
 		this->m_loginManager->signup(registerDetails);
 		Responses::SignupResponse response{ OK_STATUS };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler();
+
+		LoggedUser user(registerDetails.username);
+
+		result.newHandler = (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler(user);
 	}
 	catch (dbException ex)
 	{
@@ -153,12 +157,6 @@ bool LoginRequestHandler::isValidUserName(const std::string& username)
 	{
 		return false;
 	}
-
-	/*if (std::find_if(username.begin(), username.end(), std::isalpha) != username.end())
-	{
-		return false;
-
-	}*/
 	return true;
 }
 

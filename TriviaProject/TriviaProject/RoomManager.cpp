@@ -1,5 +1,25 @@
 #include "RoomManager.h"
 
+RoomManager* RoomManager::instance = nullptr;
+
+RoomManager::RoomManager()
+{
+
+}
+
+RoomManager::~RoomManager()
+{
+}
+
+RoomManager* RoomManager::getInstance()
+{
+	if (instance == nullptr)
+	{
+		instance = new RoomManager();
+	}
+	return instance;
+}
+
 /*Functions responsible on creating room, will add the user to the room itself as he is the creator
 * Input - user: the creator user, data: the room data
 * Output - None.
@@ -28,6 +48,20 @@ void RoomManager::deleteRoom(const int& id)
 unsigned int RoomManager::getRoomState(const int& id)
 {
 	return this->m_rooms.find(id)->second.getData().isActive;
+}
+
+/*Gets a room states, this time roomdata, makes it more suitable here
+* Input - id: the room id
+* Output - the status
+*/
+RoomData RoomManager::getRoomData(const int& id)
+{
+	return this->m_rooms.find(id)->second.getData();
+}
+
+unsigned int RoomManager::getRoomIdByUser(std::string name)
+{
+	return 0;
 }
 
 /*Returns all the rooms by their obj
