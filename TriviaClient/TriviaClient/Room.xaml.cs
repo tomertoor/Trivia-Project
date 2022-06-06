@@ -98,16 +98,7 @@ namespace TriviaClient
                         players.Children.Remove(players.Children[i] as Label);
                 }
 
-                foreach (string user in updatedUsers) //checks for new rooms
-                {
-                    if (!users.Contains(user))
-                        users.Add(user);
-                }
-                foreach (string user in users) //removes old rooms
-                {
-                    if (!updatedUsers.Contains(user))
-                        users.Remove(user);
-                }
+                users = updatedUsers;
 
                 foreach (string room in users)
                 {

@@ -89,16 +89,7 @@ namespace TriviaClient
                         roomButtons.Children.Remove(roomButtons.Children[i] as Button);
                 }
 
-                foreach (string room in updatedRooms) //checks for new rooms
-                {
-                    if (!rooms.Contains(room))
-                        rooms.Add(room);
-                }
-                foreach(string room in rooms) //removes old rooms
-                {
-                    if (!updatedRooms.Contains(room))
-                        rooms.Remove(room);
-                }
+                rooms = updatedRooms;
 
                 foreach (string room in rooms)
                 {
