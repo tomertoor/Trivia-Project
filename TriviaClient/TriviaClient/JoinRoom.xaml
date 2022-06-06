@@ -10,7 +10,7 @@
         ResizeMode="NoResize" WindowStyle="None"
         AllowsTransparency="True" Background="Transparent">
     <Grid>
-        <WrapPanel Name="roomButtons"/>
+
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition/>
@@ -24,13 +24,16 @@
                     </LinearGradientBrush>
                 </Border.Background>
             </Border>
-
+            <WrapPanel Name="roomButtons" Margin="80,170,80,10"  Background="Transparent" Orientation="Horizontal" Grid.RowSpan="2">
+            </WrapPanel>
             <TextBlock Text="Available rooms:"
                            FontWeight="SemiBold"
                            FontFamily="helvetica"
                            FontSize="22"
-                           Foreground="Black" Margin="332,43,332,124"/>
+                           Foreground="Black" Margin="312,43,312,124"/>
             <TextBlock Name="message" Text="" Margin="223,76,223,54" Foreground="Black" TextWrapping="Wrap"/>
+            <Button Name="menu" Content="Return to menu" Height="45" Margin="10,26,544,129" Click="menu_Click"/>
+
         </Grid>
 
     </Grid>

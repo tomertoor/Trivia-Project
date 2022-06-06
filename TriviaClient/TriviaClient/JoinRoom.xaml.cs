@@ -18,8 +18,9 @@ namespace TriviaClient
         public JoinRoom()
         {
             InitializeComponent();
-            while (true)
-            {
+            JoinRoom.rooms = new List<string>();
+           // while (true)
+            //{
 
                 loggedUser = Menu.loggedUser;
                 //get available rooms and adds buttons for each one
@@ -31,16 +32,16 @@ namespace TriviaClient
                     GetroomsResponse res = new GetroomsResponse();
                     switch (msg.code)
                     {
-                        case Consts.PERSONAL_STATS:
-                            msg.data = msg.data.Remove(0, 1);
-                            msg.data = msg.data.Remove(msg.data.Length - 1, 1);
+                        case Consts.GET_ROOM:
+                            /*msg.data = msg.data.Remove(0, 1);
+                            msg.data = msg.data.Remove(msg.data.Length - 1, 1);*/
                             res = JsonSerializer.Deserialize<GetroomsResponse>(msg.data);
                             break;
                         case Consts.ERROR:
                             this.message.Text = msg.data;
                             break;
                     }
-                    if (res.status.Equals("1"))
+                    if (res.status == Consts.OK_STATUS)
                     {
                         AddButtonsForEachRoom(res.rooms);
                     }
@@ -57,8 +58,8 @@ namespace TriviaClient
                     this.message.FontSize = 25;
                     this.message.Text = "Error occured";
                 }
-                Thread.Sleep(3000);
-            }
+                //Thread.Sleep(3000);
+           // }
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -91,7 +92,11 @@ namespace TriviaClient
             {
                 Button newButton = new Button();
                 newButton.Name = room;
+                newButton.Content = room;
                 newButton.Click += joinRoom;
+                newButton.Width = 160;
+                newButton.Height = 55;
+                newButton.Margin = new Thickness(5);
                 this.roomButtons.Children.Add(newButton);
             }
         }
@@ -140,15 +145,22 @@ namespace TriviaClient
                 }
             }
         }
+
+        private void menu_Click(object sender, RoutedEventArgs e)
+        {
+            Menu menu = new Menu();
+            this.Close();
+            menu.Show();
+        }
     }
 
     public class GetroomsResponse
     {
-        public string status;
-        public List<string> rooms;
+        public int status { get; set; }
+        public List<string> rooms { get; set; }
         public GetroomsResponse()
         {
-            status = "";
+            status = 0;
         }
     }
 

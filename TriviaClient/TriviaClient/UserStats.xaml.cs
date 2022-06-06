@@ -34,20 +34,20 @@ namespace TriviaClient
                 switch (msg.code)
                 {
                     case Consts.PERSONAL_STATS:
-                        msg.data = msg.data.Remove(0, 1);
-                        msg.data = msg.data.Remove(msg.data.Length - 1, 1);
+                        /*msg.data = msg.data.Remove(0, 1);
+                        msg.data = msg.data.Remove(msg.data.Length - 1, 1);*/
                         res = JsonSerializer.Deserialize<MystatsResponse>(msg.data);
                         break;
                     case Consts.ERROR:
                         this.message.Text = msg.data;
                         break;
                 }
-                if(res.status.Equals("1"))
+                if(res.status == Consts.OK_STATUS)
                 {
-                    this.correctAnswers.Text = res.correctAnswers;
-                    this.avgTime.Text = res.averageAnswerTime;
-                    this.noOfGames.Text = res.gameCount;
-                    this.totalAnswers.Text = res.totalAnswers;
+                    this.correctAnswers.Text += " " + res.correctAnswers;
+                    this.avgTime.Text += " " + res.averageAnswerTime.Substring(0, res.averageAnswerTime.Length-4); //only the first 4 digits 
+                    this.noOfGames.Text += " " + res.gameCount;
+                    this.totalAnswers.Text += " " + res.totalAnswers;
                 }
                 else
                 {
@@ -79,7 +79,7 @@ namespace TriviaClient
 
     public class MystatsResponse
     {
-        public string status { get; set; }
+        public int status { get; set; }
         public string gameCount { get; set; }
         public string totalAnswers { get; set; }
         public string correctAnswers { get; set; }
