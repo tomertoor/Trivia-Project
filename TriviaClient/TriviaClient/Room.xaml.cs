@@ -61,9 +61,9 @@ namespace TriviaClient
                     }
                     if (res.status == Consts.OK_STATUS)
                     {
-                        AddLabelsForUsers(res.playersInRoom);
-                        this.timePerQ.Text += " " + res.answerTimeOut.ToString();
-                        this.qCount.Text += " " + res.answerCount.ToString();
+                        AddLabelsForUsers(res.players);
+                        this.timePerQ.Text += " " + res.answerTimeout.ToString();
+                        this.qCount.Text += " " + res.questionCount.ToString();
                         hasGameBegun = res.hasGameBegun;
                     }
                     else
@@ -147,16 +147,16 @@ namespace TriviaClient
         {
             public int status { get; set; }
             public bool hasGameBegun { get; set; }
-            public List<string> playersInRoom { get; set; }
-            public int answerCount { get; set; }
-            public int answerTimeOut { get; set; }
+            public List<string> players { get; set; }
+            public int questionCount { get; set; }
+            public int answerTimeout { get; set; }
             public GetRoomStateResponse()
             {
                 status = 0;
                 hasGameBegun = false;
-                playersInRoom = new List<string>();
-                answerCount = 0;
-                answerTimeOut = 0;
+                players = new List<string>();
+                questionCount = 0;
+                answerTimeout = 0;
             }
         }
     }
