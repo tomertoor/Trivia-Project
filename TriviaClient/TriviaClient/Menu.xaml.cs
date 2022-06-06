@@ -21,10 +21,16 @@ namespace TriviaClient
         public Menu()
         {
             InitializeComponent();
-            if(Login.loggedUser.passedWhat == Consts.LOG_IN)
+            if (Login.loggedUser.passedWhat == Consts.LOG_IN)
                 loggedUser = Login.loggedUser;
             else if (Signup.loggedUser.passedWhat == Consts.SIGN_UP)
                 loggedUser = Signup.loggedUser;
+            else if (UserStats.loggedUser.passedWhat == Consts.PERSONAL_STATS)
+                loggedUser = UserStats.loggedUser;
+            else if (HighScores.loggedUser.passedWhat == Consts.HIGH_SCORES)
+                loggedUser = HighScores.loggedUser;
+            else if (Stats.loggedUser.passedWhat == Consts.STATS)
+                loggedUser = Stats.loggedUser;
             else
             {
                 loggedUser.username = "none";

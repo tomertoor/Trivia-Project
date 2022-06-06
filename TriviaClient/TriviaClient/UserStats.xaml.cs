@@ -18,7 +18,7 @@ namespace TriviaClient
     /// </summary>
     public partial class UserStats : Window
     {
-        private static User loggedUser;
+        public static User loggedUser;
         public UserStats()
         {
             InitializeComponent();
@@ -71,6 +71,7 @@ namespace TriviaClient
 
         private void menu_Click(object sender, RoutedEventArgs e)
         {
+            loggedUser.passedWhat = Consts.PERSONAL_STATS;
             Menu menu = new Menu();
             this.Close();
             menu.Show();

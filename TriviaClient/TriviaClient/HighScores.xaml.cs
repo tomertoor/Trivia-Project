@@ -18,7 +18,7 @@ namespace TriviaClient
     /// </summary>
     public partial class HighScores : Window
     {
-        private static User loggedUser;
+        public static User loggedUser;
         public HighScores()
         {
             InitializeComponent();
@@ -69,6 +69,7 @@ namespace TriviaClient
         }
         private void menu_Click(object sender, RoutedEventArgs e)
         {
+            loggedUser.passedWhat = Consts.HIGH_SCORES;
             Menu menu = new Menu();
             this.Close();
             menu.Show();

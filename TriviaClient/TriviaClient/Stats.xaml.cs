@@ -39,6 +39,7 @@ namespace TriviaClient
 
         private void menu_Click(object sender, RoutedEventArgs e)
         {
+            loggedUser.passedWhat = Consts.STATS;
             Menu menu = new Menu();
             this.Close();
             menu.Show();

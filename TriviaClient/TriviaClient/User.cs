@@ -47,6 +47,7 @@ namespace TriviaClient
     }
     class Consts
     {
+        public const string STATS = "s";
         public const int OK_STATUS = 1;
         public const string SIGN_UP = "1";
         public const string LOG_OUT = "2";
