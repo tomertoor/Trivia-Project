@@ -39,7 +39,7 @@ namespace TriviaClient
             {
                 User user = new User();
                 user.sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                user.sock.Connect("127.0.0.1", 42069);
+                user.sock.Connect(Consts.IP, 42069);
                 user.username = this.username.Text;
                 user.password = this.password.Password;
                 user.Login();

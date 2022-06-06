@@ -18,11 +18,17 @@ namespace TriviaClient
         public JoinRoom()
         {
             InitializeComponent();
+            loggedUser = Menu.loggedUser;
             JoinRoom.rooms = new List<string>();
+            Thread thread = new Thread(RefreshRooms);
+            thread.Start();
+            ;
+        }
+
+        private void RefreshRooms()
+        {
             while (true)
             {
-                loggedUser = Menu.loggedUser;
-                //get available rooms and adds buttons for each one
                 try
                 {
                     string data = Consts.GET_ROOM.PadLeft(2, '0') + "0000";
@@ -32,12 +38,13 @@ namespace TriviaClient
                     switch (msg.code)
                     {
                         case Consts.GET_ROOM:
-                            /*msg.data = msg.data.Remove(0, 1);
-                            msg.data = msg.data.Remove(msg.data.Length - 1, 1);*/
                             res = JsonSerializer.Deserialize<GetroomsResponse>(msg.data);
                             break;
                         case Consts.ERROR:
-                            this.message.Text = msg.data;
+                            this.Dispatcher.BeginInvoke(new Action(() =>
+                            {
+                                message.Text = msg.data;
+                            }));
                             break;
                     }
                     if (res.status == Consts.OK_STATUS)
@@ -47,23 +54,23 @@ namespace TriviaClient
                     else
                     {
                         ErrorResponse errorResponse = new ErrorResponse();
-                        msg.data = msg.data.Remove(0, 1);
                         errorResponse = JsonSerializer.Deserialize<ErrorResponse>(msg.data);
-                        this.message.Text = errorResponse.message;
+                        this.Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            message.Text = errorResponse.message;
+                        }));
                     }
                 }
                 catch (Exception)
                 {
-                    this.message.FontSize = 25;
-                    this.message.Text = "Error occured";
+                    this.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        message.FontSize = 25;
+                        message.Text = "Error occured";
+                    }));
                 }
-                
-           }
-        }
-
-        private void SleepThread()
-        {
-            Thread.Sleep(3000);
+                Thread.Sleep(3000);
+            }
         }
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
@@ -73,35 +80,38 @@ namespace TriviaClient
 
         private void AddButtonsForEachRoom(List<string> updatedRooms)
         {
-            //firstly remove all exist buttons
-            foreach (var ch in roomButtons.Children)
+            this.Dispatcher.BeginInvoke(new Action(() =>
             {
-                if(ch.GetType() == typeof(Button))
-                    roomButtons.Children.Remove(ch as Button);
-            }
+                    //firstly remove all exist buttons
+                for(int i = 0; i< roomButtons.Children.Count; i++)
+                {
+                    if(roomButtons.Children[i].GetType() == typeof(Button))
+                        roomButtons.Children.Remove(roomButtons.Children[i] as Button);
+                }
 
-            foreach (string room in updatedRooms) //checks for new rooms
-            {
-                if (!rooms.Contains(room))
-                    rooms.Add(room);
-            }
-            foreach(string room in rooms) //removes old rooms
-            {
-                if (!updatedRooms.Contains(room))
-                    rooms.Remove(room);
-            }
+                foreach (string room in updatedRooms) //checks for new rooms
+                {
+                    if (!rooms.Contains(room))
+                        rooms.Add(room);
+                }
+                foreach(string room in rooms) //removes old rooms
+                {
+                    if (!updatedRooms.Contains(room))
+                        rooms.Remove(room);
+                }
 
-            foreach (string room in rooms)
-            {
-                Button newButton = new Button();
-                newButton.Name = room;
-                newButton.Content = room;
-                newButton.Click += joinRoom;
-                newButton.Width = 160;
-                newButton.Height = 55;
-                newButton.Margin = new Thickness(5);
-                this.roomButtons.Children.Add(newButton);
-            }
+                foreach (string room in rooms)
+                {
+                    Button newButton = new Button();
+                    newButton.Name = room;
+                    newButton.Content = room;
+                    newButton.Click += joinRoom;
+                    newButton.Width = 160;
+                    newButton.Height = 55;
+                    newButton.Margin = new Thickness(5);
+                    this.roomButtons.Children.Add(newButton);
+                }
+            }));
         }
 
         public void joinRoom(object sender, RoutedEventArgs e)
