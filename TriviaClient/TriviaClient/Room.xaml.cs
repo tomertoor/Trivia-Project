@@ -61,10 +61,13 @@ namespace TriviaClient
                     }
                     if (res.status == Consts.OK_STATUS)
                     {
-                        AddLabelsForUsers(res.players);
-                        this.timePerQ.Text += " " + res.answerTimeout.ToString();
-                        this.qCount.Text += " " + res.questionCount.ToString();
-                        hasGameBegun = res.hasGameBegun;
+                        this.Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            AddLabelsForUsers(res.players);
+                            this.timePerQ.Text += " " + res.answerTimeout.ToString();
+                            this.qCount.Text += " " + res.questionCount.ToString();
+                            hasGameBegun = res.hasGameBegun;
+                        }));
                     }
                     else
                     {

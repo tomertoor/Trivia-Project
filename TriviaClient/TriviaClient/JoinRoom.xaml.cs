@@ -15,12 +15,14 @@ namespace TriviaClient
     {
         private static List<string> rooms;
         public static User loggedUser;
+        private static Thread thread;
         public JoinRoom()
         {
             InitializeComponent();
             loggedUser = Menu.loggedUser;
             JoinRoom.rooms = new List<string>();
-            Thread thread = new Thread(RefreshRooms);
+            thread = new Thread(RefreshRooms);
+            thread.IsBackground = true;
             thread.Start();
             ;
         }
@@ -113,7 +115,7 @@ namespace TriviaClient
                 try
                 {
                     string data = Consts.JOIN_ROOM.PadLeft(2, '0');
-                    string m = "{\"roomName\": \"" + rooms.IndexOf(btn.Name) + "\"}";
+                    string m = "{\"roomId\": " + rooms.IndexOf(btn.Name) + "}";
                     data += m.Length.ToString().PadLeft(4, '0');
                     data += m;
                     loggedUser.SendData(data, loggedUser.sock);
@@ -132,10 +134,17 @@ namespace TriviaClient
                     }
                     if (res.status.Equals("1"))
                     {
-                        loggedUser.passedWhat = Consts.JOIN_ROOM;
-                        Room room = new Room();
-                        this.Close();
-                        room.Show();
+                        try
+                        {
+                            thread.Abort();
+                        }
+                        catch (Exception)
+                        {
+                            loggedUser.passedWhat = Consts.JOIN_ROOM;
+                            Room room = new Room();
+                            this.Close();
+                            room.Show();
+                        }
                     }
                     else
                     {
@@ -155,9 +164,16 @@ namespace TriviaClient
 
         private void menu_Click(object sender, RoutedEventArgs e)
         {
-            Menu menu = new Menu();
-            this.Close();
-            menu.Show();
+            try
+            {
+                thread.Abort();
+            }
+            catch (Exception)
+            {
+                Menu menu = new Menu();
+                this.Close();
+                menu.Show();
+            }
         }
     }
 
