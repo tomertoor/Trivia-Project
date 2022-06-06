@@ -31,6 +31,7 @@ namespace TriviaClient
                 loggedUser = CreateRoom.loggedUser;
                 mod = Consts.ADMIN;
             }
+            this.level.Text += mod;
             Thread thread = new Thread(RefreshUsers);
             thread.Start();
             ;
@@ -42,13 +43,13 @@ namespace TriviaClient
             {
                 try
                 {
-                    string data = Consts.GET_PLAYERS.PadLeft(2, '0') + "0000";
+                    string data = Consts.GET_ROOM_STATE.PadLeft(2, '0') + "0000";
                     loggedUser.SendData(data, loggedUser.sock);
                     ServerMsg msg = loggedUser.GetData();
                     GetRoomStateResponse res = new GetRoomStateResponse();
                     switch (msg.code)
                     {
-                        case Consts.GET_ROOM:
+                        case Consts.GET_ROOM_STATE:
                             res = JsonSerializer.Deserialize<GetRoomStateResponse>(msg.data);
                             break;
                         case Consts.ERROR:
@@ -125,6 +126,18 @@ namespace TriviaClient
         private void return_Click(object sender, RoutedEventArgs e)
         {
             loggedUser.passedWhat = mod;
+            if(mod == Consts.ADMIN)
+            {
+                string data = Consts.CLOSE_ROOM.PadLeft(2, '0') + "0000";
+                loggedUser.SendData(data, loggedUser.sock);
+                ServerMsg msg = loggedUser.GetData();
+            }
+            if(mod == Consts.MEMBER)
+            {
+                string data = Consts.LEAVE_ROOM.PadLeft(2, '0') + "0000";
+                loggedUser.SendData(data, loggedUser.sock);
+                ServerMsg msg = loggedUser.GetData();
+            }
             Menu menu = new Menu();
             this.Close();
             menu.Show();

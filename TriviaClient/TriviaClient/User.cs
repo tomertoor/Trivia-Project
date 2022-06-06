@@ -44,8 +44,11 @@ namespace TriviaClient
         public const string JOIN_ROOM = "06";
         public const string GET_ROOM = "07";
         public const string PERSONAL_STATS = "08";
-        public const string GET_PLAYERS = "09";
+        public const string GET_ROOM_STATE = "13";
         public const string HIGH_SCORES = "10";
+        public const string CLOSE_ROOM = "11";
+        public const string START_GAME = "12";
+        public const string LEAVE_ROOM = "14";
         public const string ADMIN = "admin";
         public const string MEMBER = "member";
     }

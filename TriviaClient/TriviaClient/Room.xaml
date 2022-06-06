@@ -37,7 +37,7 @@
                            FontFamily="helvetica"
                            FontSize="36"
                            Foreground="#FF3E3232"
-                           HorizontalAlignment="Left" Margin="330,40,0,144" Width="164" TextAlignment="Center"/>
+                           HorizontalAlignment="Center" Margin="0,40,0,144" Width="164" TextAlignment="Center"/>
             <StackPanel Name="players" Orientation="Vertical" Margin="306,112,306,51" Grid.RowSpan="2">
             </StackPanel>
             <Button Name="start" Content="Start Game" Margin="56,128,556,65" Click="start_Click"/>
@@ -69,6 +69,13 @@
                 FontSize="22"
                 Foreground="#FF3E3232"
                 HorizontalAlignment="Left" Margin="557,0,0,195" Width="179" Grid.Row="1"/>
+            <TextBlock Name="level"
+                Text="You are "
+                FontWeight="Normal"
+                FontFamily="helvetica"
+                FontSize="22"
+                Foreground="#FF3E3232"
+                HorizontalAlignment="Left" Margin="29,171,0,24" Width="179" Grid.Row="1"/>
         </Grid>
 
     </Grid>
