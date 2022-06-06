@@ -10,7 +10,7 @@
         ResizeMode="NoResize" WindowStyle="None"
         AllowsTransparency="True" Background="Transparent">
     <Grid>
-        <Grid>
+        <Grid Name="myGrid">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -22,7 +22,8 @@
                         <GradientStop Color="#f083da" Offset="1"/>
                     </LinearGradientBrush>
                 </Border.Background>
-                <TextBlock Text="Time Per Question:"
+                <TextBlock Name="timePerQ"
+                    Text="Time Per Question:"
                     FontWeight="Normal"
                     FontFamily="helvetica"
                     FontSize="21"
@@ -37,7 +38,7 @@
                            FontSize="36"
                            Foreground="#FF3E3232"
                            HorizontalAlignment="Left" Margin="330,40,0,144" Width="164" TextAlignment="Center"/>
-            <StackPanel Orientation="Vertical" Margin="306,112,306,51" Grid.RowSpan="2">
+            <StackPanel Name="players" Orientation="Vertical" Margin="306,112,306,51" Grid.RowSpan="2">
             </StackPanel>
             <Button Name="start" Content="Start Game" Margin="56,128,556,65" Click="start_Click"/>
             <TextBlock Name="message" Text="" TextWrapping="Wrap" FontSize="17" Margin="208,131,208,0" Foreground="Black" Height="72" VerticalAlignment="Top"/>
@@ -54,13 +55,15 @@
                 Foreground="#FF3E3232"
                 HorizontalAlignment="Left" Margin="78,40,0,150" Width="144"/>
             <Button Name="return" Content="Leave Room" Margin="56,183,556,10" Click="return_Click"/>
-            <TextBlock Text="Question Count:"
+            <TextBlock Name="qCount"
+                Text="Question Count:"
                 FontWeight="Normal"
                 FontFamily="helvetica"
                 FontSize="22"
                 Foreground="#FF3E3232"
                 HorizontalAlignment="Left" Margin="557,124,0,71" Width="179"/>
-            <TextBlock Text="Max Players:"
+            <TextBlock Name="maxPlayers"
+                Text="Max Players:"
                 FontWeight="Normal"
                 FontFamily="helvetica"
                 FontSize="22"

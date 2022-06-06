@@ -18,7 +18,7 @@ namespace TriviaClient
     /// </summary>
     public partial class CreateRoom : Window
     {
-        private static User loggedUser;
+        public static User loggedUser;
         public CreateRoom()
         {
             InitializeComponent();
@@ -71,7 +71,10 @@ namespace TriviaClient
                 }
                 if(res.status.Equals("1"))
                 {
-                    //move to the next window, the room window
+                    loggedUser.passedWhat = Consts.CREATE_ROOM;
+                    Room room = new Room();
+                    this.Close();
+                    room.Show();
                 }
                 else
                 {

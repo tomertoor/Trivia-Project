@@ -60,6 +60,8 @@ namespace TriviaClient
         public const string PERSONAL_STATS = "08";
         public const string GET_PLAYERS = "09";
         public const string HIGH_SCORES = "10";
+        public const string ADMIN = "admin";
+        public const string MEMBER = "member";
     }
     
     public struct Message

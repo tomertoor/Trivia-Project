@@ -31,6 +31,8 @@ namespace TriviaClient
                 loggedUser = HighScores.loggedUser;
             else if (Stats.loggedUser.passedWhat == Consts.STATS)
                 loggedUser = Stats.loggedUser;
+            else if (Room.loggedUser.passedWhat == Consts.ADMIN || Room.loggedUser.passedWhat == Consts.MEMBER)
+                loggedUser = Room.loggedUser;
             else
             {
                 loggedUser.username = "none";

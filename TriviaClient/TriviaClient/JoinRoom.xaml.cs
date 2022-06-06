@@ -14,7 +14,7 @@ namespace TriviaClient
     public partial class JoinRoom : Window
     {
         private static List<string> rooms;
-        private static User loggedUser;
+        public static User loggedUser;
         public JoinRoom()
         {
             InitializeComponent();
@@ -141,7 +141,10 @@ namespace TriviaClient
                     }
                     if (res.status.Equals("1"))
                     {
-                        //move to the room window
+                        loggedUser.passedWhat = Consts.JOIN_ROOM;
+                        Room room = new Room();
+                        this.Close();
+                        room.Show();
                     }
                     else
                     {
