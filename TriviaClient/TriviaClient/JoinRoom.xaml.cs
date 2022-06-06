@@ -57,8 +57,7 @@ namespace TriviaClient
                     this.message.FontSize = 25;
                     this.message.Text = "Error occured";
                 }
-                Thread thread = new Thread(SleepThread);
-                thread.Join();
+                
            }
         }
 

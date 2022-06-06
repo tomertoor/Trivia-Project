@@ -49,15 +49,15 @@ namespace TriviaClient
     {
         public const string STATS = "s";
         public const int OK_STATUS = 1;
-        public const string SIGN_UP = "1";
-        public const string LOG_OUT = "2";
-        public const string ERROR = "3";
-        public const string CREATE_ROOM = "4";
-        public const string LOG_IN = "5";
-        public const string JOIN_ROOM = "6";
-        public const string GET_ROOM = "7";
-        public const string PERSONAL_STATS = "8";
-        public const string GET_PLAYERS = "9";
+        public const string SIGN_UP = "01";
+        public const string LOG_OUT = "02";
+        public const string ERROR = "03";
+        public const string CREATE_ROOM = "04";
+        public const string LOG_IN = "05";
+        public const string JOIN_ROOM = "06";
+        public const string GET_ROOM = "07";
+        public const string PERSONAL_STATS = "08";
+        public const string GET_PLAYERS = "09";
         public const string HIGH_SCORES = "10";
     }
     

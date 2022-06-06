@@ -33,19 +33,29 @@ namespace TriviaClient
                 switch (msg.code)
                 {
                     case Consts.HIGH_SCORES:
-                        msg.data = msg.data.Remove(0, 1);
-                        msg.data = msg.data.Remove(msg.data.Length - 1, 1);
                         res = JsonSerializer.Deserialize<HighscoresResponse>(msg.data);
                         break;
                     case Consts.ERROR:
                         this.message.Text = msg.data;
                         break;
                 }
-                if (res.status.Equals("1"))
+                if (res.status == Consts.OK_STATUS)
                 {
-                    this.user1.Text = res.users[0];
-                    this.user2.Text = res.users[1];
-                    this.user3.Text = res.users[2];
+                    if(res.topScores.Count >= 3)
+                    {
+                        this.user1.Text = res.topScores[0];
+                        this.user2.Text = res.topScores[1];
+                        this.user3.Text = res.topScores[2];
+                    }
+                    else if (res.topScores.Count == 2)
+                    {
+                        this.user1.Text = res.topScores[0];
+                        this.user2.Text = res.topScores[1];
+                    }
+                    else if (res.topScores.Count == 1)
+                    {
+                        this.user1.Text = res.topScores[0];
+                    }
                 }
                 else
                 {
@@ -78,12 +88,11 @@ namespace TriviaClient
 
     public class HighscoresResponse
     {
-        public string status { get; set; }
-        public string[] users { get; set; }
+        public int status { get; set; }
+        public List<string> topScores { get; set; }
         public HighscoresResponse()
         {
-            status = "";
-            users = new string[5];
+            status = 0;
         }
     }
 }
