@@ -18,23 +18,29 @@ namespace TriviaClient
         private static string mod;
         private static bool hasGameBegun;
         private static bool refresh;
+        private static int maxMembers;
+        private static int quesCount;
+        private static int qTimeout;
         public Room()
         {
             InitializeComponent();
             users = new List<string>();
-            if(JoinRoom.loggedUser.passedWhat == Consts.JOIN_ROOM)
+            if (JoinRoom.loggedUser.passedWhat == Consts.JOIN_ROOM)
             {
                 loggedUser = JoinRoom.loggedUser;
                 mod = Consts.MEMBER;
                 this.myGrid.Children.Remove(this.start);
             }
-            if(CreateRoom.loggedUser.passedWhat == Consts.CREATE_ROOM)
+            if (CreateRoom.loggedUser.passedWhat == Consts.CREATE_ROOM)
             {
                 loggedUser = CreateRoom.loggedUser;
                 mod = Consts.ADMIN;
             }
             this.level.Text += mod;
             refresh = true;
+            maxMembers = 0;
+            quesCount = 0;
+            qTimeout = 0;
             Thread thread = new Thread(RefreshUsers);
             thread.Start();
             ;
@@ -56,10 +62,14 @@ namespace TriviaClient
                     loggedUser.SendData(data, loggedUser.sock);
                     ServerMsg msg = loggedUser.GetData();
                     GetRoomStateResponse res = new GetRoomStateResponse();
+                    GetClosedroomResponse close = new GetClosedroomResponse();
                     switch (msg.code)
                     {
                         case Consts.GET_ROOM_STATE:
                             res = JsonSerializer.Deserialize<GetRoomStateResponse>(msg.data);
+                            break;
+                        case Consts.LEAVE_ROOM:
+                            close = JsonSerializer.Deserialize<GetClosedroomResponse>(msg.data);
                             break;
                         case Consts.ERROR:
                             this.Dispatcher.BeginInvoke(new Action(() =>
@@ -73,10 +83,24 @@ namespace TriviaClient
                         this.Dispatcher.BeginInvoke(new Action(() =>
                         {
                             AddLabelsForUsers(res.players);
-                            this.timePerQ.Text += " " + res.answerTimeout.ToString();
-                            this.qCount.Text += " " + res.questionCount.ToString();
+                            if (quesCount != res.questionCount)
+                            {
+                                this.qCount.Text = this.qCount.Text.Substring(0, this.qCount.Text.LastIndexOf(':') + 1) + " " + res.questionCount.ToString();
+                            }
+                            if (qTimeout != res.answerTimeout)
+                            {
+                                this.timePerQ.Text = this.timePerQ.Text.Substring(0, this.timePerQ.Text.LastIndexOf(':') + 1) + " " + res.answerTimeout.ToString();
+                            }
                             hasGameBegun = res.hasGameBegun;
                         }));
+                    }
+                    else if (close.status == Consts.OK_STATUS)
+                    {
+                        refresh = false;
+                        loggedUser.passedWhat = mod;
+                        Menu menu = new Menu();
+                        this.Close();
+                        menu.Show();
                     }
                     else
                     {
@@ -130,13 +154,13 @@ namespace TriviaClient
         {
             loggedUser.passedWhat = mod;
             refresh = false;
-            if(mod == Consts.ADMIN)
+            if (mod == Consts.ADMIN)
             {
                 string data = Consts.CLOSE_ROOM.PadLeft(2, '0') + "0000";
                 loggedUser.SendData(data, loggedUser.sock);
                 ServerMsg msg = loggedUser.GetData();
             }
-            if(mod == Consts.MEMBER)
+            if (mod == Consts.MEMBER)
             {
                 string data = Consts.LEAVE_ROOM.PadLeft(2, '0') + "0000";
                 loggedUser.SendData(data, loggedUser.sock);
@@ -161,6 +185,15 @@ namespace TriviaClient
                 players = new List<string>();
                 questionCount = 0;
                 answerTimeout = 0;
+            }
+        }
+
+        class GetClosedroomResponse
+        {
+            public int status { get; set; }
+            public GetClosedroomResponse()
+            {
+                status = 0;
             }
         }
     }
