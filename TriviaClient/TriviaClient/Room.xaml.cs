@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Text.Json;
 using System.Threading;
 
@@ -16,6 +17,7 @@ namespace TriviaClient
         public static User loggedUser;
         private static string mod;
         private static bool hasGameBegun;
+        private static bool refresh;
         public Room()
         {
             InitializeComponent();
@@ -32,14 +34,21 @@ namespace TriviaClient
                 mod = Consts.ADMIN;
             }
             this.level.Text += mod;
+            refresh = true;
             Thread thread = new Thread(RefreshUsers);
             thread.Start();
             ;
         }
 
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonDown(e);
+            this.DragMove();
+        }
+
         private void RefreshUsers()
         {
-            while (true)
+            while (refresh)
             {
                 try
                 {
@@ -120,6 +129,7 @@ namespace TriviaClient
         private void return_Click(object sender, RoutedEventArgs e)
         {
             loggedUser.passedWhat = mod;
+            refresh = false;
             if(mod == Consts.ADMIN)
             {
                 string data = Consts.CLOSE_ROOM.PadLeft(2, '0') + "0000";

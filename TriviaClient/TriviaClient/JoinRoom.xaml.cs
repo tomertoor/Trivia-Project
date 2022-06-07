@@ -16,12 +16,14 @@ namespace TriviaClient
         private static List<string> rooms;
         public static User loggedUser;
         private static Thread thread;
+        private static bool refresh;
         public JoinRoom()
         {
             InitializeComponent();
             loggedUser = Menu.loggedUser;
             JoinRoom.rooms = new List<string>();
             thread = new Thread(RefreshRooms);
+            refresh = true;
             thread.IsBackground = true;
             thread.Start();
             ;
@@ -29,7 +31,7 @@ namespace TriviaClient
 
         private void RefreshRooms()
         {
-            while (true)
+            while (refresh)
             {
                 try
                 {
@@ -112,6 +114,7 @@ namespace TriviaClient
             Button btn = (Button)sender;
             if(btn != null)
             {
+                refresh = false;
                 try
                 {
                     string data = Consts.JOIN_ROOM.PadLeft(2, '0');
@@ -123,7 +126,7 @@ namespace TriviaClient
                     JoinroomResponse res = new JoinroomResponse();
                     switch (msg.code)
                     {
-                        case Consts.PERSONAL_STATS:
+                        case Consts.JOIN_ROOM:
                             msg.data = msg.data.Remove(0, 1);
                             msg.data = msg.data.Remove(msg.data.Length - 1, 1);
                             res = JsonSerializer.Deserialize<JoinroomResponse>(msg.data);
@@ -159,6 +162,17 @@ namespace TriviaClient
                     this.message.FontSize = 25;
                     this.message.Text = "Error occured";
                 }
+                refresh = true;
+                try
+                {
+                    thread.IsBackground = true;
+                    thread.Start();
+                    ;
+                }
+                catch(Exception)
+                {
+                    //fjj
+                }
             }
         }
 
@@ -166,6 +180,7 @@ namespace TriviaClient
         {
             try
             {
+                refresh = false;
                 thread.Abort();
             }
             catch (Exception)
@@ -189,7 +204,7 @@ namespace TriviaClient
 
     public class JoinroomResponse
     {
-        public string status;
+        public string status { get; set; }
         public JoinroomResponse()
         {
             status = "";
