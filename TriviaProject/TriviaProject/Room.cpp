@@ -10,15 +10,15 @@ RoomData& Room::getData()
 // Input - user: the user to add
 void Room::addUser(const LoggedUser& user)
 {
-	this->m_users.push_back(user);
+	this->m_users->push_back(user);
 }
 
 //Removes user, finding and erasing
 void Room::removeUser(const LoggedUser& user)
 {
-	if (std::find(m_users.begin(), m_users.end(), user) != m_users.end())
+	if (std::find(m_users->begin(), m_users->end(), user) != m_users->end())
 	{
-		this->m_users.erase(std::find(m_users.begin(), m_users.end(), user));
+		this->m_users->erase(std::find(m_users->begin(), m_users->end(), user));
 
 	}
 }
@@ -26,7 +26,12 @@ void Room::removeUser(const LoggedUser& user)
 //Returns a copy of the vector of the logged users
 std::vector<LoggedUser> Room::getAllUsers() const
 {
-	return std::vector<LoggedUser>(this->m_users);
+	std::vector<LoggedUser> users;
+	for (auto& it : *this->m_users)
+	{
+		users.push_back(it);
+	}
+	return users;
 }
 
 void Room::startRoom()

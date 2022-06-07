@@ -48,12 +48,12 @@ MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler(LoggedUser u
 	return new MenuRequestHandler(user); 
 }
 
-RoomMemberRequestHandler* RequestHandlerFactory::createMemberRequestHandler(LoggedUser user, Room room)
+RoomMemberRequestHandler* RequestHandlerFactory::createMemberRequestHandler(LoggedUser user, Room* room)
 {
 	return new RoomMemberRequestHandler(room, user);
 }
 
-RoomAdminRequestHandler* RequestHandlerFactory::createAdminRequestHandler(LoggedUser user, Room room)
+RoomAdminRequestHandler* RequestHandlerFactory::createAdminRequestHandler(LoggedUser user, Room* room)
 {
 	return new RoomAdminRequestHandler(room, user);
 }

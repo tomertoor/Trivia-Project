@@ -1,7 +1,7 @@
 #include "RoomAdminRequestHandler.h"
 
 
-RoomAdminRequestHandler::RoomAdminRequestHandler(Room room, LoggedUser user) : m_room(room), m_user(user), m_handlerFactory(*RequestHandlerFactory::getInstance()), m_roomManager(*RoomManager::getInstance())
+RoomAdminRequestHandler::RoomAdminRequestHandler(Room* room, LoggedUser user) : m_room(room), m_user(user), m_handlerFactory(*RequestHandlerFactory::getInstance()), m_roomManager(*RoomManager::getInstance())
 {
 }
 
@@ -12,16 +12,9 @@ output: true if close room, start game or room state
 */
 bool RoomAdminRequestHandler::isRequestRelevant(Requests::RequestInfo request)
 {
-	switch (request.id)
+	if (request.id == std::atoi(CLOSE_ROOM_CODE) || request.id == std::atoi(START_GAME_CODE) || request.id == std::atoi(ROOM_STATE_CODE))
 	{
-	case CLOSE_ROOM_CODE:
 		return true;
-	case START_GAME_CODE:
-		return true;
-	case ROOM_STATE_CODE:
-		return true;
-	default:
-		return false;
 	}
 	return false;
 }
@@ -34,16 +27,17 @@ Requests::RequestResult RoomAdminRequestHandler::handleRequest(Requests::Request
 {
 	Requests::RequestResult result;
 
-	switch (request.id)
+	if (request.id == std::atoi(CLOSE_ROOM_CODE))
 	{
-	case CLOSE_ROOM_CODE:
 		return this->closeRoom(request);
-	case START_GAME_CODE:
+	}
+	else if (request.id == std::atoi(START_GAME_CODE))
+	{
 		return this->startGame(request);
-	case ROOM_STATE_CODE:
+	}
+	else if (request.id == std::atoi(ROOM_STATE_CODE))
+	{
 		return this->getRoomState(request);
-	default:
-		return result;
 	}
 	return result;
 }
@@ -53,9 +47,9 @@ Requests::RequestResult RoomAdminRequestHandler::getRoomState(Requests::RequestI
 	Requests::RequestResult result;
 	try
 	{
-		RoomData data = this->m_room.getData();
+		RoomData data = this->m_room->getData();
 		std::vector<std::string> users;
-		for (auto& it : this->m_room.getAllUsers())
+		for (auto& it : this->m_room->getAllUsers())
 		{
 			users.push_back(it.getName());
 		}
@@ -82,7 +76,7 @@ Requests::RequestResult RoomAdminRequestHandler::closeRoom(Requests::RequestInfo
 
 	try
 	{
-		this->m_roomManager.deleteRoom(this->m_room.getData().id);
+		this->m_roomManager.deleteRoom(this->m_room->getData().id);
 		Responses::CloseRoomResponse response = { OK_STATUS };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
 		result.newHandler = nullptr; // to be changed
@@ -105,7 +99,7 @@ Requests::RequestResult RoomAdminRequestHandler::startGame(Requests::RequestInfo
 
 	try
 	{
-		this->m_room.startRoom();
+		this->m_room->startRoom();
 		Responses::StartGameResponse response = { OK_STATUS };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
 		result.newHandler = nullptr; // to be changed

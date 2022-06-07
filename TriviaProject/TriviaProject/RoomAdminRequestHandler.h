@@ -7,7 +7,7 @@ class RoomAdminRequestHandler : public IRequestHandler
 {
 private:
 
-	Room m_room;
+	Room* m_room;
 	LoggedUser m_user;
 	RoomManager& m_roomManager;
 	RequestHandlerFactory& m_handlerFactory;
@@ -16,7 +16,7 @@ private:
 	Requests::RequestResult startGame(Requests::RequestInfo info);
 public:
 
-	RoomAdminRequestHandler(Room room, LoggedUser user);
+	RoomAdminRequestHandler(Room* room, LoggedUser user);
 	virtual ~RoomAdminRequestHandler() { };
 
 	bool isRequestRelevant(Requests::RequestInfo request);

@@ -10,9 +10,10 @@ class Room
 {
 private:
 	RoomData m_metadata;
-	std::vector<LoggedUser> m_users;
+	std::vector<LoggedUser>* m_users;
 public:
-	Room(RoomData data) : m_metadata(data) {};
+	Room(RoomData data) : m_metadata(data), m_users(new std::vector<LoggedUser>()) {};
+	~Room() { delete this->m_users; };
 	RoomData& getData();
 	void addUser(const LoggedUser& user);
 	void removeUser(const LoggedUser& user);

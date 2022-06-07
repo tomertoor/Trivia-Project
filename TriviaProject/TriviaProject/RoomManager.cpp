@@ -26,9 +26,9 @@ RoomManager* RoomManager::getInstance()
 */
 void RoomManager::createRoom(const LoggedUser& user, const RoomData& data)
 {
-	Room room(data);
-	room.addUser(user);
-	std::pair<unsigned int, Room> cell(data.id, room);
+	Room* room = new Room(data);
+	room->addUser(user);
+	std::pair<unsigned int, Room*> cell(data.id, room);
 	this->m_rooms.insert(cell);
 	this->currentId++;
 }
@@ -38,6 +38,7 @@ void RoomManager::createRoom(const LoggedUser& user, const RoomData& data)
 */
 void RoomManager::deleteRoom(const int& id)
 {
+	delete this->m_rooms[id];
 	this->m_rooms.erase(id);
 }
 
@@ -47,7 +48,7 @@ void RoomManager::deleteRoom(const int& id)
 */
 unsigned int RoomManager::getRoomState(const int& id)
 {
-	return this->m_rooms.find(id)->second.getData().isActive;
+	return this->m_rooms.find(id)->second->getData().isActive;
 }
 
 /*Gets a room states, this time roomdata, makes it more suitable here
@@ -56,7 +57,7 @@ unsigned int RoomManager::getRoomState(const int& id)
 */
 RoomData RoomManager::getRoomData(const int& id)
 {
-	return this->m_rooms.find(id)->second.getData();
+	return this->m_rooms.find(id)->second->getData();
 }
 
 unsigned int RoomManager::getRoomIdByUser(std::string name)
@@ -68,9 +69,9 @@ unsigned int RoomManager::getRoomIdByUser(std::string name)
 * Input: None
 * Output - All the rooms
 */
-std::vector<Room> RoomManager::getRooms()
+std::vector<Room*> RoomManager::getRooms()
 {
-	std::vector<Room> rooms;
+	std::vector<Room*> rooms;
 	for (auto iter = this->m_rooms.begin(); iter != this->m_rooms.end(); iter++)
 	{
 		rooms.push_back(iter->second);
@@ -87,7 +88,7 @@ std::vector<RoomData> RoomManager::getRoomsData()
 	std::vector<RoomData> rooms;
 	for (auto iter = this->m_rooms.begin(); iter != this->m_rooms.end(); iter++)
 	{
-		rooms.push_back(iter->second.getData());
+		rooms.push_back(iter->second->getData());
 	}
 	return rooms;
 }

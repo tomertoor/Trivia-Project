@@ -37,8 +37,8 @@ public:
 
 	LoginRequestHandler* createLoginRequestHandler();
 	MenuRequestHandler* createMenuRequestHandler(LoggedUser user);
-	RoomMemberRequestHandler* createMemberRequestHandler(LoggedUser user, Room room);
-	RoomAdminRequestHandler* createAdminRequestHandler(LoggedUser user, Room room);
+	RoomMemberRequestHandler* createMemberRequestHandler(LoggedUser user, Room* room);
+	RoomAdminRequestHandler* createAdminRequestHandler(LoggedUser user, Room* room);
 
 	LoginManager& getLoginManager();
 	StatisticsManager& getStatisticsManager();

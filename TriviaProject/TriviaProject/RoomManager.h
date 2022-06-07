@@ -7,7 +7,7 @@ class RoomManager
 {
 private:
 	int currentId = 0;
-	std::map<unsigned int, Room> m_rooms;
+	std::map<unsigned int, Room*> m_rooms;
 
 
 	RoomManager();
@@ -31,7 +31,7 @@ public:
 	RoomData getRoomData(const int& id);
 	unsigned int getRoomIdByUser(std::string name);
 
-	std::vector<Room> getRooms();
+	std::vector<Room*> getRooms();
 	std::vector<RoomData> getRoomsData();
 
 	unsigned int getCurrentId() const;

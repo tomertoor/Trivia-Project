@@ -17,7 +17,11 @@ LoginRequestHandler::LoginRequestHandler(LoginManager* manager, RequestHandlerFa
 //Checks if the request is a sign in or a signup, if not its false
 bool LoginRequestHandler::isRequestRelevant(Requests::RequestInfo request)
 {
-	return (request.id == SIGNIN_REQUEST || request.id == SIGNUP_REQUEST) ? true : false;
+	if (request.id == std::atoi(LOGIN_CODE) || request.id == std::atoi(SIGNUP_CODE))
+	{
+		return true;
+	}
+	return false;
 }
 
 /*Handles the sign in and sign up requests

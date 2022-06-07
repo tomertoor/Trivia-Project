@@ -6,12 +6,12 @@ JsonResponsePacketSerializer* JsonResponsePacketSerializer::instance = nullptr;
 * Input - code to put and json
 * Output - the serilized buffer.
 */
-Buffer JsonResponsePacketSerializer::serializeStatusResponse(const unsigned char& code, const unsigned int& status)
+Buffer JsonResponsePacketSerializer::serializeStatusResponse(const char* code, const unsigned int& status)
 {
     std::stringstream message;
     std::string jsonMessage = R"("{"status":")" + std::to_string(status) + R"("}")";
     std::string length = std::to_string(jsonMessage.length());
-    message << code << std::setfill('0') << std::setw(MAX_FILLING_LENGTH) << length << jsonMessage;
+    message << std::string(code) << std::setfill('0') << std::setw(MAX_FILLING_LENGTH) << length << jsonMessage;
 
     return stringToBuffer(message.str());
 }
@@ -20,12 +20,12 @@ Buffer JsonResponsePacketSerializer::serializeStatusResponse(const unsigned char
 * Input - code to put and json
 * Output - the serilized buffer.
 */
-Buffer JsonResponsePacketSerializer::serializeJsonResponse(const unsigned char& code, const nlohmann::json& json)
+Buffer JsonResponsePacketSerializer::serializeJsonResponse(const char* code, const nlohmann::json& json)
 {
     std::stringstream message;
     std::string jsonMessage = json.dump();
     std::string length = std::to_string(jsonMessage.length());
-    message << code << std::setfill('0') << std::setw(MAX_FILLING_LENGTH) << length << jsonMessage;
+    message << std::string(code) << std::setfill('0') << std::setw(MAX_FILLING_LENGTH) << length << jsonMessage;
 
     return stringToBuffer(message.str());
 }
@@ -125,7 +125,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(Responses::LeaveRoomRespo
 Buffer JsonResponsePacketSerializer::serializeResponse(Responses::GetPlayersInRoomResponse response)
 {
     nlohmann::json json;
-    json["PlayersInRoom"] = response.players;
+    json["playersInRoom"] = response.players;
     return serializeJsonResponse(GET_PLAYERS_CODE, json);
 }
 
@@ -172,8 +172,8 @@ Buffer JsonResponsePacketSerializer::serializeResponse(Responses::GetHighScoreRe
 {
     nlohmann::json json;
 
-
-    json["HighScores"] = response.statistics;
+    json["status"] = response.status;
+    json["topScores"] = response.statistics;
 
     return serializeJsonResponse(HIGH_SCORE_CODE, json);
 

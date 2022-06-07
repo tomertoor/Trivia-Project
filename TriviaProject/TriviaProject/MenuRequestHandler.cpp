@@ -12,18 +12,10 @@ MenuRequestHandler::MenuRequestHandler(LoggedUser user) :
 */
 bool MenuRequestHandler::isRequestRelevant(Requests::RequestInfo request)
 {
-	switch ((char)request.id+'0') //converting it to char since all the defines are on char
+	
+	if (request.id == std::atoi(CREATE_ROOM_CODE) || request.id == std::atoi(GET_PLAYERS_CODE) || request.id == std::atoi(GET_ROOM_CODE) || request.id == std::atoi(JOIN_ROOM_CODE) || request.id == std::atoi(LOGOUT_CODE) || request.id == std::atoi(PERSONAL_STATS_CODE) || request.id == std::atoi(HIGH_SCORE_CODE))
 	{
-	case CREATE_ROOM_CODE:
-	case GET_PLAYERS_CODE:
-	case GET_ROOM_CODE:
-	case JOIN_ROOM_CODE:
-	case LOGOUT_CODE:
-	case PERSONAL_STATS_CODE:
 		return true;
-		break;
-	default:
-		return false;
 	}
 	return false;
 }
@@ -36,28 +28,37 @@ Requests::RequestResult MenuRequestHandler::handleRequest(Requests::RequestInfo 
 {
 	Requests::RequestResult	result;
 
-	switch ((char)request.id + '0') //converting it to char since all the defines are on char
+	if (request.id == std::atoi(CREATE_ROOM_CODE))
 	{
-		case CREATE_ROOM_CODE:
-			return this->createRoom(request);
-			break;
-		case GET_PLAYERS_CODE:
-			return this->getPlayersInRoom(request);
-			break;
-		case GET_ROOM_CODE:
-			return this->getRooms(request);
-			break;
-		case JOIN_ROOM_CODE:
-			return this->joinRoom(request);
-			break;
-		case LOGOUT_CODE:
-			return this->signout(request);
-			break;
-		case PERSONAL_STATS_CODE:
-			return this->getPersonalStats(request);
-			break;
-		default:
-			return Requests::RequestResult();
+		return this->createRoom(request);
+	}
+	else if (request.id == std::atoi(GET_PLAYERS_CODE))
+	{
+		return this->getPlayersInRoom(request);
+
+	}
+	else if (request.id == std::atoi(GET_ROOM_CODE))
+	{
+		return this->getRooms(request);
+	}
+	else if (request.id == std::atoi(JOIN_ROOM_CODE))
+	{
+		return this->joinRoom(request);
+
+	}
+	else if (request.id == std::atoi(LOGOUT_CODE))
+	{
+		return this->signout(request);
+
+	}
+	else if (request.id == std::atoi(PERSONAL_STATS_CODE))
+	{
+		return this->getPersonalStats(request);
+
+	}
+	else if (request.id == std::atoi(HIGH_SCORE_CODE))
+	{
+		return this->getHighScore(request);
 	}
 	Responses::ErrorResponse errorResponse = { "Error, incorrect state" };
 	result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
@@ -78,7 +79,7 @@ Requests::RequestResult MenuRequestHandler::signout(Requests::RequestInfo info)
 		auto vec = this->m_roomManager->getRooms();
 		for (auto& iter : vec)
 		{
-			iter.removeUser(this->m_user);
+			iter->removeUser(this->m_user);
 		}
 		Responses::LogoutResponse response;
 		response.status = OK_STATUS;
@@ -134,7 +135,7 @@ Requests::RequestResult MenuRequestHandler::getPlayersInRoom(Requests::RequestIn
 		Requests::GetPlayersInRoomRequest request = JsonRequestPacketDeserializer::deserializeGetPlayersInRoomRequest(info.buffer);
 		
 		Responses::GetPlayersInRoomResponse response;
-		auto userVec = this->m_roomManager->getRooms()[request.roomId].getAllUsers();
+		auto userVec = this->m_roomManager->getRooms()[request.roomId]->getAllUsers();
 		for (auto& iter : userVec)
 		{
 			response.players.push_back(iter.getName());
@@ -219,13 +220,24 @@ Requests::RequestResult MenuRequestHandler::joinRoom(Requests::RequestInfo info)
 	try
 	{
 		Requests::JoinRoomRequest request = JsonRequestPacketDeserializer::deserializeJoinRoomRequest(info.buffer);
-		this->m_roomManager->getRooms()[request.roomId].addUser(this->m_user);
+		
+		if (this->m_roomManager->getRooms()[request.roomId]->getAllUsers().size() == this->m_roomManager->getRooms()[request.roomId]->getData().maxPlayers)
+		{
+			Responses::ErrorResponse errorResponse{ "Error, Room is full." };
+			result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
+			result.newHandler = nullptr;
+		}
+		else
+		{
+			this->m_roomManager->getRooms()[request.roomId]->addUser(this->m_user);
 
-		Responses::CreateRoomResponse response;
-		response.status = OK_STATUS;
+			Responses::JoinRoomResponse response;
+			response.status = OK_STATUS;
 
-		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = nullptr;
+			result.response = JsonResponsePacketSerializer::serializeResponse(response);
+			result.newHandler = this->m_handlerFactory->createMemberRequestHandler(this->m_user, this->m_roomManager->getRooms()[request.roomId]);
+
+		}
 	}
 	catch (...)
 	{

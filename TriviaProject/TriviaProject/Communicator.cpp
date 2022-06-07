@@ -91,7 +91,7 @@ void Communicator::handleNewClient(SOCKET sock)
         while (true)
         {
             ri.buffer = Buffer();
-            ri.id = stoi(this->getPartFromSocket(sock, 1));
+            ri.id = stoi(this->getPartFromSocket(sock, 2));
             int len = stoi(this->getPartFromSocket(sock, 4));
             for (int i = 0; i < len; i++)
             {
