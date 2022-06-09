@@ -16,9 +16,9 @@ namespace TriviaClient
         private static List<string> users;
         public static User loggedUser;
         private static string mod;
+        public static string name;
         private static bool hasGameBegun;
         private static bool refresh;
-        private static int maxMembers;
         private static int quesCount;
         private static int qTimeout;
         public Room()
@@ -38,7 +38,7 @@ namespace TriviaClient
             }
             this.level.Text += mod;
             refresh = true;
-            maxMembers = 0;
+            roomName.Text += " " + name;
             quesCount = 0;
             qTimeout = 0;
             Thread thread = new Thread(RefreshUsers);
@@ -128,14 +128,9 @@ namespace TriviaClient
         {
             this.Dispatcher.BeginInvoke(new Action(() =>
             {
-                for (int i = 0; i < players.Children.Count; i++)
-                {
-                    if (players.Children[i].GetType() == typeof(Label))
-                        players.Children.Remove(players.Children[i] as Label);
-                }
-
+                players.Children.Clear();
+                
                 users = updatedUsers;
-
                 foreach (string room in users)
                 {
                     Label newLabel = new Label();

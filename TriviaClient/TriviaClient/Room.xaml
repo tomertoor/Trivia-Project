@@ -28,7 +28,7 @@
                     FontFamily="helvetica"
                     FontSize="21"
                     Foreground="#FF3E3232"
-                    HorizontalAlignment="Left" Margin="554,169,0,243" Width="205"/>
+                    HorizontalAlignment="Left" Margin="554,169,0,243" Width="230"/>
 
             </Border>
 
@@ -61,14 +61,14 @@
                 FontFamily="helvetica"
                 FontSize="22"
                 Foreground="#FF3E3232"
-                HorizontalAlignment="Left" Margin="557,124,0,71" Width="179"/>
-            <TextBlock Name="maxPlayers"
-                Text="Max Players:"
+                HorizontalAlignment="Left" Margin="557,124,0,71" Width="215"/>
+            <TextBlock Name="roomName"
+                Text="Room name:"
                 FontWeight="Normal"
                 FontFamily="helvetica"
                 FontSize="22"
                 Foreground="#FF3E3232"
-                HorizontalAlignment="Left" Margin="557,0,0,195" Width="179" Grid.Row="1"/>
+                HorizontalAlignment="Left" Margin="557,0,0,195" Width="208" Grid.Row="1"/>
             <TextBlock Name="level"
                 Text="You are "
                 FontWeight="Normal"

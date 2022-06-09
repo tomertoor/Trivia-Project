@@ -86,12 +86,8 @@ namespace TriviaClient
         {
             this.Dispatcher.BeginInvoke(new Action(() =>
             {
-                    //firstly remove all exist buttons
-                for(int i = 0; i< roomButtons.Children.Count; i++)
-                {
-                    if(roomButtons.Children[i].GetType() == typeof(Button))
-                        roomButtons.Children.Remove(roomButtons.Children[i] as Button);
-                }
+                //firstly remove all exist buttons
+                roomButtons.Children.Clear();
 
                 rooms = updatedRooms;
 
@@ -144,6 +140,7 @@ namespace TriviaClient
                         catch (Exception)
                         {
                             loggedUser.passedWhat = Consts.JOIN_ROOM;
+                            Room.name = btn.Name;
                             Room room = new Room();
                             this.Close();
                             room.Show();
