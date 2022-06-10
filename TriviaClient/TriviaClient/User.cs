@@ -49,6 +49,7 @@ namespace TriviaClient
         public const string CLOSE_ROOM = "11";
         public const string START_GAME = "12";
         public const string LEAVE_ROOM = "14";
+        public const string GET_QUESTION = "15";
         public const string ADMIN = "admin";
         public const string MEMBER = "member";
     }

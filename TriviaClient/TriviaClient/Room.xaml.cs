@@ -17,10 +17,9 @@ namespace TriviaClient
         public static User loggedUser;
         private static string mod;
         public static string name;
-        private static bool hasGameBegun;
         private static bool refresh;
-        private static int quesCount;
-        private static int qTimeout;
+        public static int quesCount;
+        public static int qTimeout;
         public Room()
         {
             InitializeComponent();
@@ -91,7 +90,12 @@ namespace TriviaClient
                             {
                                 this.timePerQ.Text = this.timePerQ.Text.Substring(0, this.timePerQ.Text.LastIndexOf(':') + 1) + " " + res.answerTimeout.ToString();
                             }
-                            hasGameBegun = res.hasGameBegun;
+                            if(res.hasGameBegun)
+                            {
+                                Game game = new Game();
+                                this.Close();
+                                game.Show();
+                            }
                         }));
                     }
                     else if (close.status == Consts.OK_STATUS)
