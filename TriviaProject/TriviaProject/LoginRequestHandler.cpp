@@ -17,7 +17,11 @@ LoginRequestHandler::LoginRequestHandler(LoginManager* manager, RequestHandlerFa
 //Checks if the request is a sign in or a signup, if not its false
 bool LoginRequestHandler::isRequestRelevant(Requests::RequestInfo request)
 {
-	return (request.id == SIGNIN_REQUEST || request.id == SIGNUP_REQUEST) ? true : false;
+	if (request.id == std::atoi(LOGIN_CODE) || request.id == std::atoi(SIGNUP_CODE))
+	{
+		return true;
+	}
+	return false;
 }
 
 /*Handles the sign in and sign up requests
@@ -56,28 +60,35 @@ Requests::RequestResult LoginRequestHandler::login(Requests::LoginRequest loginD
 	try
 	{
 		this->m_loginManager->login(loginDetails.username, loginDetails.password);
+		LoggedUser user(loginDetails.username);
 		Responses::LoginResponse response{ OK_STATUS };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler();
+		result.newHandler = (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler(user);
 	}
 	catch (dbException ex)
 	{
+		Responses::ErrorResponse errorResponse;
 		switch (ex.status)
 		{
 		case WRONG_PASS:
 		{
-			Responses::ErrorResponse errorResponse{ "Error, wrong password or user doesn't exist." };
-			result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
-			result.newHandler = (IRequestHandler*)this->m_handlerFactory->createLoginRequestHandler();
+			 errorResponse.message = "Error, wrong password or user doesn't exist.";
+			
+			break;
+		}
+		case ALREADY_LOGGED:
+		{
+			errorResponse.message = "Error, User with this name is already logged in..";
 			break;
 		}
 		default:
 		{
-			Responses::ErrorResponse errorResponse{ "Error, Unexpected behaviour." };
-			result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
-			result.newHandler = nullptr;
+			errorResponse.message = "Error, Unexpected behaviour.";
 		}
+		
 		}
+		result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
+		result.newHandler = (IRequestHandler*)this->m_handlerFactory->createLoginRequestHandler();
 	}
 	catch (...)
 	{
@@ -100,7 +111,10 @@ Requests::RequestResult LoginRequestHandler::signup(Requests::SignupRequest regi
 		this->m_loginManager->signup(registerDetails);
 		Responses::SignupResponse response{ OK_STATUS };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler();
+
+		LoggedUser user(registerDetails.username);
+
+		result.newHandler = (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler(user);
 	}
 	catch (dbException ex)
 	{
@@ -153,12 +167,6 @@ bool LoginRequestHandler::isValidUserName(const std::string& username)
 	{
 		return false;
 	}
-
-	/*if (std::find_if(username.begin(), username.end(), std::isalpha) != username.end())
-	{
-		return false;
-
-	}*/
 	return true;
 }
 

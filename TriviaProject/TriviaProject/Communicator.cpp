@@ -91,7 +91,7 @@ void Communicator::handleNewClient(SOCKET sock)
         while (true)
         {
             ri.buffer = Buffer();
-            ri.id = stoi(this->getPartFromSocket(sock, 1));
+            ri.id = stoi(this->getPartFromSocket(sock, 2));
             int len = stoi(this->getPartFromSocket(sock, 4));
             for (int i = 0; i < len; i++)
             {
@@ -202,4 +202,8 @@ std::string Communicator::bufferToString(Buffer buf)
     for (int i = 0; i < buf.buffer.size(); i++)
         data += buf.buffer[i];
     return data;
+}
+
+void Communicator::checkBroadcastToRoom(SOCKET sock)
+{
 }

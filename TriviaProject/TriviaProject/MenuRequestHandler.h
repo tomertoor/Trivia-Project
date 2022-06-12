@@ -6,12 +6,13 @@
 #include "RequestHandlerFactory.h"
 
 class RequestHandlerFactory;
+class RoomAdminRequestHandler;
 
 class MenuRequestHandler : public IRequestHandler
 {
 private:
 	LoggedUser m_user;
-	RoomManager m_roomManager;
+	RoomManager* m_roomManager;
 	StatisticsManager* m_statisticsManager;
 	RequestHandlerFactory* m_handlerFactory;
 
@@ -24,8 +25,8 @@ private:
 	Requests::RequestResult createRoom(Requests::RequestInfo info);
 
 public:
-	MenuRequestHandler();
-	~MenuRequestHandler() = default;
+	MenuRequestHandler(LoggedUser user);
+	virtual ~MenuRequestHandler() = default;
 
 	bool isRequestRelevant(Requests::RequestInfo request) override;
 	Requests::RequestResult handleRequest(Requests::RequestInfo request) override;
