@@ -1,7 +1,7 @@
 #include "MenuRequestHandler.h"
 
-MenuRequestHandler::MenuRequestHandler() :
-	m_handlerFactory(RequestHandlerFactory::getInstance()), m_statisticsManager(StatisticsManager::getInstance())
+MenuRequestHandler::MenuRequestHandler(LoggedUser user) :
+	m_handlerFactory(RequestHandlerFactory::getInstance()), m_statisticsManager(StatisticsManager::getInstance()), m_user(user), m_roomManager(RoomManager::getInstance())
 {
 }
 
@@ -12,18 +12,10 @@ MenuRequestHandler::MenuRequestHandler() :
 */
 bool MenuRequestHandler::isRequestRelevant(Requests::RequestInfo request)
 {
-	switch (request.id)
+	
+	if (request.id == std::atoi(CREATE_ROOM_CODE) || request.id == std::atoi(GET_PLAYERS_CODE) || request.id == std::atoi(GET_ROOM_CODE) || request.id == std::atoi(JOIN_ROOM_CODE) || request.id == std::atoi(LOGOUT_CODE) || request.id == std::atoi(PERSONAL_STATS_CODE) || request.id == std::atoi(HIGH_SCORE_CODE))
 	{
-	case CREATE_ROOM_CODE:
-	case GET_PLAYERS_CODE:
-	case GET_ROOM_CODE:
-	case JOIN_ROOM_CODE:
-	case LOGOUT_CODE:
-	case PERSONAL_STATS_CODE:
 		return true;
-		break;
-	default:
-		return false;
 	}
 	return false;
 }
@@ -36,30 +28,42 @@ Requests::RequestResult MenuRequestHandler::handleRequest(Requests::RequestInfo 
 {
 	Requests::RequestResult	result;
 
-	switch (request.id)
+	if (request.id == std::atoi(CREATE_ROOM_CODE))
 	{
-		case CREATE_ROOM_CODE:
-			return this->createRoom(request);
-			break;
-		case GET_PLAYERS_CODE:
-			return this->getPlayersInRoom(request);
-			break;
-		case GET_ROOM_CODE:
-			return this->getRooms(request);
-			break;
-		case JOIN_ROOM_CODE:
-			return this->joinRoom(request);
-			break;
-		case LOGOUT_CODE:
-			return this->signout(request);
-			break;
-		case PERSONAL_STATS_CODE:
-			return this->getPersonalStats(request);
-			break;
-		default:
-			return Requests::RequestResult();
+		return this->createRoom(request);
 	}
-	return Requests::RequestResult();
+	else if (request.id == std::atoi(GET_PLAYERS_CODE))
+	{
+		return this->getPlayersInRoom(request);
+
+	}
+	else if (request.id == std::atoi(GET_ROOM_CODE))
+	{
+		return this->getRooms(request);
+	}
+	else if (request.id == std::atoi(JOIN_ROOM_CODE))
+	{
+		return this->joinRoom(request);
+
+	}
+	else if (request.id == std::atoi(LOGOUT_CODE))
+	{
+		return this->signout(request);
+
+	}
+	else if (request.id == std::atoi(PERSONAL_STATS_CODE))
+	{
+		return this->getPersonalStats(request);
+
+	}
+	else if (request.id == std::atoi(HIGH_SCORE_CODE))
+	{
+		return this->getHighScore(request);
+	}
+	Responses::ErrorResponse errorResponse = { "Error, incorrect state" };
+	result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
+	result.newHandler = this->m_handlerFactory->createMenuRequestHandler(this->m_user);
+	return result;
 }
 
 /*Responsible on handling signout, just goes through all rooms and signs him out
@@ -72,11 +76,12 @@ Requests::RequestResult MenuRequestHandler::signout(Requests::RequestInfo info)
 
 	try
 	{
-		auto vec = this->m_roomManager.getRooms();
+		auto vec = this->m_roomManager->getRooms();
 		for (auto& iter : vec)
 		{
-			iter.removeUser(this->m_user);
+			iter->removeUser(this->m_user);
 		}
+		this->m_handlerFactory->getLoginManager().logout(this->m_user.getName());
 		Responses::LogoutResponse response;
 		response.status = OK_STATUS;
 
@@ -87,7 +92,7 @@ Requests::RequestResult MenuRequestHandler::signout(Requests::RequestInfo info)
 	{
 		Responses::ErrorResponse errorResponse{ "Error, Unexpected behaviour." };
 		result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
-		result.newHandler = this->m_handlerFactory->createMenuRequestHandler();
+		result.newHandler = this->m_handlerFactory->createMenuRequestHandler(this->m_user);
 	}
 	return result;
 }
@@ -102,20 +107,18 @@ Requests::RequestResult MenuRequestHandler::getRooms(Requests::RequestInfo info)
 
 	try
 	{
-		Requests::CreateRoomRequest request = JsonRequestPacketDeserializer::deserializeCreateRoomRequest(info.buffer);
-
 		Responses::GetRoomsResponse response;
-		response.rooms = this->m_roomManager.getRoomsData();
+		response.rooms = this->m_roomManager->getRoomsData();
 		response.status = OK_STATUS;
 
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = this->m_handlerFactory->createMenuRequestHandler();
+		result.newHandler = this->m_handlerFactory->createMenuRequestHandler(this->m_user);
 	}
 	catch (...)
 	{
 		Responses::ErrorResponse errorResponse{ "Error, Unexpected behaviour." };
 		result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
-		result.newHandler = this->m_handlerFactory->createMenuRequestHandler();
+		result.newHandler = this->m_handlerFactory->createMenuRequestHandler(this->m_user);
 	}
 	return result;
 }
@@ -133,20 +136,20 @@ Requests::RequestResult MenuRequestHandler::getPlayersInRoom(Requests::RequestIn
 		Requests::GetPlayersInRoomRequest request = JsonRequestPacketDeserializer::deserializeGetPlayersInRoomRequest(info.buffer);
 		
 		Responses::GetPlayersInRoomResponse response;
-		auto userVec = this->m_roomManager.getRooms()[request.roomId].getAllUsers();
+		auto userVec = this->m_roomManager->getRooms()[request.roomId]->getAllUsers();
 		for (auto& iter : userVec)
 		{
 			response.players.push_back(iter.getName());
 		}
 
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = this->m_handlerFactory->createMenuRequestHandler();
+		result.newHandler = this->m_handlerFactory->createMenuRequestHandler(this->m_user);
 	}
 	catch (...)
 	{
 		Responses::ErrorResponse errorResponse{ "Error, Unexpected behaviour." };
 		result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
-		result.newHandler = this->m_handlerFactory->createMenuRequestHandler();
+		result.newHandler = this->m_handlerFactory->createMenuRequestHandler(this->m_user);
 	}
 	return result;
 }
@@ -218,13 +221,24 @@ Requests::RequestResult MenuRequestHandler::joinRoom(Requests::RequestInfo info)
 	try
 	{
 		Requests::JoinRoomRequest request = JsonRequestPacketDeserializer::deserializeJoinRoomRequest(info.buffer);
-		this->m_roomManager.getRooms()[request.roomId].addUser(this->m_user);
+		
+		if (this->m_roomManager->getRooms()[request.roomId]->getAllUsers().size() == this->m_roomManager->getRooms()[request.roomId]->getData().maxPlayers)
+		{
+			Responses::ErrorResponse errorResponse{ "Error, Room is full." };
+			result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
+			result.newHandler = nullptr;
+		}
+		else
+		{
+			this->m_roomManager->getRooms()[request.roomId]->addUser(this->m_user);
+			//this->m_roomManager->addUserToRoom(request.roomId, this->m_user);
+			Responses::JoinRoomResponse response;
+			response.status = OK_STATUS;
 
-		Responses::CreateRoomResponse response;
-		response.status = OK_STATUS;
+			result.response = JsonResponsePacketSerializer::serializeResponse(response);
+			result.newHandler = this->m_handlerFactory->createMemberRequestHandler(this->m_user, this->m_roomManager->getRooms()[request.roomId]);
 
-		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = nullptr;
+		}
 	}
 	catch (...)
 	{
@@ -246,19 +260,19 @@ Requests::RequestResult MenuRequestHandler::createRoom(Requests::RequestInfo inf
 	try
 	{
 		Requests::CreateRoomRequest request = JsonRequestPacketDeserializer::deserializeCreateRoomRequest(info.buffer);
-		this->m_roomManager.createRoom(this->m_user, { this->m_roomManager.getCurrentId(), request.roomName, request.maxUsers, request.questionCount, request.questionTimeout});
+		this->m_roomManager->createRoom(this->m_user, { this->m_roomManager->getCurrentId(), request.roomName, request.maxUsers, request.questionCount, request.questionTimeout});
 		
 		Responses::CreateRoomResponse response;
 		response.status = OK_STATUS;
 		
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = nullptr;
+		result.newHandler = this->m_handlerFactory->createAdminRequestHandler(this->m_user, this->m_roomManager->getRooms()[this->m_roomManager->getCurrentId()-1]);
 	}
 	catch(...)
 	{
 		Responses::ErrorResponse errorResponse{ "Error, Unexpected behaviour." };
 		result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
-		result.newHandler = nullptr;
+		result.newHandler = this->m_handlerFactory->createMenuRequestHandler(this->m_user);
 	}
 	return result;
 }
