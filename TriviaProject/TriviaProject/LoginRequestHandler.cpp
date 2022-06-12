@@ -67,22 +67,28 @@ Requests::RequestResult LoginRequestHandler::login(Requests::LoginRequest loginD
 	}
 	catch (dbException ex)
 	{
+		Responses::ErrorResponse errorResponse;
 		switch (ex.status)
 		{
 		case WRONG_PASS:
 		{
-			Responses::ErrorResponse errorResponse{ "Error, wrong password or user doesn't exist." };
-			result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
-			result.newHandler = (IRequestHandler*)this->m_handlerFactory->createLoginRequestHandler();
+			 errorResponse.message = "Error, wrong password or user doesn't exist.";
+			
+			break;
+		}
+		case ALREADY_LOGGED:
+		{
+			errorResponse.message = "Error, User with this name is already logged in..";
 			break;
 		}
 		default:
 		{
-			Responses::ErrorResponse errorResponse{ "Error, Unexpected behaviour." };
-			result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
-			result.newHandler = nullptr;
+			errorResponse.message = "Error, Unexpected behaviour.";
 		}
+		
 		}
+		result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
+		result.newHandler = (IRequestHandler*)this->m_handlerFactory->createLoginRequestHandler();
 	}
 	catch (...)
 	{

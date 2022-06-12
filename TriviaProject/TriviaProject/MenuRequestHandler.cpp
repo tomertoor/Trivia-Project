@@ -81,6 +81,7 @@ Requests::RequestResult MenuRequestHandler::signout(Requests::RequestInfo info)
 		{
 			iter->removeUser(this->m_user);
 		}
+		this->m_handlerFactory->getLoginManager().logout(this->m_user.getName());
 		Responses::LogoutResponse response;
 		response.status = OK_STATUS;
 
@@ -230,7 +231,7 @@ Requests::RequestResult MenuRequestHandler::joinRoom(Requests::RequestInfo info)
 		else
 		{
 			this->m_roomManager->getRooms()[request.roomId]->addUser(this->m_user);
-
+			//this->m_roomManager->addUserToRoom(request.roomId, this->m_user);
 			Responses::JoinRoomResponse response;
 			response.status = OK_STATUS;
 

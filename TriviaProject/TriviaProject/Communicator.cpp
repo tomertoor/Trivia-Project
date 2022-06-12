@@ -203,3 +203,7 @@ std::string Communicator::bufferToString(Buffer buf)
         data += buf.buffer[i];
     return data;
 }
+
+void Communicator::checkBroadcastToRoom(SOCKET sock)
+{
+}

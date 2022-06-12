@@ -40,6 +40,7 @@ void RoomManager::deleteRoom(const int& id)
 {
 	delete this->m_rooms[id];
 	this->m_rooms.erase(id);
+	this->currentId--;
 }
 
 /*Gets a room states
@@ -96,4 +97,9 @@ std::vector<RoomData> RoomManager::getRoomsData()
 unsigned int RoomManager::getCurrentId() const
 {
 	return this->currentId;
+}
+
+void RoomManager::addUserToRoom(int roomId, const LoggedUser& name)
+{
+	this->m_rooms[roomId]->addUser(name);
 }

@@ -49,9 +49,10 @@ Requests::RequestResult RoomAdminRequestHandler::getRoomState(Requests::RequestI
 	{
 		RoomData data = this->m_room->getData();
 		std::vector<std::string> users;
-		for (auto& it : this->m_room->getAllUsers())
+		auto usersVec = this->m_room->getAllUsers();
+		for (int i = 0; i < usersVec.size(); i++)
 		{
-			users.push_back(it.getName());
+			users.push_back(usersVec[i].getName());
 		}
 		Responses::GetRoomStateResponse response = { OK_STATUS, data.isActive, users, data.timePerQuestion, data.numOfQuestionsInGame };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
@@ -61,7 +62,7 @@ Requests::RequestResult RoomAdminRequestHandler::getRoomState(Requests::RequestI
 	{
 		Responses::ErrorResponse errorResponse{ "Error, Unexpected behaviour." };
 		result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
-		result.newHandler = this->m_handlerFactory.createMemberRequestHandler(this->m_user, this->m_room);
+		result.newHandler = (IRequestHandler*) this->m_handlerFactory.createMemberRequestHandler(this->m_user, this->m_room);
 	}
 	return result;
 }
@@ -79,7 +80,7 @@ Requests::RequestResult RoomAdminRequestHandler::closeRoom(Requests::RequestInfo
 		this->m_roomManager.deleteRoom(this->m_room->getData().id);
 		Responses::CloseRoomResponse response = { OK_STATUS };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = nullptr; // to be changed
+		result.newHandler = this->m_handlerFactory.createMenuRequestHandler(this->m_user); // to be changed
 	}
 	catch (...)
 	{

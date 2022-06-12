@@ -9,6 +9,7 @@
 
 const int PORT = 42069;
 
+
 class Communicator
 {
 private:
@@ -40,4 +41,6 @@ private:
 	std::string getPartFromSocket(const SOCKET sc, const int bytesNum);
 	std::string getPartFromSocket(const SOCKET sc, const int bytesNum, const int flags);
 	std::string bufferToString(Buffer buf);
+
+	void checkBroadcastToRoom(SOCKET sock);
 };

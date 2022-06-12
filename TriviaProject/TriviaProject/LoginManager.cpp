@@ -56,6 +56,10 @@ void LoginManager::login(const std::string& username, const std::string& passwor
 {
 	if (m_database->doesPasswordMatch(username, password))
 	{
+		if (this->isAlreadyLogged(LoggedUser(username)))
+		{
+			throw dbException(ALREADY_LOGGED);
+		}
 		LoggedUser lg(username);
 		m_loggedUsers.push_back(lg);
 	}
@@ -72,10 +76,10 @@ output: none
 */
 void LoginManager::logout(const std::string& username)
 {
-	for (auto it = m_loggedUsers.begin() ; it != m_loggedUsers.end() ; it++) 
+	for (int i = 0; i < this->m_loggedUsers.size(); i++) 
 	{
-		if (it->getName() == username)
-			m_loggedUsers.erase(it);
+		if (this->m_loggedUsers[i].getName() == username)
+			m_loggedUsers.erase(this->m_loggedUsers.begin() + i); //erases the cell
 	}
 }
 
@@ -107,6 +111,22 @@ bool LoginManager::isPhoneValid(const std::string& phone)
 {
 	std::regex phoneRegex(R"(^0[\d]{1,2}[-][\d]{7,9}$)");
 	return regex_match(phone, phoneRegex);
+}
+
+/*Function to check if user is already logged, not using find just in case iterators decide to glitch the vector like in previous versions
+* Input - user: the user to check for
+* Output - if it's already logged in or not.
+*/
+bool LoginManager::isAlreadyLogged(LoggedUser user)
+{
+	for (int i = 0; i < this->m_loggedUsers.size(); i++)
+	{
+		if (this->m_loggedUsers[i].getName() == user.getName())
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 bool LoginManager::isValidDetails(Requests::SignupRequest signupReq)

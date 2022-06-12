@@ -18,6 +18,8 @@ private:
 	bool isAdressValid(const Address& adress);
 	bool isPhoneValid(const std::string& phone);
 
+	bool isAlreadyLogged(LoggedUser user);
+
 	LoginManager();
 
 	static LoginManager* instance;

@@ -36,4 +36,5 @@ public:
 
 	unsigned int getCurrentId() const;
 
+	void addUserToRoom(int roomId, const LoggedUser& name);
 };
