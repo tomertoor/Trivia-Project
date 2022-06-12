@@ -1,15 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Net.Sockets;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Text.Json;
 
 
@@ -19,23 +11,20 @@ namespace TriviaClient
     /// Interaction logic for Signup.xaml
     /// </summary>
     /// 
-    public class SignupResponse
-    {
-        public SignupResponse()
-        {
-            this.status = "";
-        }
-        public string status { get; set; }
-    }
-
-
-
+    
     public partial class Signup : Window
     {
         public static User loggedUser;
-        public Signup()
+        public Signup(Window w)
         {
             InitializeComponent();
+            this.Left = w.Left;
+            this.Top = w.Top;
+            AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
+            {
+                string data = Consts.LOG_OUT.PadLeft(2, '0') + "0000";
+                loggedUser.SendData(data, loggedUser.sock);
+            };
         }
 
         private void register_Click(object sender, RoutedEventArgs e)
@@ -44,7 +33,7 @@ namespace TriviaClient
             {
                 User user = new User();
                 user.sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                user.sock.Connect("127.0.0.1", 42069);
+                user.sock.Connect(Consts.IP, 42069);
                 user.username = this.username.Text;
                 user.password = this.password.Password;
                 user.email = this.email.Text;
@@ -73,7 +62,7 @@ namespace TriviaClient
                 {
                     loggedUser = user;
                     loggedUser.passedWhat = Consts.SIGN_UP;
-                    Menu menu = new Menu();
+                    Menu menu = new Menu(this);
                     this.Close();
                     menu.Show();
                 }

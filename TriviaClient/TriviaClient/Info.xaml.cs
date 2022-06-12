@@ -17,9 +17,11 @@ namespace TriviaClient
     /// </summary>
     public partial class Info : Window
     {
-        public Info()
+        public Info(Window w)
         {
             InitializeComponent();
+            this.Left = w.Left;
+            this.Top = w.Top;
         }
 
         private void home_Click(object sender, RoutedEventArgs e)

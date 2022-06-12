@@ -34,9 +34,10 @@
                            HorizontalAlignment="Center"/>
             </StackPanel>
             <Button Name="menu" Content="Return to menu" Height="45" Margin="10,34,483,146" Click="menu_Click"/>
-            <TextBlock Name="user1" Text="First: " TextWrapping="Wrap" FontSize="17" Margin="541,207,69,163" Foreground="Black" Grid.RowSpan="2"/>
+            <TextBlock Name="message" Text="" TextWrapping="Wrap" FontSize="17" Margin="208,131,208,22" Foreground="Black"/>
+            <TextBlock Name="user1" Text="First: " TextWrapping="Wrap" FontSize="17" Margin="68,207,542,163" Foreground="Black" Grid.RowSpan="2"/>
             <TextBlock Name="user2" Text="Second: " TextWrapping="Wrap" FontSize="17" Margin="324,207,324,163" Foreground="Black" Grid.RowSpan="2"/>
-            <TextBlock Name="user3" Text="Third: " TextWrapping="Wrap" FontSize="17" Margin="69,207,578,163" Foreground="Black" Grid.RowSpan="2"/>
+            <TextBlock Name="user3" Text="Third: " TextWrapping="Wrap" FontSize="17" Margin="579,207,68,163" Foreground="Black" Grid.RowSpan="2"/>
         </Grid>
 
     </Grid>

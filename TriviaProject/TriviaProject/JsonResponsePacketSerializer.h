@@ -9,28 +9,33 @@ using json = nlohmann::json;
 
 #define MAX_FILLING_LENGTH 4
 
-#define SIGNUP_CODE 1
-#define LOGIN_CODE 5
-#define ERROR_CODE 3
-#define LOGOUT_CODE 2
-#define CREATE_ROOM_CODE 4
-#define JOIN_ROOM_CODE 6
-#define GET_ROOM_CODE 7
-#define PERSONAL_STATS_CODE 8
-#define GET_PLAYERS_CODE 9
-#define HIGH_SCORE_CODE 'A'
-#define STATISTICS_CODE 'B'
+#define SIGNUP_CODE "01"
+#define LOGIN_CODE "05"
+#define ERROR_CODE "03"
+#define LOGOUT_CODE "02"
+#define CREATE_ROOM_CODE "04"
+#define JOIN_ROOM_CODE "06"
+#define GET_ROOM_CODE "07"
+#define PERSONAL_STATS_CODE "08"
+#define GET_PLAYERS_CODE "09"
+#define HIGH_SCORE_CODE "10"
+#define CLOSE_ROOM_CODE "11"
+#define START_GAME_CODE "12"
+#define ROOM_STATE_CODE "13"
+#define LEAVE_ROOM_CODE "14"
 
-#define AVERAGE_ANSWER 0
-#define CORRECT_ANSWER 1
-#define TOTAL_ANSWERS 2
-#define GAME_COUNT 3
+//Positions for json
+#define AVERAGE_ANSWER 3
+#define CORRECT_ANSWER 0
+#define TOTAL_ANSWERS 1
+#define GAME_COUNT 2
+
 class JsonResponsePacketSerializer
 {
 
 private:
-	static Buffer serializeStatusResponse(const unsigned int& code, const unsigned int& status);
-	static Buffer serializeJsonResponse(const unsigned int& code, const nlohmann::json& json);
+	static Buffer serializeStatusResponse(const char* code, const unsigned int& status);
+	static Buffer serializeJsonResponse(const char* code, const nlohmann::json& json);
 	static Buffer stringToBuffer(std::string str);
 	static JsonResponsePacketSerializer* instance;
 
@@ -47,9 +52,13 @@ public:
 	static Buffer serializeResponse(Responses::GetPlayersInRoomResponse response);
 	static Buffer serializeResponse(Responses::JoinRoomResponse response);
 	static Buffer serializeResponse(Responses::CreateRoomResponse response);
-
 	static Buffer serializeResponse(Responses::GetHighScoreResponse response);
 	static Buffer serializeResponse(Responses::GetPersonalStatsResponse response);
+	static Buffer serializeResponse(Responses::CloseRoomResponse response);
+	static Buffer serializeResponse(Responses::StartGameResponse response);
+	static Buffer serializeResponse(Responses::GetRoomStateResponse response);
+	static Buffer serializeResponse(Responses::LeaveRoomResponse response);
+
 
 
 };
