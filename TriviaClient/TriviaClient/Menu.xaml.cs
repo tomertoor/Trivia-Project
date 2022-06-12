@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
 
 namespace TriviaClient
@@ -9,9 +10,17 @@ namespace TriviaClient
     public partial class Menu : Window
     {
         public static User loggedUser;
-        public Menu()
+        public Menu(Window w)
         {
             InitializeComponent();
+            this.Left = w.Left;
+            this.Top = w.Top;
+            AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
+            {
+                string data = Consts.LOG_OUT.PadLeft(2, '0') + "0000";
+                loggedUser.SendData(data, loggedUser.sock);
+            };
+
             if (Login.loggedUser.passedWhat == Consts.LOG_IN)
                 loggedUser = Login.loggedUser;
             else if (Signup.loggedUser.passedWhat == Consts.SIGN_UP)
@@ -47,21 +56,21 @@ namespace TriviaClient
 
         private void createRoom_Click(object sender, RoutedEventArgs e)
         {
-            CreateRoom create = new CreateRoom();
+            CreateRoom create = new CreateRoom(this);
             this.Close();
             create.Show();
         }
 
         private void joinRoom_Click(object sender, RoutedEventArgs e)
         {
-            JoinRoom join = new JoinRoom();
+            JoinRoom join = new JoinRoom(this);
             this.Close();
             join.Show();
         }
 
         private void statistics_Click(object sender, RoutedEventArgs e)
         {
-            Stats stats = new Stats();
+            Stats stats = new Stats(this);
             this.Close();
             stats.Show();
         }

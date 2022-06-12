@@ -17,10 +17,17 @@ namespace TriviaClient
         public static User loggedUser;
         private static Thread thread;
         private static bool refresh;
-        public JoinRoom()
+        public JoinRoom(Window w)
         {
             InitializeComponent();
+            this.Left = w.Left;
+            this.Top = w.Top;
             loggedUser = Menu.loggedUser;
+            AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
+            {
+                string data = Consts.LOG_OUT.PadLeft(2, '0') + "0000";
+                loggedUser.SendData(data, loggedUser.sock);
+            };
             JoinRoom.rooms = new List<string>();
             thread = new Thread(RefreshRooms);
             refresh = true;
@@ -141,7 +148,7 @@ namespace TriviaClient
                         {
                             loggedUser.passedWhat = Consts.JOIN_ROOM;
                             Room.name = btn.Name;
-                            Room room = new Room();
+                            Room room = new Room(this);
                             this.Close();
                             room.Show();
                         }
@@ -182,7 +189,7 @@ namespace TriviaClient
             }
             catch (Exception)
             {
-                Menu menu = new Menu();
+                Menu menu = new Menu(this);
                 this.Close();
                 menu.Show();
             }

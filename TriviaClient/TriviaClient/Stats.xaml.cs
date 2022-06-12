@@ -9,9 +9,11 @@ namespace TriviaClient
     public partial class Stats : Window
     {
         public static User loggedUser;
-        public Stats()
+        public Stats(Window w)
         {
             InitializeComponent();
+            this.Left = w.Left;
+            this.Top = w.Top;
             loggedUser = Menu.loggedUser;
         }
 
@@ -23,7 +25,7 @@ namespace TriviaClient
 
         private void highScores_Click(object sender, RoutedEventArgs e)
         {
-            HighScores scores = new HighScores();
+            HighScores scores = new HighScores(this);
             this.Close();
             scores.Show();
         }
@@ -31,7 +33,7 @@ namespace TriviaClient
         private void menu_Click(object sender, RoutedEventArgs e)
         {
             loggedUser.passedWhat = Consts.STATS;
-            Menu menu = new Menu();
+            Menu menu = new Menu(this);
             this.Close();
             menu.Show();
         }

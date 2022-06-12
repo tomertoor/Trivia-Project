@@ -14,6 +14,11 @@ namespace TriviaClient
         public UserStats()
         {
             InitializeComponent();
+            AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
+            {
+                string data = Consts.LOG_OUT.PadLeft(2, '0') + "0000";
+                loggedUser.SendData(data, loggedUser.sock);
+            };
             loggedUser = Stats.loggedUser;
             message.Text = loggedUser.username + " statistics";
             //show the user stats
@@ -64,7 +69,7 @@ namespace TriviaClient
         private void menu_Click(object sender, RoutedEventArgs e)
         {
             loggedUser.passedWhat = Consts.PERSONAL_STATS;
-            Menu menu = new Menu();
+            Menu menu = new Menu(this);
             this.Close();
             menu.Show();
         }

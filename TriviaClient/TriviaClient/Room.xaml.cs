@@ -20,9 +20,16 @@ namespace TriviaClient
         private static bool refresh;
         public static int quesCount;
         public static int qTimeout;
-        public Room()
+        public Room(Window w)
         {
             InitializeComponent();
+            this.Left = w.Left;
+            this.Top = w.Top;
+            AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
+            {
+                string data = Consts.LOG_OUT.PadLeft(2, '0') + "0000";
+                JoinRoom.loggedUser.SendData(data, loggedUser.sock);
+            };
             users = new List<string>();
             if (JoinRoom.loggedUser.passedWhat == Consts.JOIN_ROOM)
             {
@@ -34,6 +41,8 @@ namespace TriviaClient
             {
                 loggedUser = CreateRoom.loggedUser;
                 mod = Consts.ADMIN;
+                this.@return.Content = "Close Room";
+
             }
             this.level.Text += mod;
             refresh = true;
@@ -62,12 +71,15 @@ namespace TriviaClient
                     ServerMsg msg = loggedUser.GetData();
                     GetRoomStateResponse res = new GetRoomStateResponse();
                     GetClosedroomResponse close = new GetClosedroomResponse();
+         
                     switch (msg.code)
                     {
                         case Consts.GET_ROOM_STATE:
                             res = JsonSerializer.Deserialize<GetRoomStateResponse>(msg.data);
                             break;
                         case Consts.LEAVE_ROOM:
+                            msg.data = msg.data.Remove(0, 1);
+                            msg.data = msg.data.Remove(msg.data.Length - 1, 1);
                             close = JsonSerializer.Deserialize<GetClosedroomResponse>(msg.data);
                             break;
                         case Consts.ERROR:
@@ -92,19 +104,22 @@ namespace TriviaClient
                             }
                             if(res.hasGameBegun)
                             {
-                                Game game = new Game();
+                                Game game = new Game(this);
                                 this.Close();
                                 game.Show();
                             }
                         }));
                     }
-                    else if (close.status == Consts.OK_STATUS)
+                    else if (int.Parse(close.status) == Consts.OK_STATUS)
                     {
-                        refresh = false;
-                        loggedUser.passedWhat = mod;
-                        Menu menu = new Menu();
-                        this.Close();
-                        menu.Show();
+                            this.Dispatcher.Invoke((Action)delegate {
+                            refresh = false;
+                            loggedUser.passedWhat = mod;
+                            Menu menu = new Menu(this);
+                            this.Close();
+                            menu.Show();
+                        });
+                        
                     }
                     else
                     {
@@ -165,7 +180,7 @@ namespace TriviaClient
                 loggedUser.SendData(data, loggedUser.sock);
                 ServerMsg msg = loggedUser.GetData();
             }
-            Menu menu = new Menu();
+            Menu menu = new Menu(this);
             this.Close();
             menu.Show();
         }
@@ -189,10 +204,10 @@ namespace TriviaClient
 
         class GetClosedroomResponse
         {
-            public int status { get; set; }
+            public string status { get; set; }
             public GetClosedroomResponse()
             {
-                status = 0;
+                status = "0";
             }
         }
     }

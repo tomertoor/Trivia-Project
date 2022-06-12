@@ -12,10 +12,17 @@ namespace TriviaClient
     public partial class HighScores : Window
     {
         public static User loggedUser;
-        public HighScores()
+        public HighScores(Window w)
         {
             InitializeComponent();
+            this.Left = w.Left;
+            this.Top = w.Top;
             loggedUser = Stats.loggedUser;
+            AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
+            {
+                string data = Consts.LOG_OUT.PadLeft(2, '0') + "0000";
+                loggedUser.SendData(data, loggedUser.sock);
+            };
             //request the high scores
             try
             {
@@ -73,7 +80,7 @@ namespace TriviaClient
         private void menu_Click(object sender, RoutedEventArgs e)
         {
             loggedUser.passedWhat = Consts.HIGH_SCORES;
-            Menu menu = new Menu();
+            Menu menu = new Menu(this);
             this.Close();
             menu.Show();
         }

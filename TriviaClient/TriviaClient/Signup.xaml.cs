@@ -15,9 +15,16 @@ namespace TriviaClient
     public partial class Signup : Window
     {
         public static User loggedUser;
-        public Signup()
+        public Signup(Window w)
         {
             InitializeComponent();
+            this.Left = w.Left;
+            this.Top = w.Top;
+            AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
+            {
+                string data = Consts.LOG_OUT.PadLeft(2, '0') + "0000";
+                loggedUser.SendData(data, loggedUser.sock);
+            };
         }
 
         private void register_Click(object sender, RoutedEventArgs e)
@@ -55,7 +62,7 @@ namespace TriviaClient
                 {
                     loggedUser = user;
                     loggedUser.passedWhat = Consts.SIGN_UP;
-                    Menu menu = new Menu();
+                    Menu menu = new Menu(this);
                     this.Close();
                     menu.Show();
                 }

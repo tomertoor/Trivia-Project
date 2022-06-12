@@ -19,9 +19,16 @@ namespace TriviaClient
         private static int time;
         private static int quesCount;
         private static GetQuestionRes currectQuestion;
-        public Game()
+        public Game(Window w)
         {
             InitializeComponent();
+            this.Left = w.Left;
+            this.Top = w.Top;
+            AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
+            {
+                string data = Consts.LOG_OUT.PadLeft(2, '0') + "0000";
+                loggedUser.SendData(data, loggedUser.sock);
+            };
             loggedUser = Room.loggedUser;
             timeForQ = Room.qTimeout;
             quesCount = Room.quesCount;

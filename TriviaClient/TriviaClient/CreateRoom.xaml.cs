@@ -11,10 +11,17 @@ namespace TriviaClient
     public partial class CreateRoom : Window
     {
         public static User loggedUser;
-        public CreateRoom()
+        public CreateRoom(Window w)
         {
             InitializeComponent();
+            this.Left = w.Left;
+            this.Top = w.Top;
             loggedUser = Menu.loggedUser;
+            AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
+            {
+                string data = Consts.LOG_OUT.PadLeft(2, '0') + "0000";
+                loggedUser.SendData(data, loggedUser.sock);
+            };
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -25,7 +32,7 @@ namespace TriviaClient
 
         private void menu_Click(object sender, RoutedEventArgs e)
         {
-            Menu menu = new Menu();
+            Menu menu = new Menu(this);
             this.Close();
             menu.Show();
         }
@@ -64,7 +71,7 @@ namespace TriviaClient
                 if(res.status.Equals("1"))
                 {
                     loggedUser.passedWhat = Consts.CREATE_ROOM;
-                    Room room = new Room();
+                    Room room = new Room(this);
                     this.Close();
                     room.Show();
                 }
