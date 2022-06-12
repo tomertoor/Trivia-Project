@@ -1,14 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace TriviaClient
 {
@@ -18,13 +10,29 @@ namespace TriviaClient
     public partial class Menu : Window
     {
         public static User loggedUser;
-        public Menu()
+        public Menu(Window w)
         {
             InitializeComponent();
-            if(Login.loggedUser.passedWhat == Consts.LOG_IN)
+            this.Left = w.Left;
+            this.Top = w.Top;
+            AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
+            {
+                string data = Consts.LOG_OUT.PadLeft(2, '0') + "0000";
+                loggedUser.SendData(data, loggedUser.sock);
+            };
+
+            if (Login.loggedUser.passedWhat == Consts.LOG_IN)
                 loggedUser = Login.loggedUser;
             else if (Signup.loggedUser.passedWhat == Consts.SIGN_UP)
                 loggedUser = Signup.loggedUser;
+            else if (UserStats.loggedUser.passedWhat == Consts.PERSONAL_STATS)
+                loggedUser = UserStats.loggedUser;
+            else if (HighScores.loggedUser.passedWhat == Consts.HIGH_SCORES)
+                loggedUser = HighScores.loggedUser;
+            else if (Stats.loggedUser.passedWhat == Consts.STATS)
+                loggedUser = Stats.loggedUser;
+            else if (Room.loggedUser.passedWhat == Consts.ADMIN || Room.loggedUser.passedWhat == Consts.MEMBER)
+                loggedUser = Room.loggedUser;
             else
             {
                 loggedUser.username = "none";
@@ -41,24 +49,28 @@ namespace TriviaClient
 
         private void exit_Click(object sender, RoutedEventArgs e)
         {
+            loggedUser.Logout();
+            ServerMsg msg = loggedUser.GetData();
             this.Close();
         }
 
         private void createRoom_Click(object sender, RoutedEventArgs e)
         {
-            CreateRoom create = new CreateRoom();
+            CreateRoom create = new CreateRoom(this);
             this.Close();
             create.Show();
         }
 
         private void joinRoom_Click(object sender, RoutedEventArgs e)
         {
-            
+            JoinRoom join = new JoinRoom(this);
+            this.Close();
+            join.Show();
         }
 
         private void statistics_Click(object sender, RoutedEventArgs e)
         {
-            Stats stats = new Stats();
+            Stats stats = new Stats(this);
             this.Close();
             stats.Show();
         }

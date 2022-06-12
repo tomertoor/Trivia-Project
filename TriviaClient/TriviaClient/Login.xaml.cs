@@ -1,14 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Net.Sockets;
 using System.Text.Json;
 
@@ -19,31 +11,19 @@ namespace TriviaClient
     /// Interaction logic for Login.xaml
     /// </summary>
     /// 
-
-    public class LoginResponse
-    {
-        public LoginResponse()
-        {
-            this.status = "";
-        }
-        public string status { get; set; }
-    }
-
-
-    public class ErrorResponse
-    {
-        public ErrorResponse()
-        {
-            this.message = "";
-        }
-        public string message { get; set; }
-    }
     public partial class Login : Window
     {
         public static User loggedUser;
-        public Login()
+        public Login(Window w)
         {
             InitializeComponent();
+            this.Left = w.Left;
+            this.Top = w.Top;
+            AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
+            {
+                string data = Consts.LOG_OUT.PadLeft(2, '0') + "0000";
+                loggedUser.SendData(data, loggedUser.sock);
+            };
         }
 
         private void home_Click(object sender, RoutedEventArgs e)
@@ -58,7 +38,7 @@ namespace TriviaClient
             {
                 User user = new User();
                 user.sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                user.sock.Connect("127.0.0.1", 42069);
+                user.sock.Connect(Consts.IP, 42069);
                 user.username = this.username.Text;
                 user.password = this.password.Password;
                 user.Login();
@@ -88,7 +68,7 @@ namespace TriviaClient
                 {
                     loggedUser = user;
                     loggedUser.passedWhat = Consts.LOG_IN;
-                    Menu menu = new Menu();
+                    Menu menu = new Menu(this);
                     this.Close();
                     menu.Show();
                 }

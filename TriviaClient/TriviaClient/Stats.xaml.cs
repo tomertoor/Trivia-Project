@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+﻿using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace TriviaClient
 {
@@ -18,9 +9,11 @@ namespace TriviaClient
     public partial class Stats : Window
     {
         public static User loggedUser;
-        public Stats()
+        public Stats(Window w)
         {
             InitializeComponent();
+            this.Left = w.Left;
+            this.Top = w.Top;
             loggedUser = Menu.loggedUser;
         }
 
@@ -32,14 +25,15 @@ namespace TriviaClient
 
         private void highScores_Click(object sender, RoutedEventArgs e)
         {
-            HighScores scores = new HighScores();
+            HighScores scores = new HighScores(this);
             this.Close();
             scores.Show();
         }
 
         private void menu_Click(object sender, RoutedEventArgs e)
         {
-            Menu menu = new Menu();
+            loggedUser.passedWhat = Consts.STATS;
+            Menu menu = new Menu(this);
             this.Close();
             menu.Show();
         }
