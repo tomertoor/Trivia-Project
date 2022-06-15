@@ -18,7 +18,7 @@ public:
 	Game(const std::vector<Question> questions, int gameId);
 	~Game() = default;
 
-	GameData getPlayerData(const LoggedUser& user);
+	std::map<LoggedUser, GameData> getPlayerData();
 
 	Question getQuestionForUser(const LoggedUser& loggedUser);
 	void addUser(const LoggedUser& loggedUser);
