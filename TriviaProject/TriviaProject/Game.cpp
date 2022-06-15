@@ -8,9 +8,16 @@ Game::Game(const std::vector<Question> questions, int gameId)
 	this->m_gameId = gameId;
 }
 
+//Returns the player data
+GameData Game::getPlayerData(const LoggedUser& user)
+{
+	return this->m_players.find(user)->second;
+}
+
 //return the current question for a player
 Question Game::getQuestionForUser(const LoggedUser& loggedUser)
 {
+	this->startTime = std::clock();
 	return this->m_players[loggedUser].currentQuetion;
 }
 
@@ -22,15 +29,17 @@ void Game::addUser(const LoggedUser& loggedUser)
 }
 
 //this function adds to the user game data the data given
-void Game::submitAnswer(const LoggedUser& loggedUser, int answerId, float avg)
+void Game::submitAnswer(const LoggedUser& loggedUser, int answerId)
 {
+	double duration = (std::clock() - this->startTime) / (double)CLOCKS_PER_SEC;
 	if (this->m_players[loggedUser].currentQuetion.getCorrectAnswerId() == answerId)
 		this->m_players[loggedUser].correctAnswerCount++;
 	else
 		this->m_players[loggedUser].wrongAnswerCount++;
-	this->m_players[loggedUser].averageAnswerTime++;
+	this->m_players[loggedUser].averageAnswerTime = ((this->m_players[loggedUser].currentQuestionIndex) * this->m_players[loggedUser].averageAnswerTime + duration) / this->m_players[loggedUser].currentQuestionIndex + 1;
 	this->m_players[loggedUser].currentQuestionIndex++;
 	this->m_players[loggedUser].currentQuetion = this->m_questions[this->m_players[loggedUser].currentQuestionIndex];
+
 
 }
 
