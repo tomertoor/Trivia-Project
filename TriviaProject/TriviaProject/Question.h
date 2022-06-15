@@ -3,22 +3,17 @@
 #include <iostream>
 #include <vector>
 
-struct Question
+class Question
 {
-	std::string content;
-	std::string correctAnswer;
-	std::vector<std::string> incorrectAnswers;
+private:
+	std::string m_question;
+	std::vector<std::string> m_possibleAnswers;
+	int m_correctAnswerId;
+public:
+	Question(const std::string& question, const std::vector<std::string>& possibleAnswers, int correctAnswerId);
+	~Question() = default;
 
-	Question operator=(const bsoncxx::v_noabi::document::view& other)
-	{
-		this->content = other["content"].get_utf8().value.to_string();
-		this->correctAnswer = other["correctAnswer"].get_utf8().value.to_string();
-		auto incorrectAnswers = other["incorrectAnswers"].get_array().value;
-		for (auto& iter : incorrectAnswers)
-		{
-			auto test = iter.get_utf8();
-			this->incorrectAnswers.push_back(iter.get_utf8().value.to_string());
-		}
-		return *this;
-	}
+	std::string getQuestion();
+	std::vector<std::string> getPossibleAnswers();
+	int getCorrectAnswerId();
 };

@@ -43,13 +43,18 @@ void MongoDataBase::testQuestions()
 	nlohmann::json json = nlohmann::json::parse(res.text);
 	for (auto& iter : json["results"])
 	{
-		Question question;
-		question.content = iter["question"];
-		question.correctAnswer = iter["correct_answer"];
+		srand(time(NULL));
+		int correctIndex = rand() % 4, i = 0;
+		std::vector<std::string> answers;
 		for (auto& it : iter["incorrect_answers"])
 		{
-			question.incorrectAnswers.push_back(it);
+			if (correctIndex == i)
+				answers.push_back(iter["correct_answer"]);
+			else
+				answers.push_back(it);
+			i++;
 		}
+		Question question(iter["question"], answers, correctIndex);
 		this->addQuestion(question);
 	}
 }
@@ -220,21 +225,21 @@ std::vector<std::string> MongoDataBase::getHighestScores()
 * Input - the question to add
 * Output - none.
 */
-void MongoDataBase::addQuestion(const Question& question)
+void MongoDataBase::addQuestion(Question& question)
 {
 	mongocxx::collection coll = db[QUESTION_COLLECTION];
 
 	bsoncxx::builder::stream::array bsonArr;
 
-	for (auto& iter : question.incorrectAnswers)
+	for (auto& iter : question.getPossibleAnswers())
 	{
 		bsonArr << iter;
 	}
 	auto builder = bsoncxx::builder::stream::document{};
 	bsoncxx::document::value newQuestion = builder
-		<< "content" << question.content
-		<< "correctAnswer" << question.correctAnswer
-		<< "incorrectAnswers" << bsonArr 
+		<< "content" << question.getQuestion()
+		<< "correctAnswerId" << question.getCorrectAnswerId()
+		<< "possibleAnswers" << bsonArr 
 		<< bsoncxx::builder::stream::finalize;
 	coll.insert_one(newQuestion.view());
 }
@@ -255,8 +260,12 @@ std::list<Question> MongoDataBase::getQuestions(int amount)
 		{
 			break;
 		}
-		Question question;
-		question.operator=(doc);
+		std::string content = doc["content"].get_decimal128().value.to_string();
+		int correctAnswerId = doc["correctAnswerId"].get_int32();
+		std::vector<std::string> answers;
+		for (auto& ans : doc["possibleAnswers"].get_array().value)
+			answers.push_back(ans.get_decimal128().value.to_string());
+		Question question(content, answers, correctAnswerId);
 		questions.push_back(question);
 		count++;
 	}

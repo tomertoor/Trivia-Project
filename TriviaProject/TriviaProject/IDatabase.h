@@ -18,4 +18,6 @@ public:
 	virtual int getNumOfPlayerGames(std::string name) = 0;
 
 	virtual std::vector<std::string> getHighestScores() = 0;
+	virtual void addQuestion(Question& question) = 0;
+	virtual std::list<Question> getQuestions(int amount) = 0;
 };
