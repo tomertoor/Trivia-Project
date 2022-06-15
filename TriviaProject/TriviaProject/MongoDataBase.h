@@ -77,11 +77,6 @@ public:
 	int getNumOfPlayerGames(std::string name) override;
 
 	std::vector<std::string> getHighestScores() override;
-
-	
-
-	void addQuestion(const Question& question);
-	std::list<Question> getQuestions(int amount);
-
-
+	void addQuestion(Question& question) override;
+	std::list<Question> getQuestions(int amount) override;
 };
