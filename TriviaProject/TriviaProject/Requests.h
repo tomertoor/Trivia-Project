@@ -53,4 +53,8 @@ namespace Requests
 		unsigned int questionCount;
 		unsigned int questionTimeout;
 	};
+	struct SubmitAnswerRequest
+	{
+		unsigned int answerId;
+	};
 };

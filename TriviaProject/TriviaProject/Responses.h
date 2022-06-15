@@ -72,4 +72,5 @@ namespace Responses
 	{
 		unsigned int status;
 	};
+	
 }
