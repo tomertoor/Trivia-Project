@@ -113,9 +113,64 @@ Buffer JsonResponsePacketSerializer::serializeResponse(Responses::GetRoomsRespon
     return serializeJsonResponse(GET_ROOM_CODE, json);
 }
 
+/*Serializes LeaveRoom response, status type serialize
+* Input - the response to serialize
+* Output - the buffer
+*/
 Buffer JsonResponsePacketSerializer::serializeResponse(Responses::LeaveRoomResponse response)
 {
     return serializeStatusResponse(LEAVE_ROOM_CODE, response.status);
+}
+
+/*Serializes GetGameResults response, json type serialize
+* Input - the response to serialize
+* Output - the buffer
+*/
+Buffer JsonResponsePacketSerializer::serializeResponse(Responses::GetGameResultsResponse response)
+{
+    nlohmann::json json;
+    json["status"] = response.status;
+    for (int i = 0; i < response.results.size(); i++)
+    {
+        json["results"][i]["username"] = response.results[i].username;
+        json["results"][i]["correctAnswerCount"] = response.results[i].correctAnswerCount;
+        json["results"][i]["wrongAnswerCount"] = response.results[i].wrongAnswerCount;
+        json["results"][i]["averageAnswerTime"] = response.results[i].averageAnswerTime;
+
+    }
+    return serializeJsonResponse(GET_RESULTS_CODE, json);
+}
+
+/*Serializes submitAnswer response, status type serialize
+* Input - the response to serialize
+* Output - the buffer
+*/
+Buffer JsonResponsePacketSerializer::serializeResponse(Responses::SubmitAnswerResponse response)
+{
+    return serializeStatusResponse(SUBMIT_ANSWER_CODE, response.status);
+}
+
+/*Serializes getQuestion response, json type serialize
+* Input - the response to serialize
+* Output - the buffer
+*/
+Buffer JsonResponsePacketSerializer::serializeResponse(Responses::GetQuestionResponse response)
+{
+    nlohmann::json json;
+    json["status"] = response.status;
+    
+    json["question"] = response.question;
+    json["answers"] = response.answers;
+    return serializeJsonResponse(GET_QUESTION_CODE, json);
+}
+
+/*Serializes leavegame response, status type serialize
+* Input - the response to serialize
+* Output - the buffer
+*/
+Buffer JsonResponsePacketSerializer::serializeResponse(Responses::LeaveGameResponse response)
+{
+    return serializeStatusResponse(LEAVE_GAME_CODE, response.status);
 }
 
 /*Serializes GetPlayersInRoom response, json type serialize
@@ -129,7 +184,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(Responses::GetPlayersInRo
     return serializeJsonResponse(GET_PLAYERS_CODE, json);
 }
 
-/*Serializes JoinRoom response, json type serialize
+/*Serializes JoinRoom response, status type serialize
 * Input - the response to serialize
 * Output - the buffer
 */
