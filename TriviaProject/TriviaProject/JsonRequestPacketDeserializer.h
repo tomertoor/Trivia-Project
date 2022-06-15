@@ -26,5 +26,7 @@ public:
 	static Requests::GetPlayersInRoomRequest deserializeGetPlayersInRoomRequest(Buffer buffer);
 	static Requests::JoinRoomRequest deserializeJoinRoomRequest(Buffer buffer);
 	static Requests::CreateRoomRequest deserializeCreateRoomRequest(Buffer buffer);
+	static Requests::SubmitAnswerRequest deserializeSubmitAnswerRequest(Buffer buffer);
+
 
 };
