@@ -17,7 +17,7 @@ public:
 
 	Question getQuestionForUser(const LoggedUser& loggedUser);
 	void addUser(const LoggedUser& loggedUser);
-	void submitAnswer(const LoggedUser& loggedUser, int answerId);
+	void submitAnswer(const LoggedUser& loggedUser, int answerId, float avg);
 	void removePlayer(const LoggedUser& loggedUser);
 	int getId();
 };
