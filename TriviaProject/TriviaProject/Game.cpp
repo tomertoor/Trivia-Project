@@ -9,9 +9,9 @@ Game::Game(const std::vector<Question> questions, int gameId)
 }
 
 //Returns the player data
-GameData Game::getPlayerData(const LoggedUser& user)
+std::map<LoggedUser, GameData> Game::getPlayerData()
 {
-	return this->m_players.find(user)->second;
+	return std::map<LoggedUser, GameData>(this->m_players);
 }
 
 //return the current question for a player
