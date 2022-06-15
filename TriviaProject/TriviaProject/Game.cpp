@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "MongoDataBase.h"
 
 //constructor
 Game::Game(const std::vector<Question> questions, int gameId)
