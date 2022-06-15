@@ -9,7 +9,7 @@ Game::Game(const std::vector<Question> questions, int gameId)
 }
 
 //Returns the player data
-std::map<LoggedUser, GameData> Game::getPlayerData()
+std::map<LoggedUser, GameData> Game::getPlayers()
 {
 	return std::map<LoggedUser, GameData>(this->m_players);
 }
