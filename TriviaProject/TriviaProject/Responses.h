@@ -1,8 +1,8 @@
 #pragma once
 
-#include <iostream>
 #include <vector>
 #include "RoomData.h"
+#include "PlayerResults.h"
 
 #define OK_STATUS 1
 
@@ -71,5 +71,25 @@ namespace Responses
 	struct LeaveRoomResponse
 	{
 		unsigned int status;
+	};
+	struct LeaveGameResponse
+	{
+		unsigned int status;
+	};
+	struct GetQuestionResponse
+	{
+		unsigned int status;
+		std::string question;
+		std::map<unsigned int, std::string> answers;
+	};
+	struct SubmitAnswerResponse
+	{
+		unsigned int status;
+		unsigned int correctAnswerId;
+	};
+	struct GetGameResultsResponse
+	{
+		unsigned int status;
+		std::vector<PlayerResults> results;
 	};
 }

@@ -23,12 +23,17 @@ using json = nlohmann::json;
 #define START_GAME_CODE "12"
 #define ROOM_STATE_CODE "13"
 #define LEAVE_ROOM_CODE "14"
+#define LEAVE_GAME_CODE "15"
+#define GET_QUESTION_CODE "16"
+#define SUBMIT_ANSWER_CODE "17"
+#define GET_RESULTS_CODE "18"
 
-//Positions for json
+//Positions for json in room
 #define AVERAGE_ANSWER 3
 #define CORRECT_ANSWER 0
 #define TOTAL_ANSWERS 1
 #define GAME_COUNT 2
+
 
 class JsonResponsePacketSerializer
 {
@@ -58,7 +63,10 @@ public:
 	static Buffer serializeResponse(Responses::StartGameResponse response);
 	static Buffer serializeResponse(Responses::GetRoomStateResponse response);
 	static Buffer serializeResponse(Responses::LeaveRoomResponse response);
-
+	static Buffer serializeResponse(Responses::GetGameResultsResponse response);
+	static Buffer serializeResponse(Responses::SubmitAnswerResponse response);
+	static Buffer serializeResponse(Responses::GetQuestionResponse response);
+	static Buffer serializeResponse(Responses::LeaveGameResponse response);
 
 
 };
