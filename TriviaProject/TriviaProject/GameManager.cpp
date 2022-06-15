@@ -2,11 +2,13 @@
 
 GameManager* GameManager::instance = nullptr;
 
+//constructor
 GameManager::GameManager() :
 	m_database(MongoDataBase::getInstance()), gameCounter(1)
 {
 }
 
+//get instance for singleton
 GameManager* GameManager::getInstance()
 {
 	if (instance == nullptr)
@@ -14,6 +16,7 @@ GameManager* GameManager::getInstance()
 	return instance;
 }
 
+//this function creates a new game by the room data and adds it to the vector of games
 Game GameManager::createGame(Room& room)
 {
 	std::vector<Question> questions;
@@ -23,14 +26,16 @@ Game GameManager::createGame(Room& room)
 	for (int i = 0; i < room.getAllUsers().size(); i++)
 		game.addUser(room.getAllUsers()[i]);
 	this->m_games.push_back(game);
+	gameCounter++;
 	return game;
 }
 
+//this function removes a game from the vector of games
 void GameManager::deleteGame(int gameId)
 {
-	for (auto& game : this->m_games)
+	for (auto it = this->m_games.begin() ; it != this->m_games.end() ; it++)
 	{
-		if (game.getId() == gameId)
-			this->m_games.erase(game);
+		if (it->getId() == gameId)
+			this->m_games.erase(it);
 	}
 }
