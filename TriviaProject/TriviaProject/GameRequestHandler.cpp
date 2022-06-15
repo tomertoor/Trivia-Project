@@ -57,18 +57,9 @@ Requests::RequestResult GameRequestHandler::getGameResults(Requests::RequestInfo
 
 	try
 	{
-		Requests::SubmitAnswerRequest request = JsonRequestPacketDeserializer::deserializeSubmitAnswerRequest(info.buffer);
-		Question question = this->m_game.(this->m_user);
+		std::map<LoggedUser, GameData> results = this->m_game.getPlayerData();
 
-		auto answersVec = question.getPossibleAnswers();
-		std::map<unsigned int, std::string> answersMap;
-
-		for (int i = 0; i < answersVec.size(); i++)
-		{
-			answersMap.insert(std::make_pair(i, answersVec[i]));
-		}
-
-		Responses::GetQuestionResponse response = { OK_STATUS, question.getQuestion(), answersMap };
+		Responses::GetGameResultsResponse response = { OK_STATUS,p };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
 		result.newHandler = nullptr;
 	}
