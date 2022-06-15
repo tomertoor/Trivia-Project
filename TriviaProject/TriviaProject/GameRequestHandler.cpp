@@ -57,9 +57,13 @@ Requests::RequestResult GameRequestHandler::getGameResults(Requests::RequestInfo
 
 	try
 	{
-		std::map<LoggedUser, GameData> results = this->m_game.getPlayerData();
-
-		Responses::GetGameResultsResponse response = { OK_STATUS,p };
+		std::map<LoggedUser, GameData> resultsMap = this->m_game.getPlayers();
+		std::vector<PlayerResults> resultsVec;
+		for (auto& it : resultsMap)
+		{
+			resultsVec.push_back(PlayerResults{it.first.getName(), it.second.correctAnswerCount, it.second.wrongAnswerCount, it.second.averageAnswerTime});
+		}
+		Responses::GetGameResultsResponse response = { OK_STATUS, resultsVec};
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
 		result.newHandler = nullptr;
 	}
@@ -75,7 +79,23 @@ Requests::RequestResult GameRequestHandler::getGameResults(Requests::RequestInfo
 
 Requests::RequestResult GameRequestHandler::leaveGame(Requests::RequestInfo info)
 {
-	return Requests::RequestResult();
+	Requests::RequestResult result;
+
+	try
+	{
+		this->m_game.removePlayer(this->m_user);
+		Responses::LeaveGameResponse response = { OK_STATUS };
+		result.response = JsonResponsePacketSerializer::serializeResponse(response);
+		result.newHandler = nullptr;
+	}
+	catch (...)
+	{
+		Responses::ErrorResponse errorResponse{ "Error, Unexpected behaviour." };
+		result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
+		result.newHandler = nullptr;
+
+	}
+	return result;
 }
 
 GameRequestHandler::GameRequestHandler(LoggedUser user, Game game) : m_user(user), m_game(game), m_handlerFactory(*RequestHandlerFactory::getInstance()), m_gameManager(*GameManager::getInstance())
