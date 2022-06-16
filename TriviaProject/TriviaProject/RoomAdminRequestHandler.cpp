@@ -50,11 +50,11 @@ Requests::RequestResult RoomAdminRequestHandler::getRoomState(Requests::RequestI
 		RoomData data = this->m_room->getData();
 		std::vector<std::string> users;
 		auto usersVec = this->m_room->getAllUsers();
-		for (int i = 0; i < usersVec.size(); i++)
+		for (unsigned int i = 0; i < usersVec.size(); i++)
 		{
 			users.push_back(usersVec[i].getName());
 		}
-		Responses::GetRoomStateResponse response = { OK_STATUS, data.isActive, users, data.timePerQuestion, data.numOfQuestionsInGame };
+		Responses::GetRoomStateResponse response = { OK_STATUS, (bool)data.isActive, users, data.timePerQuestion, data.numOfQuestionsInGame };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
 		result.newHandler = nullptr; // to be changed
 	}

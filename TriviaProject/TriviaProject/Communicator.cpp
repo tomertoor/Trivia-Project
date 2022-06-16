@@ -5,7 +5,7 @@
 
 Communicator* Communicator::instance = nullptr;
 
-Communicator::Communicator(RequestHandlerFactory& handlerFactory) : m_handlerFactory(handlerFactory)
+Communicator::Communicator(RequestHandlerFactory& handlerFactory) : m_handlerFactory(handlerFactory), m_serverSocket(0)
 
 {
 }
@@ -199,7 +199,7 @@ output: string with the content of the buffer
 std::string Communicator::bufferToString(Buffer buf)
 {
     std::string data = "";
-    for (int i = 0; i < buf.buffer.size(); i++)
+    for (unsigned int i = 0; i < buf.buffer.size(); i++)
         data += buf.buffer[i];
     return data;
 }

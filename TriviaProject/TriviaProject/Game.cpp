@@ -3,15 +3,16 @@
 //constructor
 Game::Game(const std::vector<Question> questions, int gameId)
 {
-	for (int i = 0; i < questions.size(); i++)
+	for (unsigned int i = 0; i < questions.size(); i++)
 		this->m_questions.push_back(questions[i]);
 	this->m_gameId = gameId;
+	this->startTime = 0;
 }
 
 //Returns the player data
-std::map<LoggedUser, GameData> Game::getPlayers()
+std::unordered_map<LoggedUser, GameData, UserHash> Game::getPlayers()
 {
-	return std::map<LoggedUser, GameData>(this->m_players);
+	return std::unordered_map<LoggedUser, GameData, UserHash>(this->m_players);
 }
 
 //return the current question for a player
@@ -40,14 +41,12 @@ void Game::submitAnswer(const LoggedUser& loggedUser, int answerId)
 	this->m_players[loggedUser].averageAnswerTime = ((this->m_players[loggedUser].currentQuestionIndex) * this->m_players[loggedUser].averageAnswerTime + duration) / this->m_players[loggedUser].currentQuestionIndex + 1;
 	this->m_players[loggedUser].currentQuestionIndex++;
 	this->m_players[loggedUser].currentQuetion = this->m_questions[this->m_players[loggedUser].currentQuestionIndex];
-
-
 }
 
 //This function removes a player from the players in the game
 void Game::removePlayer(const LoggedUser& loggedUser)
 {
-	//this->m_players.erase(loggedUser);
+	this->m_players.erase(loggedUser);
 }
 
 //return the game id

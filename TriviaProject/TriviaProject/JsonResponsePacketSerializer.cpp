@@ -130,7 +130,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(Responses::GetGameResults
 {
     nlohmann::json json;
     json["status"] = response.status;
-    for (int i = 0; i < response.results.size(); i++)
+    for (unsigned int i = 0; i < response.results.size(); i++)
     {
         json["results"][i]["username"] = response.results[i].username;
         json["results"][i]["correctAnswerCount"] = response.results[i].correctAnswerCount;

@@ -12,4 +12,15 @@ public:
 	void setName(const std::string& username);
 	std::string getName() const;
 	bool operator==(const LoggedUser& other);
+	friend bool operator==(const LoggedUser& user1, const LoggedUser& user2);
+};
+
+class UserHash
+{
+public:
+	std::size_t operator()(const LoggedUser& user) const
+	{
+		std::hash<std::string> hasher;
+		return hasher(user.getName());
+	}
 };

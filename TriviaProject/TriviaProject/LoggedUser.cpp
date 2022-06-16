@@ -25,6 +25,10 @@ std::string LoggedUser::getName() const
 
 bool LoggedUser::operator==(const LoggedUser& other)
 {
-
 	return other.getName() == this->getName();
+}
+
+bool operator==(const LoggedUser& user1, const LoggedUser& user2)
+{
+	return user1.getName() == user2.getName();
 }

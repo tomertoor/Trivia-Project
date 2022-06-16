@@ -16,7 +16,7 @@ Requests::RequestResult RoomMemberRequestHandler::getRoomState(Requests::Request
 		{
 			users.push_back(it.getName());
 		}
-		Responses::GetRoomStateResponse response = { OK_STATUS, data.isActive, users, data.timePerQuestion, data.numOfQuestionsInGame };
+		Responses::GetRoomStateResponse response = { OK_STATUS, (bool)data.isActive, users, data.timePerQuestion, data.numOfQuestionsInGame };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
 		result.newHandler = nullptr;
 	}

@@ -48,6 +48,7 @@ Requests::RequestResult LoginRequestHandler::handleRequest(Requests::RequestInfo
 		result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
 		return result;
 	}
+	return result;
 }
 
 /*Handles the login request, gets the details and uses the loginmanager, if successful will return a result with menu handler and the buffer, if not it will catch exception with the problem.

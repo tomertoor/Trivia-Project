@@ -32,7 +32,7 @@ Requests::RequestResult GameRequestHandler::getQuestion(Requests::RequestInfo in
 		auto answersVec = question.getPossibleAnswers();
 		std::map<unsigned int, std::string> answersMap;
 
-		for (int i = 0; i < answersVec.size(); i++)
+		for (unsigned int i = 0; i < answersVec.size(); i++)
 		{
 			answersMap.insert(std::make_pair(i, answersVec[i]));
 		}
@@ -57,7 +57,7 @@ Requests::RequestResult GameRequestHandler::getGameResults(Requests::RequestInfo
 
 	try
 	{
-		std::map<LoggedUser, GameData> resultsMap = this->m_game.getPlayers();
+		std::unordered_map<LoggedUser, GameData, UserHash> resultsMap = this->m_game.getPlayers();
 		std::vector<PlayerResults> resultsVec;
 		for (auto& it : resultsMap)
 		{
