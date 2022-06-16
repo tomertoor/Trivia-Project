@@ -123,7 +123,6 @@ namespace TriviaClient
             public int status { get; set; }
             public string question { get; set; }
             public List<string> answers { get; set; }
-            public int correctAns { get; set; }
             public GetQuestionRes()
             {
                 status = 0;
@@ -166,14 +165,7 @@ namespace TriviaClient
             }
             while (time > 0) { }//waits here until timeout
             //then check if this answer is correct with the ansIndex
-            if(currectQuestion.correctAns == ansIndex)
-            {
-                message.Text = "Correct!";
-            }
-            else
-            {
-                message.Text = "Wrong";
-            }
+            
         }
     }
 }

@@ -161,7 +161,45 @@ namespace TriviaClient
         }
         private void start_Click(object sender, RoutedEventArgs e)
         {
-            //start game
+            try
+            {
+                string data = Consts.START_GAME + "0000";
+                loggedUser.SendData(data, loggedUser.sock);
+                ServerMsg msg = loggedUser.GetData();
+                GetStartGameRepsonse response = new GetStartGameRepsonse();
+                switch (msg.code)
+                {
+                    case Consts.START_GAME:
+                        msg.data = msg.data.Remove(0, 1);
+                        msg.data = msg.data.Remove(msg.data.Length - 1, 1);
+                        response = JsonSerializer.Deserialize<GetStartGameRepsonse>(msg.data);
+                        break;
+                    case Consts.ERROR:
+                        this.message.Text = msg.data;
+                        break;
+                }
+
+                if (response.status == 1)
+                {
+                    Game game = new Game(this);
+                    this.Close();
+                    game.Show();
+                }
+                else
+                {
+                    ErrorResponse errorResponse = new ErrorResponse();
+                    msg.data = msg.data.Remove(0, 1);
+                    errorResponse = JsonSerializer.Deserialize<ErrorResponse>(msg.data);
+
+                    this.message.Text = errorResponse.message;
+
+                }
+            }
+            catch (Exception)
+            {
+                this.message.FontSize = 25;
+                this.message.Text = "Error occured";
+            }
         }
 
         private void return_Click(object sender, RoutedEventArgs e)
@@ -185,6 +223,14 @@ namespace TriviaClient
             menu.Show();
         }
 
+        class GetStartGameRepsonse
+        {
+            public int status { get; set; }
+            public GetStartGameRepsonse()
+            {
+                status = 0;
+            }
+        }
         class GetRoomStateResponse
         {
             public int status { get; set; }
