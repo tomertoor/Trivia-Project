@@ -62,8 +62,13 @@ namespace TriviaClient
 
         private void RefreshUsers()
         {
-            while (refresh)
+            bool isLoaded = true;
+            while (refresh && isLoaded)
             {
+                this.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    isLoaded = this.IsLoaded;
+                }));
                 try
                 {
                     string data = Consts.GET_ROOM_STATE.PadLeft(2, '0') + "0000";
@@ -104,6 +109,7 @@ namespace TriviaClient
                             }
                             if(res.hasGameBegun)
                             {
+                                refresh = false;
                                 Game game = new Game(this);
                                 this.Close();
                                 game.Show();
@@ -181,6 +187,7 @@ namespace TriviaClient
 
                 if (response.status == 1)
                 {
+                    refresh = false;
                     Game game = new Game(this);
                     this.Close();
                     game.Show();
