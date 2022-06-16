@@ -33,7 +33,7 @@ namespace TriviaClient
     }
     class Consts
     {
-        public const string IP = "172.20.10.6";
+        public const string IP = "85.250.96.65";
         public const string STATS = "s";
         public const int OK_STATUS = 1;
         public const string SIGN_UP = "01";
@@ -54,11 +54,6 @@ namespace TriviaClient
         public const string MEMBER = "member";
     }
     
-    public struct Message
-    {
-        string code;
-        string data;
-    }
     public struct User
     {
         public Socket sock;

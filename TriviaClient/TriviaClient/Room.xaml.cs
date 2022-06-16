@@ -18,6 +18,7 @@ namespace TriviaClient
         private static string mod;
         public static string name;
         private static bool refresh;
+        private static Mutex mut;
         public static int quesCount;
         public static int qTimeout;
         public Room(Window w)
@@ -46,6 +47,7 @@ namespace TriviaClient
             }
             this.level.Text += mod;
             refresh = true;
+            mut = new Mutex();
             roomName.Text += " " + name;
             quesCount = 0;
             qTimeout = 0;
@@ -62,18 +64,20 @@ namespace TriviaClient
 
         private void RefreshUsers()
         {
-            bool isLoaded = true;
-            while (refresh && isLoaded)
+            while (refresh)
             {
                 this.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    isLoaded = this.IsLoaded;
+                    if (!this.IsVisible)
+                        refresh = false;
                 }));
                 try
                 {
                     string data = Consts.GET_ROOM_STATE.PadLeft(2, '0') + "0000";
+                    mut.WaitOne();
                     loggedUser.SendData(data, loggedUser.sock);
                     ServerMsg msg = loggedUser.GetData();
+                    mut.ReleaseMutex();
                     GetRoomStateResponse res = new GetRoomStateResponse();
                     GetClosedroomResponse close = new GetClosedroomResponse();
          
@@ -170,8 +174,10 @@ namespace TriviaClient
             try
             {
                 string data = Consts.START_GAME + "0000";
+                mut.WaitOne();
                 loggedUser.SendData(data, loggedUser.sock);
                 ServerMsg msg = loggedUser.GetData();
+                mut.ReleaseMutex();
                 GetStartGameRepsonse response = new GetStartGameRepsonse();
                 switch (msg.code)
                 {
