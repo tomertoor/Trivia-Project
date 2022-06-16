@@ -103,7 +103,7 @@ Requests::RequestResult RoomAdminRequestHandler::startGame(Requests::RequestInfo
 		this->m_room->startRoom();
 		Responses::StartGameResponse response = { OK_STATUS };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = nullptr; // to be changed
+		result.newHandler = this->m_handlerFactory.createGameRequestHandler(this->m_user, this->m_handlerFactory.getGameManager().createGame(*this->m_room)); // to be changed
 	}
 	catch (...)
 	{

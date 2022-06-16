@@ -10,6 +10,7 @@ RequestHandlerFactory::RequestHandlerFactory()
 	m_database = MongoDataBase::getInstance();
 	m_StatisticsManager = StatisticsManager::getInstance();
 	m_roomManager = RoomManager::getInstance();
+	m_gameManager = GameManager::getInstance();
 }
 
 //get instance for singleton

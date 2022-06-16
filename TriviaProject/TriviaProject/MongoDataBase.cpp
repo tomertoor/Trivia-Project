@@ -46,13 +46,15 @@ void MongoDataBase::testQuestions()
 		srand(time(NULL));
 		int correctIndex = rand() % 4, i = 0;
 		std::vector<std::string> answers;
-		for (auto& it : iter["incorrect_answers"])
+		for (int i = 0; i < 4; i++)
 		{
-			if (correctIndex == i)
-				answers.push_back(iter["correct_answer"]);
-			else
-				answers.push_back(it);
-			i++;
+			for (auto& it : iter["incorrect_answers"])
+			{
+				if (correctIndex == i)
+					answers.push_back(iter["correct_answer"]);
+				else
+					answers.push_back(it);
+			}
 		}
 		Question question(iter["question"], answers, correctIndex);
 		this->addQuestion(question);
@@ -254,17 +256,17 @@ std::list<Question> MongoDataBase::getQuestions(int amount)
 	std::list<Question> questions;
 	mongocxx::cursor cursor = coll.find({});
 	int count = 0;
-	for (auto& doc : cursor)
+	for (auto& doc : this->db[QUESTION_COLLECTION].find({}))
 	{
 		if (count == amount)
 		{
 			break;
 		}
-		std::string content = doc["content"].get_decimal128().value.to_string();
+		std::string content = doc["content"].get_utf8().value.to_string();
 		int correctAnswerId = doc["correctAnswerId"].get_int32();
 		std::vector<std::string> answers;
 		for (auto& ans : doc["possibleAnswers"].get_array().value)
-			answers.push_back(ans.get_decimal128().value.to_string());
+			answers.push_back(ans.get_utf8().value.to_string());
 		Question question(content, answers, correctAnswerId);
 		questions.push_back(question);
 		count++;

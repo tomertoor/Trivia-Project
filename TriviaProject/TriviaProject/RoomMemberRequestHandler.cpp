@@ -17,8 +17,16 @@ Requests::RequestResult RoomMemberRequestHandler::getRoomState(Requests::Request
 			users.push_back(it.getName());
 		}
 		Responses::GetRoomStateResponse response = { OK_STATUS, (bool)data.isActive, users, data.timePerQuestion, data.numOfQuestionsInGame };
+		if ((bool)data.isActive)
+		{
+			result.newHandler = this->m_handlerFactory.createGameRequestHandler(this->m_user, this->m_handlerFactory.getGameManager().createGame(*this->m_room));
+		}
+		else
+		{
+			result.newHandler = nullptr;
+		}
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = nullptr;
+		
 	}
 	catch(std::exception e)
 	{

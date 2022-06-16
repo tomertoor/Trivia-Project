@@ -41,7 +41,6 @@ private:
 	boost::optional<bsoncxx::v_noabi::document::value> getUser(std::string username);
 
 	double calculatePoints(const std::string& username);
-	void testQuestions();
 
 	static MongoDataBase* instance;
 
@@ -52,6 +51,9 @@ public:
 
 	MongoDataBase(const MongoDataBase&) = delete;
 	MongoDataBase& operator=(const MongoDataBase&) = delete;
+
+
+	void testQuestions();
 
 	//get instance for singleton
 	static MongoDataBase* getInstance()
