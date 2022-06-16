@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <list>
+#include "Question.h"
 
 class IDatabase
 {

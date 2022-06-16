@@ -1,4 +1,5 @@
 #include "GameManager.h"
+#include "MongoDataBase.h"
 
 GameManager* GameManager::instance = nullptr;
 

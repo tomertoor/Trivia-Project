@@ -1,5 +1,4 @@
 #include "Game.h"
-#include "MongoDataBase.h"
 
 //constructor
 Game::Game(const std::vector<Question> questions, int gameId)
@@ -19,7 +18,8 @@ std::map<LoggedUser, GameData> Game::getPlayers()
 Question Game::getQuestionForUser(const LoggedUser& loggedUser)
 {
 	this->startTime = std::clock();
-	return this->m_players[loggedUser].currentQuetion;
+	
+	return Question("asd", {"asd"}, 5);//this->m_players.find(loggedUser)->second.currentQuetion;
 }
 
 //This function adds a user to the game
@@ -47,7 +47,7 @@ void Game::submitAnswer(const LoggedUser& loggedUser, int answerId)
 //This function removes a player from the players in the game
 void Game::removePlayer(const LoggedUser& loggedUser)
 {
-	this->m_players.erase(loggedUser);
+	//this->m_players.erase(loggedUser);
 }
 
 //return the game id

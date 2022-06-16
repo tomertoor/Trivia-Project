@@ -3,6 +3,7 @@
 #include <vector>
 #include "RoomData.h"
 #include "PlayerResults.h"
+#include <map>
 
 #define OK_STATUS 1
 

@@ -4,6 +4,7 @@
 #include "StatisticsManager.h"
 #include "RoomManager.h"
 #include "MenuRequestHandler.h"
+#include "GameManager.h"
 
 #include "RoomMemberRequestHandler.h"
 #include "RoomAdminRequestHandler.h"
