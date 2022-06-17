@@ -33,7 +33,7 @@ namespace TriviaClient
     }
     class Consts
     {
-        public const string IP = "85.250.96.65";
+        public const string IP = "127.0.0.1";
         public const string STATS = "s";
         public const int OK_STATUS = 1;
         public const string SIGN_UP = "01";
@@ -49,7 +49,10 @@ namespace TriviaClient
         public const string CLOSE_ROOM = "11";
         public const string START_GAME = "12";
         public const string LEAVE_ROOM = "14";
-        public const string GET_QUESTION = "15";
+        public const string GET_QUESTION = "16";
+        public const string LEAVE_GAME = "15";
+        public const string SUBMIT_ANSWER = "17";
+        public const string GET_RESULTS = "18";
         public const string ADMIN = "admin";
         public const string MEMBER = "member";
     }

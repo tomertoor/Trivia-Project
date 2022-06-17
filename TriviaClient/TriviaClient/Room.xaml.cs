@@ -66,11 +66,11 @@ namespace TriviaClient
         {
             while (refresh)
             {
-                this.Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    if (!this.IsVisible)
-                        refresh = false;
-                }));
+                _ = this.Dispatcher.BeginInvoke(new Action(() =>
+                  {
+                      if (!this.IsVisible)
+                          refresh = false;
+                  }));
                 try
                 {
                     string data = Consts.GET_ROOM_STATE.PadLeft(2, '0') + "0000";
@@ -106,10 +106,12 @@ namespace TriviaClient
                             if (quesCount != res.questionCount)
                             {
                                 this.qCount.Text = this.qCount.Text.Substring(0, this.qCount.Text.LastIndexOf(':') + 1) + " " + res.questionCount.ToString();
+                                quesCount = res.questionCount;
                             }
                             if (qTimeout != res.answerTimeout)
                             {
                                 this.timePerQ.Text = this.timePerQ.Text.Substring(0, this.timePerQ.Text.LastIndexOf(':') + 1) + " " + res.answerTimeout.ToString();
+                                qTimeout = res.answerTimeout;
                             }
                             if(res.hasGameBegun)
                             {
@@ -191,7 +193,7 @@ namespace TriviaClient
                         break;
                 }
 
-                if (response.status == 1)
+                if (response.status.Equals("1"))
                 {
                     refresh = false;
                     Game game = new Game(this);
@@ -238,10 +240,10 @@ namespace TriviaClient
 
         class GetStartGameRepsonse
         {
-            public int status { get; set; }
+            public string status { get; set; }
             public GetStartGameRepsonse()
             {
-                status = 0;
+                status = "";
             }
         }
         class GetRoomStateResponse
