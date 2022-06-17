@@ -46,14 +46,15 @@ void MongoDataBase::testQuestions()
 		srand(time(NULL));
 		int correctIndex = rand() % 4, i = 0;
 		std::vector<std::string> answers;
-		for (int i = 0; i < 4; i++)
+		auto it = iter["incorrect_answers"].begin();
+		for (int i = 0 ; i < 4; i++)
 		{
-			for (auto& it : iter["incorrect_answers"])
+			if (correctIndex == i)
+				answers.push_back(iter["correct_answer"]);
+			else
 			{
-				if (correctIndex == i)
-					answers.push_back(iter["correct_answer"]);
-				else
-					answers.push_back(it);
+				answers.push_back(*it);
+				it++;
 			}
 		}
 		Question question(iter["question"], answers, correctIndex);

@@ -19,8 +19,8 @@ std::unordered_map<LoggedUser, GameData, UserHash> Game::getPlayers()
 Question Game::getQuestionForUser(const LoggedUser& loggedUser)
 {
 	this->startTime = std::clock();
-	
-	return Question("asd", {"asd"}, 5);//this->m_players.find(loggedUser)->second.currentQuetion;
+	auto test = this->m_players.find(loggedUser);
+	return this->m_players.find(loggedUser)->second.currentQuetion;
 }
 
 //This function adds a user to the game

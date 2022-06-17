@@ -26,7 +26,6 @@ Requests::RequestResult GameRequestHandler::getQuestion(Requests::RequestInfo in
 
 	try
 	{
-		Requests::SubmitAnswerRequest request = JsonRequestPacketDeserializer::deserializeSubmitAnswerRequest(info.buffer);
 		Question question = this->m_game.getQuestionForUser(this->m_user);
 
 		auto answersVec = question.getPossibleAnswers();
