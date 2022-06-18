@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Text.Json;
 using System.Threading;
+using System.Windows.Input;
 
 namespace TriviaClient
 {
@@ -41,6 +42,7 @@ namespace TriviaClient
             for(int i = 1; i<=quesCount; i++)
             {
                 GetQuestion();
+                SetTimer();
                 this.Dispatcher.BeginInvoke(new Action(() =>
                 {
                     this.ans1.Visibility = Visibility.Visible;
@@ -49,7 +51,7 @@ namespace TriviaClient
                     this.ans4.Visibility = Visibility.Visible;
                     this.quesNum.Text = this.quesNum.Text.Substring(0, this.quesNum.Text.LastIndexOf(' ') + 1) + i.ToString();
                 }));
-
+                WaitForNextQuestion(_time.Seconds);
                 WaitForNextQuestion(5);//wait 5 seconds between each question
             }
         }
@@ -107,7 +109,6 @@ namespace TriviaClient
             this.ans2.Content = currectQuestion.answers[1][1];
             this.ans3.Content = currectQuestion.answers[2][1];
             this.ans4.Content = currectQuestion.answers[3][1];
-            SetTimer();
         }
 
         private void SetTimer()
@@ -120,6 +121,12 @@ namespace TriviaClient
                     _time = _time.Add(TimeSpan.FromSeconds(-1));
                 }, Application.Current.Dispatcher);
             Timer.Start();
+        }
+
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonDown(e);
+            this.DragMove();
         }
 
         class GetQuestionRes
@@ -175,7 +182,7 @@ namespace TriviaClient
                 this.ans3.Visibility = Visibility.Hidden;
                 ansIndex = 3;
             }
-            WaitForNextQuestion(_time.Seconds);//waits here until timeout
+            //WaitForNextQuestion(_time.Seconds);//waits here until timeout
 
             //then check if this answer is correct with the ansIndex
 
