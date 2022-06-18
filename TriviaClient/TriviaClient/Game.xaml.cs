@@ -88,10 +88,10 @@ namespace TriviaClient
         private void AddQuestion()
         {
             this.question.Text = currectQuestion.question;
-            this.ans1.Content = currectQuestion.answers[0];
-            this.ans2.Content = currectQuestion.answers[1];
-            this.ans3.Content = currectQuestion.answers[2];
-            this.ans4.Content = currectQuestion.answers[3];
+            this.ans1.Content = currectQuestion.answers[0][1];
+            this.ans2.Content = currectQuestion.answers[1][1];
+            this.ans3.Content = currectQuestion.answers[2][1];
+            this.ans4.Content = currectQuestion.answers[3][1];
             SetTimer();
         }
 
@@ -122,12 +122,20 @@ namespace TriviaClient
         {
             public int status { get; set; }
             public string question { get; set; }
-            public List<string> answers { get; set; }
+            public List<List<JsonElement>> answers { get; set; }
             public GetQuestionRes()
             {
                 status = 0;
                 question = "";
-                answers = new List<string>();
+                answers = new List<List<JsonElement>>();
+            }
+        }
+        class SubmitQuestionRes
+        {
+            public string status { get; set; }
+            public SubmitQuestionRes()
+            {
+                status = "0";
             }
         }
 
@@ -164,8 +172,40 @@ namespace TriviaClient
                 ansIndex = 3;
             }
             while (time > 0) { }//waits here until timeout
-            //then check if this answer is correct with the ansIndex
             
+            //then check if this answer is correct with the ansIndex
+
+            
+            try
+            {
+                string data = Consts.LOG_IN.PadLeft(2, '0');
+                string msg = "{\"answerId\":" + ansIndex + "}";
+                data += msg.Length.ToString().PadLeft(4, '0');
+                data += msg;
+                loggedUser.SendData(data, loggedUser.sock);
+                ServerMsg serverMsg = loggedUser.GetData();
+                SubmitQuestionRes res = new SubmitQuestionRes();
+                switch (serverMsg.code)
+                {
+                    case Consts.GET_QUESTION:
+                        res = JsonSerializer.Deserialize<SubmitQuestionRes>(serverMsg.data);
+                        break;
+                    case Consts.ERROR:
+                        message.Text = serverMsg.data;
+                        break;
+                }
+                if (int.Parse(res.status) != Consts.OK_STATUS)
+                {
+                    ErrorResponse errorResponse = new ErrorResponse();
+                    errorResponse = JsonSerializer.Deserialize<ErrorResponse>(serverMsg.data);
+                    message.Text = errorResponse.message;
+                }
+            }
+            catch (Exception)
+            {
+                message.FontSize = 25;
+                message.Text = "Error occured";
+            }
         }
     }
 }
