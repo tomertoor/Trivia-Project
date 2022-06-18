@@ -16,7 +16,7 @@ namespace TriviaClient
         private static User loggedUser;
         private static int timeForQ;
         private static DispatcherTimer Timer;
-        private static int time;
+        private static TimeSpan _time;
         private static int quesCount;
         private static GetQuestionRes currectQuestion;
         public Game(Window w)
@@ -43,8 +43,13 @@ namespace TriviaClient
                 GetQuestion();
                 this.Dispatcher.BeginInvoke(new Action(() =>
                 {
+                    this.ans1.Visibility = Visibility.Visible;
+                    this.ans2.Visibility = Visibility.Visible;
+                    this.ans3.Visibility = Visibility.Visible;
+                    this.ans4.Visibility = Visibility.Visible;
                     this.quesNum.Text = this.quesNum.Text.Substring(0, this.quesNum.Text.LastIndexOf(' ') + 1) + i.ToString();
                 }));
+
                 WaitForNextQuestion(5);//wait 5 seconds between each question
             }
         }
@@ -53,7 +58,7 @@ namespace TriviaClient
         {
             Thread.Sleep(seconds * 1000);
         }
-
+        
         private void GetQuestion()
         {
             try
@@ -96,6 +101,7 @@ namespace TriviaClient
         }
         private void AddQuestion()
         {
+            this.question.FontSize = 10;
             this.question.Text = currectQuestion.question;
             this.ans1.Content = currectQuestion.answers[0][1];
             this.ans2.Content = currectQuestion.answers[1][1];
@@ -106,25 +112,14 @@ namespace TriviaClient
 
         private void SetTimer()
         {
-            time = timeForQ;
-            Timer = new DispatcherTimer();
-            Timer.Interval = new TimeSpan(0, 0, 1);
-            Timer.Tick += Timer_Tick;
+            _time = TimeSpan.FromSeconds(timeForQ);
+            Timer = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, delegate
+                {
+                    countdown.Text = _time.ToString("c");
+                    if (_time == TimeSpan.Zero) { Timer.Stop(); countdown.Text = "Time over!"; };
+                    _time = _time.Add(TimeSpan.FromSeconds(-1));
+                }, Application.Current.Dispatcher);
             Timer.Start();
-        }
-
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            if(time > 0)
-            {
-                time--;
-                countdown.Text = string.Format("00:0{0}:{1}", time / 60, time % 60);
-            }
-            else
-            {
-                countdown.Text = "Time over!";
-                Timer.Stop();
-            }
         }
 
         class GetQuestionRes
@@ -180,11 +175,11 @@ namespace TriviaClient
                 this.ans3.Visibility = Visibility.Hidden;
                 ansIndex = 3;
             }
-            //while (time > 0) { }//waits here until timeout
-            
+            WaitForNextQuestion(_time.Seconds);//waits here until timeout
+
             //then check if this answer is correct with the ansIndex
 
-            
+
             try
             {
                 string data = Consts.SUBMIT_ANSWER.PadLeft(2, '0');
@@ -205,7 +200,11 @@ namespace TriviaClient
                         message.Text = serverMsg.data;
                         break;
                 }
-                if (int.Parse(res.status) != Consts.OK_STATUS)
+                if (int.Parse(res.status) == Consts.OK_STATUS)
+                {
+                    
+                }
+                else
                 {
                     ErrorResponse errorResponse = new ErrorResponse();
                     errorResponse = JsonSerializer.Deserialize<ErrorResponse>(serverMsg.data);

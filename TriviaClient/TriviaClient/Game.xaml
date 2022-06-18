@@ -30,7 +30,7 @@
                            FontWeight="SemiBold"
                            FontFamily="helvetica"
                            FontSize="22"
-                           Foreground="Black" Margin="198,34,198,122"/>
+                           Foreground="Black" Margin="175,34,188,122"/>
             <TextBlock Name="countdown" Text="ffdsfds" FontWeight="SemiBold" FontFamily="helvetica" Foreground="Black" Margin="625,43,38,132"/>
             <TextBlock Name="quesNum" Text="Question Number " FontWeight="SemiBold" FontFamily="helvetica" Foreground="Black" Margin="38,44,625,131"/>
             <TextBlock Name="message" Text="" Margin="223,76,223,54" Foreground="Black" TextWrapping="Wrap"/>
