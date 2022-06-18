@@ -32,7 +32,8 @@ namespace TriviaClient
             loggedUser = Room.loggedUser;
             timeForQ = Room.qTimeout;
             quesCount = Room.quesCount;
-            StartGame();
+            Thread th = new Thread(StartGame);
+            th.Start();
         }
 
         private void StartGame()
@@ -40,7 +41,10 @@ namespace TriviaClient
             for(int i = 1; i<=quesCount; i++)
             {
                 GetQuestion();
-                this.quesNum.Text = this.quesNum.Text.Substring(0, this.quesNum.Text.LastIndexOf(' ') + 1) + i.ToString();
+                this.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    this.quesNum.Text = this.quesNum.Text.Substring(0, this.quesNum.Text.LastIndexOf(' ') + 1) + i.ToString();
+                }));
                 WaitForNextQuestion(5);//wait 5 seconds between each question
             }
         }
@@ -54,33 +58,38 @@ namespace TriviaClient
         {
             try
             {
-                string data = Consts.GET_QUESTION.PadLeft(2, '0') + "0000";
-                loggedUser.SendData(data, loggedUser.sock);
-                ServerMsg msg = loggedUser.GetData();
-                GetQuestionRes res = new GetQuestionRes();
-                switch (msg.code)
+                this.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    case Consts.GET_QUESTION:
-                        res = JsonSerializer.Deserialize<GetQuestionRes>(msg.data);
-                        break;
-                    case Consts.ERROR:
-                        message.Text = msg.data;
-                        break;
-                }
-                if (res.status == Consts.OK_STATUS)
-                {
-                    currectQuestion = res;
-                    AddQuestion();
-                }
-                else
-                {
-                    ErrorResponse errorResponse = new ErrorResponse();
-                    errorResponse = JsonSerializer.Deserialize<ErrorResponse>(msg.data);
-                    message.Text = errorResponse.message;
-                }
+                    string data = Consts.GET_QUESTION.PadLeft(2, '0') + "0000";
+                    loggedUser.SendData(data, loggedUser.sock);
+                    ServerMsg msg = loggedUser.GetData();
+                    GetQuestionRes res = new GetQuestionRes();
+                    switch (msg.code)
+                    {
+                        case Consts.GET_QUESTION:
+                            res = JsonSerializer.Deserialize<GetQuestionRes>(msg.data);
+                            break;
+                        case Consts.ERROR:
+                            message.Text = msg.data;
+                            break;
+                    }
+                    if (res.status == Consts.OK_STATUS)
+                    {
+                        currectQuestion = res;
+                        AddQuestion();
+                    }
+                    else
+                    {
+                        ErrorResponse errorResponse = new ErrorResponse();
+                        errorResponse = JsonSerializer.Deserialize<ErrorResponse>(msg.data);
+                        message.Text = errorResponse.message;
+                    }
+                }));
+                
             }
             catch (Exception)
             {
+
                 message.FontSize = 25;
                 message.Text = "Error occured";
             }
@@ -171,14 +180,14 @@ namespace TriviaClient
                 this.ans3.Visibility = Visibility.Hidden;
                 ansIndex = 3;
             }
-            while (time > 0) { }//waits here until timeout
+            //while (time > 0) { }//waits here until timeout
             
             //then check if this answer is correct with the ansIndex
 
             
             try
             {
-                string data = Consts.LOG_IN.PadLeft(2, '0');
+                string data = Consts.SUBMIT_ANSWER.PadLeft(2, '0');
                 string msg = "{\"answerId\":" + ansIndex + "}";
                 data += msg.Length.ToString().PadLeft(4, '0');
                 data += msg;
@@ -187,7 +196,9 @@ namespace TriviaClient
                 SubmitQuestionRes res = new SubmitQuestionRes();
                 switch (serverMsg.code)
                 {
-                    case Consts.GET_QUESTION:
+                    case Consts.SUBMIT_ANSWER:
+                        serverMsg.data = serverMsg.data.Remove(0, 1);
+                        serverMsg.data = serverMsg.data.Remove(serverMsg.data.Length - 1, 1);
                         res = JsonSerializer.Deserialize<SubmitQuestionRes>(serverMsg.data);
                         break;
                     case Consts.ERROR:
