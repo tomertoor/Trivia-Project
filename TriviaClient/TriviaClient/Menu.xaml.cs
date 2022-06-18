@@ -33,6 +33,8 @@ namespace TriviaClient
                 loggedUser = Stats.loggedUser;
             else if (Room.loggedUser.passedWhat == Consts.ADMIN || Room.loggedUser.passedWhat == Consts.MEMBER)
                 loggedUser = Room.loggedUser;
+            else if (GameResults.loggedUser.passedWhat == Consts.GET_RESULTS)
+                loggedUser = GameResults.loggedUser;
             else
             {
                 loggedUser.username = "none";

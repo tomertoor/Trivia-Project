@@ -1,0 +1,39 @@
+﻿<Window x:Class="TriviaClient.GameResults"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:TriviaClient"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="400" Width="800"
+        ResizeMode="NoResize" WindowStyle="None"
+        AllowsTransparency="True" Background="Transparent">
+    <Grid>
+
+        <Grid Name="myGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Border CornerRadius="10" Grid.RowSpan="2">
+                <Border.Background>
+                    <LinearGradientBrush>
+                        <GradientStop Color="#7be9f6" Offset="0.0"/>
+                        <GradientStop Color="#1bf53f" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
+            <StackPanel Name="scores" Margin="80,146,81,10" Grid.RowSpan="2"/>
+            <TextBlock Name="title"
+                           Text="Game results: "
+                           FontWeight="SemiBold"
+                           FontFamily="helvetica"
+                           FontSize="22"
+                           Foreground="Black" Margin="312,34,312,122"/>
+            <TextBlock Name="message" Text="" Margin="223,76,223,54" Foreground="Black" TextWrapping="Wrap"/>
+            <Button Name="menu" Content="Return to menu" Height="45" Margin="10,26,544,129" Click="menu_Click"/>
+        </Grid>
+
+    </Grid>
+</Window>

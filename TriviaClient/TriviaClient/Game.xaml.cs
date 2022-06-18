@@ -14,7 +14,7 @@ namespace TriviaClient
     /// </summary>
     public partial class Game : Window
     {
-        private static User loggedUser;
+        public static User loggedUser;
         private static int timeForQ;
         private static DispatcherTimer Timer;
         private static TimeSpan _time;
@@ -84,6 +84,10 @@ namespace TriviaClient
                     {
                         currectQuestion = res;
                         AddQuestion();
+                    }
+                    else if(res.status.Equals("0"))
+                    {
+                        //no more questions
                     }
                     else
                     {
