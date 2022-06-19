@@ -19,6 +19,7 @@ namespace TriviaClient
         private static DispatcherTimer Timer;
         private static TimeSpan _time;
         private static int quesCount;
+        private static bool isAnswered;
         private static GetQuestionRes currectQuestion;
         public Game(Window w)
         {
@@ -27,8 +28,7 @@ namespace TriviaClient
             this.Top = w.Top;
             AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
             {
-                string data = Consts.LOG_OUT.PadLeft(2, '0') + "0000";
-                loggedUser.SendData(data, loggedUser.sock);
+                loggedUser.Logout();
             };
             loggedUser = Room.loggedUser;
             timeForQ = Room.qTimeout;
@@ -39,19 +39,62 @@ namespace TriviaClient
 
         private void StartGame()
         {
-            for(int i = 1; i<=quesCount; i++)
+            for (int i = 1; i<=quesCount; i++)
             {
                 GetQuestion();
                 SetTimer();
+                isAnswered = false;
                 this.Dispatcher.BeginInvoke(new Action(() =>
                 {
                     this.ans1.Visibility = Visibility.Visible;
                     this.ans2.Visibility = Visibility.Visible;
                     this.ans3.Visibility = Visibility.Visible;
                     this.ans4.Visibility = Visibility.Visible;
-                    this.quesNum.Text = this.quesNum.Text.Substring(0, this.quesNum.Text.LastIndexOf(' ') + 1) + i.ToString();
+                this.quesNum.Text = this.quesNum.Text.Substring(0, this.quesNum.Text.LastIndexOf(' ') + 1) + i.ToString();
                 }));
                 WaitForNextQuestion(_time.Seconds);
+                if(!isAnswered)
+                {
+                    this.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        try
+                        {
+                            string data = Consts.SUBMIT_ANSWER.PadLeft(2, '0');
+                            string msg = "{\"answerId\":-1}";
+                            data += msg.Length.ToString().PadLeft(4, '0');
+                            data += msg;
+                            loggedUser.SendData(data, loggedUser.sock);
+                            ServerMsg serverMsg = loggedUser.GetData();
+                            SubmitQuestionRes res = new SubmitQuestionRes();
+                            switch (serverMsg.code)
+                            {
+                                case Consts.SUBMIT_ANSWER:
+                                    serverMsg.data = serverMsg.data.Remove(0, 1);
+                                    serverMsg.data = serverMsg.data.Remove(serverMsg.data.Length - 1, 1);
+                                    res = JsonSerializer.Deserialize<SubmitQuestionRes>(serverMsg.data);
+                                    break;
+                                case Consts.ERROR:
+                                    message.Text = serverMsg.data;
+                                    break;
+                            }
+                            if (int.Parse(res.status) == Consts.OK_STATUS)
+                            {
+
+                            }
+                            else
+                            {
+                                ErrorResponse errorResponse = new ErrorResponse();
+                                errorResponse = JsonSerializer.Deserialize<ErrorResponse>(serverMsg.data);
+                                message.Text = errorResponse.message;
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            message.FontSize = 25;
+                            message.Text = "Error occured";
+                        }
+                    }));
+                }
                 WaitForNextQuestion(5);//wait 5 seconds between each question
             }
             this.Dispatcher.BeginInvoke(new Action(() =>
@@ -69,9 +112,9 @@ namespace TriviaClient
         
         private void GetQuestion()
         {
-            try
+            this.Dispatcher.BeginInvoke(new Action(() =>
             {
-                this.Dispatcher.BeginInvoke(new Action(() =>
+                try
                 {
                     string data = Consts.GET_QUESTION.PadLeft(2, '0') + "0000";
                     loggedUser.SendData(data, loggedUser.sock);
@@ -103,19 +146,18 @@ namespace TriviaClient
                         errorResponse = JsonSerializer.Deserialize<ErrorResponse>(msg.data);
                         message.Text = errorResponse.message;
                     }
-                }));
                 
-            }
-            catch (Exception)
-            {
+                }
+                catch (Exception)
+                {
 
-                message.FontSize = 25;
-                message.Text = "Error occured";
-            }
+                    message.FontSize = 25;
+                    message.Text = "Error occured";
+                }
+            }));
         }
         private void AddQuestion()
         {
-            this.question.FontSize = 10;
             this.question.Text = currectQuestion.question;
             this.ans1.Content = currectQuestion.answers[0][1];
             this.ans2.Content = currectQuestion.answers[1][1];
@@ -168,6 +210,7 @@ namespace TriviaClient
             int ansIndex = 0;
             if(btn.Name == "ans1")
             {
+                this.ans1.IsHitTestVisible = false;
                 this.ans2.Visibility = Visibility.Hidden;
                 this.ans3.Visibility = Visibility.Hidden;
                 this.ans4.Visibility = Visibility.Hidden;
@@ -175,6 +218,7 @@ namespace TriviaClient
             }
             else if(btn.Name == "ans2")
             {
+                this.ans2.IsHitTestVisible = false;
                 this.ans1.Visibility = Visibility.Hidden;
                 this.ans3.Visibility = Visibility.Hidden;
                 this.ans4.Visibility = Visibility.Hidden;
@@ -182,6 +226,7 @@ namespace TriviaClient
             }
             else if (btn.Name == "ans3")
             {
+                this.ans3.IsHitTestVisible = false;
                 this.ans1.Visibility = Visibility.Hidden;
                 this.ans2.Visibility = Visibility.Hidden;
                 this.ans4.Visibility = Visibility.Hidden;
@@ -189,16 +234,13 @@ namespace TriviaClient
             }
             else
             {
+                this.ans4.IsHitTestVisible = false;
                 this.ans1.Visibility = Visibility.Hidden;
                 this.ans2.Visibility = Visibility.Hidden;
                 this.ans3.Visibility = Visibility.Hidden;
                 ansIndex = 3;
             }
-            //WaitForNextQuestion(_time.Seconds);//waits here until timeout
-
-            //then check if this answer is correct with the ansIndex
-
-
+            isAnswered = true;
             try
             {
                 string data = Consts.SUBMIT_ANSWER.PadLeft(2, '0');

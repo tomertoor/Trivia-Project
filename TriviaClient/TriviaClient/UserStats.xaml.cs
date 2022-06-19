@@ -16,8 +16,7 @@ namespace TriviaClient
             InitializeComponent();
             AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
             {
-                string data = Consts.LOG_OUT.PadLeft(2, '0') + "0000";
-                loggedUser.SendData(data, loggedUser.sock);
+                loggedUser.Logout();
             };
             loggedUser = Stats.loggedUser;
             message.Text = loggedUser.username + " statistics";

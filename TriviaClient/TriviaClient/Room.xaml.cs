@@ -28,8 +28,7 @@ namespace TriviaClient
             this.Top = w.Top;
             AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
             {
-                string data = Consts.LOG_OUT.PadLeft(2, '0') + "0000";
-                JoinRoom.loggedUser.SendData(data, loggedUser.sock);
+                loggedUser.Logout();
             };
             users = new List<string>();
             if (JoinRoom.loggedUser.passedWhat == Consts.JOIN_ROOM)

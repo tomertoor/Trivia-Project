@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -18,7 +17,10 @@ namespace TriviaClient
         {
             InitializeComponent();
             loggedUser = Game.loggedUser;
-
+            AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
+            {
+                loggedUser.Logout();
+            };
             try
             {
                 string data = Consts.GET_RESULTS.PadLeft(2, '0') + "0000";
@@ -54,14 +56,13 @@ namespace TriviaClient
 
         private void ShowScores(List<GameResult> users)
         {
-            //username, correct, wrong, average
             scores.Children.Clear();
 
             foreach (GameResult user in users)
             {
                 Label newLabel = new Label();
                 newLabel.Content = "Username: " + user.username + ",Correct answers count: " + user.correctAnswerCount.ToString() + ",Wrong answers count: " + user.wrongAnswerCount.ToString() + ",Average time answer: " + user.averageAnswerTime.ToString();
-                newLabel.FontSize = 10;
+                newLabel.FontSize = 18;
                 this.scores.Children.Add(newLabel);
             }
         }

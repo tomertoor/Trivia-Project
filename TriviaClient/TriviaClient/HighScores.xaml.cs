@@ -20,8 +20,7 @@ namespace TriviaClient
             loggedUser = Stats.loggedUser;
             AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
             {
-                string data = Consts.LOG_OUT.PadLeft(2, '0') + "0000";
-                loggedUser.SendData(data, loggedUser.sock);
+                loggedUser.Logout();
             };
             //request the high scores
             try
