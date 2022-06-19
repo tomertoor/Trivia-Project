@@ -54,6 +54,12 @@ namespace TriviaClient
                 WaitForNextQuestion(_time.Seconds);
                 WaitForNextQuestion(5);//wait 5 seconds between each question
             }
+            this.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                GameResults results = new GameResults(this);
+                this.Close();
+                results.Show();
+            }));
         }
 
         private void WaitForNextQuestion(int seconds)
@@ -87,7 +93,9 @@ namespace TriviaClient
                     }
                     else if(res.status.Equals("0"))
                     {
-                        //no more questions
+                        GameResults results = new GameResults(this);
+                        this.Close();
+                        results.Show();
                     }
                     else
                     {

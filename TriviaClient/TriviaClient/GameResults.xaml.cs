@@ -36,7 +36,7 @@ namespace TriviaClient
                 }
                 if (res.status == Consts.OK_STATUS)
                 {
-                    ShowScores(res.users);
+                    ShowScores(res.results);
                 }
                 else
                 {
@@ -52,15 +52,15 @@ namespace TriviaClient
             }
         }
 
-        private void ShowScores(List<List<JsonElement>> users)
+        private void ShowScores(List<GameResult> users)
         {
             //username, correct, wrong, average
             scores.Children.Clear();
 
-            foreach (List<JsonElement> user in users)
+            foreach (GameResult user in users)
             {
                 Label newLabel = new Label();
-                newLabel.Content = "Username: " + user[0] + ",Correct answers count: " + user[1].ToString() + ",Wrong answers count: " + user[2].ToString() + ",Average time answer: " + user[3].ToString();
+                newLabel.Content = "Username: " + user.username + ",Correct answers count: " + user.correctAnswerCount.ToString() + ",Wrong answers count: " + user.wrongAnswerCount.ToString() + ",Average time answer: " + user.averageAnswerTime.ToString();
                 newLabel.FontSize = 10;
                 this.scores.Children.Add(newLabel);
             }
@@ -72,15 +72,25 @@ namespace TriviaClient
             this.DragMove();
         }
 
+        struct GameResult
+        {
+            public string username { get; set; }
+            public int correctAnswerCount { get; set; }
+            public int wrongAnswerCount { get; set; }
+            public float averageAnswerTime { get; set; }
+
+        
+        }
+
         class GetGameResults
         {
             public int status { get; set; }
-            public List<List<JsonElement>> users { get; set; }
+            public List<GameResult> results { get; set; }
 
             public GetGameResults()
             {
                 status = 0;
-                users = new List<List<JsonElement>>();
+                results = new List<GameResult>();
             }
         }
 
