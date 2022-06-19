@@ -18,15 +18,15 @@ GameManager* GameManager::getInstance()
 }
 
 //this function creates a new game by the room data and adds it to the vector of games
-Game GameManager::createGame(Room& room)
+Game* GameManager::createGame(Room& room)
 {
 	//this->m_database->testQuestions();
 	std::vector<Question> questions;
 	for (auto& question : this->m_database->getQuestions(room.getData().numOfQuestionsInGame))
 		questions.push_back(question);
-	Game game(questions, gameCounter);
+	Game* game = new Game(questions, gameCounter);
 	for (int i = 0; i < room.getAllUsers().size(); i++)
-		game.addUser(room.getAllUsers()[i]);
+		game->addUser(room.getAllUsers()[i]);
 	this->m_games.push_back(game);
 	gameCounter++;
 	return game;
@@ -37,7 +37,8 @@ void GameManager::deleteGame(int gameId)
 {
 	for (auto it = this->m_games.begin() ; it != this->m_games.end() ; it++)
 	{
-		if (it->getId() == gameId)
+		if ((*it)->getId() == gameId)
+			delete (*it);
 			this->m_games.erase(it);
 	}
 }

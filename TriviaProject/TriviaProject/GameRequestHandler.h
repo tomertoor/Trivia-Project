@@ -8,7 +8,7 @@ class RequestHandlerFactory;
 class GameRequestHandler : public IRequestHandler
 {
 private:
-	Game& m_game;
+	Game* m_game;
 	LoggedUser m_user;
 	GameManager& m_gameManager;
 	RequestHandlerFactory& m_handlerFactory;
@@ -20,7 +20,7 @@ private:
 
 
 public:
-	GameRequestHandler(LoggedUser user, Game game);
+	GameRequestHandler(LoggedUser user, Game* game);
 	virtual ~GameRequestHandler() = default;
 
 	bool isRequestRelevant(Requests::RequestInfo request) override;

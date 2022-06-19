@@ -122,7 +122,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(Responses::LeaveRoomRespo
     return serializeStatusResponse(LEAVE_ROOM_CODE, response.status);
 }
 
-/*Serializes GetGameResults response, json type serialize
+/*Serializes GetGameResuslts response, json type serialize
 * Input - the response to serialize
 * Output - the buffer
 */
@@ -161,6 +161,8 @@ Buffer JsonResponsePacketSerializer::serializeResponse(Responses::GetQuestionRes
     
     json["question"] = response.question;
     json["answers"] = response.answers;
+    nlohmann::json test = response.answers;
+    std::cout << test << std::endl;
     return serializeJsonResponse(GET_QUESTION_CODE, json);
 }
 

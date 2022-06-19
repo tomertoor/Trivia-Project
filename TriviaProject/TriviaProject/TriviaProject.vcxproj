@@ -153,6 +153,7 @@
     <ClInclude Include="dbException.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameData.h" />
+    <ClInclude Include="GameException.h" />
     <ClInclude Include="GameRequestHandler.h" />
     <ClInclude Include="GlobalException.h" />
     <ClInclude Include="IDatabase.h" />

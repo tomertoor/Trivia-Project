@@ -7,7 +7,7 @@ Requests::RequestResult GameRequestHandler::submitAnswer(Requests::RequestInfo i
 	try
 	{
 		Requests::SubmitAnswerRequest request = JsonRequestPacketDeserializer::deserializeSubmitAnswerRequest(info.buffer);
-		this->m_game.submitAnswer(this->m_user, request.answerId);
+		this->m_game->submitAnswer(this->m_user, request.answerId);
 		Responses::SubmitAnswerResponse response = { OK_STATUS };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
 		result.newHandler = nullptr;
@@ -26,7 +26,7 @@ Requests::RequestResult GameRequestHandler::getQuestion(Requests::RequestInfo in
 
 	try
 	{
-		Question question = this->m_game.getQuestionForUser(this->m_user);
+		Question question = this->m_game->getQuestionForUser(this->m_user);
 
 		auto answersVec = question.getPossibleAnswers();
 		std::map<unsigned int, std::string> answersMap;
@@ -37,6 +37,12 @@ Requests::RequestResult GameRequestHandler::getQuestion(Requests::RequestInfo in
 		}
 
 		Responses::GetQuestionResponse response = { OK_STATUS, question.getQuestion(), answersMap};
+		result.response = JsonResponsePacketSerializer::serializeResponse(response);
+		result.newHandler = nullptr;
+	}
+	catch (GameException ex)
+	{
+		Responses::GetQuestionResponse response = { ex.status, "", {} };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
 		result.newHandler = nullptr;
 	}
@@ -56,7 +62,7 @@ Requests::RequestResult GameRequestHandler::getGameResults(Requests::RequestInfo
 
 	try
 	{
-		std::unordered_map<LoggedUser, GameData, UserHash> resultsMap = this->m_game.getPlayers();
+		std::unordered_map<LoggedUser, GameData, UserHash> resultsMap = this->m_game->getPlayers();
 		std::vector<PlayerResults> resultsVec;
 		for (auto& it : resultsMap)
 		{
@@ -64,7 +70,7 @@ Requests::RequestResult GameRequestHandler::getGameResults(Requests::RequestInfo
 		}
 		Responses::GetGameResultsResponse response = { OK_STATUS, resultsVec};
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = nullptr;
+		result.newHandler = this->m_handlerFactory.createMenuRequestHandler(this->m_user);
 	}
 	catch (...)
 	{
@@ -82,7 +88,7 @@ Requests::RequestResult GameRequestHandler::leaveGame(Requests::RequestInfo info
 
 	try
 	{
-		this->m_game.removePlayer(this->m_user);
+		this->m_game->removePlayer(this->m_user);
 		Responses::LeaveGameResponse response = { OK_STATUS };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
 		result.newHandler = nullptr;
@@ -97,7 +103,7 @@ Requests::RequestResult GameRequestHandler::leaveGame(Requests::RequestInfo info
 	return result;
 }
 
-GameRequestHandler::GameRequestHandler(LoggedUser user, Game game) : m_user(user), m_game(game), m_handlerFactory(*RequestHandlerFactory::getInstance()), m_gameManager(*GameManager::getInstance())
+GameRequestHandler::GameRequestHandler(LoggedUser user, Game* game) : m_user(user), m_game(game), m_handlerFactory(*RequestHandlerFactory::getInstance()), m_gameManager(*GameManager::getInstance())
 {
 }
 

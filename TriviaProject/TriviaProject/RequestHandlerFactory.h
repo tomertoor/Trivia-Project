@@ -44,7 +44,7 @@ public:
 	MenuRequestHandler* createMenuRequestHandler(LoggedUser user);
 	RoomMemberRequestHandler* createMemberRequestHandler(LoggedUser user, Room* room);
 	RoomAdminRequestHandler* createAdminRequestHandler(LoggedUser user, Room* room);
-	GameRequestHandler* createGameRequestHandler(LoggedUser user, Game game);
+	GameRequestHandler* createGameRequestHandler(LoggedUser user, Game* game);
 
 	LoginManager& getLoginManager();
 	StatisticsManager& getStatisticsManager();

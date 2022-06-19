@@ -19,7 +19,10 @@ std::unordered_map<LoggedUser, GameData, UserHash> Game::getPlayers()
 Question Game::getQuestionForUser(const LoggedUser& loggedUser)
 {
 	this->startTime = std::clock();
-	auto test = this->m_players.find(loggedUser);
+	if (this->m_players.find(loggedUser)->second.currentQuestionIndex == this->m_questions.size())
+	{
+		throw GameException(NO_QUESTIONS);
+	}
 	return this->m_players.find(loggedUser)->second.currentQuetion;
 }
 
@@ -38,9 +41,12 @@ void Game::submitAnswer(const LoggedUser& loggedUser, int answerId)
 		this->m_players[loggedUser].correctAnswerCount++;
 	else
 		this->m_players[loggedUser].wrongAnswerCount++;
-	this->m_players[loggedUser].averageAnswerTime = ((this->m_players[loggedUser].currentQuestionIndex) * this->m_players[loggedUser].averageAnswerTime + duration) / this->m_players[loggedUser].currentQuestionIndex + 1;
+	this->m_players[loggedUser].averageAnswerTime = ((this->m_players[loggedUser].currentQuestionIndex) * this->m_players[loggedUser].averageAnswerTime + duration) / (this->m_players[loggedUser].currentQuestionIndex + 1);
 	this->m_players[loggedUser].currentQuestionIndex++;
-	this->m_players[loggedUser].currentQuetion = this->m_questions[this->m_players[loggedUser].currentQuestionIndex];
+	if (this->m_players[loggedUser].currentQuestionIndex < this->m_questions.size())
+	{
+		this->m_players[loggedUser].currentQuetion = this->m_questions[this->m_players[loggedUser].currentQuestionIndex];
+	}
 }
 
 //This function removes a player from the players in the game

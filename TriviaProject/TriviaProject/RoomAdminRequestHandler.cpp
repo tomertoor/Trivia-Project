@@ -54,7 +54,7 @@ Requests::RequestResult RoomAdminRequestHandler::getRoomState(Requests::RequestI
 		{
 			users.push_back(usersVec[i].getName());
 		}
-		Responses::GetRoomStateResponse response = { OK_STATUS, (bool)data.isActive, users, data.timePerQuestion, data.numOfQuestionsInGame };
+		Responses::GetRoomStateResponse response = { OK_STATUS, (bool)data.isActive, users, data.numOfQuestionsInGame, data.timePerQuestion };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
 		result.newHandler = nullptr; // to be changed
 	}
@@ -104,6 +104,7 @@ Requests::RequestResult RoomAdminRequestHandler::startGame(Requests::RequestInfo
 		Responses::StartGameResponse response = { OK_STATUS };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
 		result.newHandler = this->m_handlerFactory.createGameRequestHandler(this->m_user, this->m_handlerFactory.getGameManager().createGame(*this->m_room)); // to be changed
+		this->m_roomManager.deleteRoom(this->m_room->getData().id);
 	}
 	catch (...)
 	{

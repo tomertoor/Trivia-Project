@@ -8,7 +8,7 @@ class GameManager
 {
 private:
 	IDatabase* m_database;
-	std::vector<Game> m_games;
+	std::vector<Game*> m_games;
 	int gameCounter;
 	static GameManager* instance;
 	GameManager();
@@ -18,6 +18,6 @@ public:
 	GameManager& operator=(const GameManager&) = delete;
 	static GameManager* getInstance();
 
-	Game createGame(Room& room);
+	Game* createGame(Room& room);
 	void deleteGame(int gameId);
 };

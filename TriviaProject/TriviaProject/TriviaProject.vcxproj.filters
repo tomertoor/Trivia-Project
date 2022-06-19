@@ -108,6 +108,9 @@
     <ClInclude Include="RoomData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GameException.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="JsonResponsePacketSerializer.cpp">

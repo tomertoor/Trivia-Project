@@ -126,7 +126,7 @@ Requests::SubmitAnswerRequest JsonRequestPacketDeserializer::deserializeSubmitAn
 	std::string str = vectorToString(buffer.buffer);
 
 	json json = json::parse(str);
-	request.answerId = std::stoi((std::string)json["answerId"]);
+	request.answerId = json["answerId"];
 
 	return request;
 }

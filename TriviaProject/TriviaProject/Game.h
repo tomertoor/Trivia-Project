@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <cstdio>
 #include <ctime>
+#include "GameException.h"
 
 class Game
 {
