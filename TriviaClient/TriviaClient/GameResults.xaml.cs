@@ -62,7 +62,7 @@ namespace TriviaClient
             {
                 Label newLabel = new Label();
                 newLabel.Content = "Username: " + user.username + ",Correct answers count: " + user.correctAnswerCount.ToString() + ",Wrong answers count: " + user.wrongAnswerCount.ToString() + ",Average time answer: " + user.averageAnswerTime.ToString();
-                newLabel.FontSize = 18;
+                newLabel.FontSize = 13;
                 this.scores.Children.Add(newLabel);
             }
         }

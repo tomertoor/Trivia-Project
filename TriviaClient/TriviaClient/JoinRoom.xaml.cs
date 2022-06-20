@@ -79,7 +79,7 @@ namespace TriviaClient
                         message.Text = "Error occured";
                     }));
                 }
-                Thread.Sleep(3000);
+                Thread.Sleep(1500);
             }
         }
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -87,7 +87,11 @@ namespace TriviaClient
             base.OnMouseLeftButtonDown(e);
             this.DragMove();
         }
-
+        private void OnWindowclose(object sender, EventArgs e)
+        {
+            loggedUser.Logout();
+            refresh = false;
+        }
         private void AddButtonsForEachRoom(List<string> updatedRooms)
         {
             this.Dispatcher.BeginInvoke(new Action(() =>

@@ -21,6 +21,7 @@ namespace TriviaClient
         private static int quesCount;
         private static bool isAnswered;
         private static GetQuestionRes currectQuestion;
+        private static Thread th;
         public Game(Window w)
         {
             InitializeComponent();
@@ -33,7 +34,8 @@ namespace TriviaClient
             loggedUser = Room.loggedUser;
             timeForQ = Room.qTimeout;
             quesCount = Room.quesCount;
-            Thread th = new Thread(StartGame);
+            th = new Thread(StartGame);
+            th.IsBackground = true;
             th.Start();
         }
 
@@ -50,7 +52,11 @@ namespace TriviaClient
                     this.ans2.Visibility = Visibility.Visible;
                     this.ans3.Visibility = Visibility.Visible;
                     this.ans4.Visibility = Visibility.Visible;
-                this.quesNum.Text = this.quesNum.Text.Substring(0, this.quesNum.Text.LastIndexOf(' ') + 1) + i.ToString();
+                    this.ans1.IsHitTestVisible = true;
+                    this.ans2.IsHitTestVisible = true;
+                    this.ans3.IsHitTestVisible = true;
+                    this.ans4.IsHitTestVisible = true;
+                    this.quesNum.Text = this.quesNum.Text.Substring(0, this.quesNum.Text.LastIndexOf(' ') + 1) + i.ToString();
                 }));
                 WaitForNextQuestion(_time.Seconds);
                 if(!isAnswered)
@@ -95,7 +101,7 @@ namespace TriviaClient
                         }
                     }));
                 }
-                WaitForNextQuestion(5);//wait 5 seconds between each question
+                WaitForNextQuestion(3);//wait 3 seconds between each question
             }
             this.Dispatcher.BeginInvoke(new Action(() =>
             {
@@ -181,6 +187,15 @@ namespace TriviaClient
         {
             base.OnMouseLeftButtonDown(e);
             this.DragMove();
+        }
+        private void OnWindowclose(object sender, EventArgs e)
+        {
+            try
+            {
+                loggedUser.Logout();
+                th.Abort();
+            }
+            catch (Exception) { }
         }
 
         class GetQuestionRes

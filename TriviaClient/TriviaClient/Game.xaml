@@ -30,7 +30,7 @@
                            Text=""
                            FontWeight="SemiBold"
                            FontFamily="helvetica"
-                           FontSize="25"
+                           FontSize="18"
                            Foreground="Black" Margin="181,46,182,110"/>
             <TextBlock Name="countdown" Text="" FontWeight="SemiBold" FontFamily="helvetica" Foreground="Black" Margin="640,35,23,140"/>
             <TextBlock Name="quesNum" Text="Question Number " FontSize="20" FontWeight="SemiBold" FontFamily="helvetica" Foreground="Black" Margin="18,16,595,159"/>

@@ -40,9 +40,9 @@ namespace TriviaClient
             if (CreateRoom.loggedUser.passedWhat == Consts.CREATE_ROOM)
             {
                 loggedUser = CreateRoom.loggedUser;
+                name = CreateRoom.name;
                 mod = Consts.ADMIN;
                 this.@return.Content = "Close Room";
-
             }
             this.level.Text += mod;
             refresh = true;
@@ -61,15 +61,15 @@ namespace TriviaClient
             this.DragMove();
         }
 
+        private void OnWindowclose(object sender, EventArgs e)
+        {
+            loggedUser.Logout();
+            refresh = false;
+        }
         private void RefreshUsers()
         {
             while (refresh)
             {
-                _ = this.Dispatcher.BeginInvoke(new Action(() =>
-                  {
-                      if (!this.IsVisible)
-                          refresh = false;
-                  }));
                 try
                 {
                     string data = Consts.GET_ROOM_STATE.PadLeft(2, '0') + "0000";
@@ -130,7 +130,6 @@ namespace TriviaClient
                             this.Close();
                             menu.Show();
                         });
-                        
                     }
                     else
                     {
@@ -150,7 +149,7 @@ namespace TriviaClient
                         message.Text = "Error occured";
                     }));
                 }
-                Thread.Sleep(3000);
+                Thread.Sleep(500);
             }
         }
 
