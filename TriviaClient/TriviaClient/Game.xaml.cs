@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.IO;
 
 namespace TriviaClient
 {
@@ -34,13 +35,14 @@ namespace TriviaClient
             {
                 loggedUser.Logout();
             };
+            string dir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
             loggedUser = Room.loggedUser;
             timeForQ = Room.qTimeout;
             quesCount = Room.quesCount;
             theme = new MediaPlayer();
-            theme.Open(new Uri("question.mp3"));
+            theme.Open(new Uri(dir + @"question.mp3"));
             gong = new MediaPlayer();
-            gong.Open(new Uri("gong.mp3"));
+            gong.Open(new Uri(dir + @"gong.mp3"));
             th = new Thread(StartGame);
             th.IsBackground = true;
             th.Start();
@@ -66,8 +68,11 @@ namespace TriviaClient
                     this.quesNum.Text = this.quesNum.Text.Substring(0, this.quesNum.Text.LastIndexOf(' ') + 1) + i.ToString();
                 }));
                 WaitForNextQuestion(_time.Seconds);
-                theme.Stop();
-                if(!isAnswered)
+                this.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    theme.Stop();
+                }));
+                if (!isAnswered)
                 {
                     this.Dispatcher.BeginInvoke(new Action(() =>
                     {
@@ -109,7 +114,10 @@ namespace TriviaClient
                         }
                     }));
                 }
-                gong.Play();
+                this.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    gong.Play();
+                }));
                 WaitForNextQuestion(3);//wait 3 seconds between each question
             }
             this.Dispatcher.BeginInvoke(new Action(() =>
@@ -170,7 +178,10 @@ namespace TriviaClient
                     message.Text = "Error occured";
                 }
             }));
-            theme.Play();
+            this.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                theme.Play();
+            }));
         }
         private void AddQuestion()
         {
