@@ -13,14 +13,14 @@ class Game
 {
 private:
 	std::vector<Question> m_questions;
-	std::unordered_map<LoggedUser, GameData, UserHash> m_players;
+	std::unordered_map<LoggedUser, GameData*, UserHash> m_players;
 	int m_gameId;
 	std::clock_t startTime;
 public:
 	Game(const std::vector<Question> questions, int gameId);
 	~Game() = default;
 
-	std::unordered_map<LoggedUser, GameData, UserHash> getPlayers();
+	std::unordered_map<LoggedUser, GameData*, UserHash> getPlayers();
 
 	Question getQuestionForUser(const LoggedUser& loggedUser);
 	void addUser(const LoggedUser& loggedUser);

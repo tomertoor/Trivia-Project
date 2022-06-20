@@ -62,14 +62,29 @@ Requests::RequestResult GameRequestHandler::getGameResults(Requests::RequestInfo
 
 	try
 	{
-		std::unordered_map<LoggedUser, GameData, UserHash> resultsMap = this->m_game->getPlayers();
-		std::vector<PlayerResults> resultsVec;
+		std::unordered_map<LoggedUser, GameData*, UserHash> resultsMap = this->m_game->getPlayers();
+		std::vector<LoggedUser> users;
 		for (auto& it : resultsMap)
 		{
-			resultsVec.push_back(PlayerResults{it.first.getName(), it.second.correctAnswerCount, it.second.wrongAnswerCount, it.second.averageAnswerTime});
+			users.push_back(it.first);
+		}
+		std::vector<PlayerResults> resultsVec;
+		for (int i = 0; i < users.size(); i++)
+		{
+			resultsVec.push_back(PlayerResults{users[i].getName(), resultsMap[users[i]]->correctAnswerCount, resultsMap[users[i]]->wrongAnswerCount, resultsMap[users[i]]->averageAnswerTime});
 		}
 		Responses::GetGameResultsResponse response = { OK_STATUS, resultsVec};
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
+		try
+		{
+			this->m_handlerFactory.getRoomManager().getRooms().at(this->m_game->getId()); // if the room doesnt exist it will trigger expection
+			this->m_handlerFactory.getRoomManager().deleteRoom(this->m_game->getId());
+
+		}
+		catch(...)
+		{
+			auto test = "asd";
+		}
 		result.newHandler = this->m_handlerFactory.createMenuRequestHandler(this->m_user);
 	}
 	catch (...)

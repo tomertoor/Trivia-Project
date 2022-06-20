@@ -18,6 +18,6 @@ public:
 	GameManager& operator=(const GameManager&) = delete;
 	static GameManager* getInstance();
 
-	Game* createGame(Room& room);
+	Game* createGame(Room& room, const unsigned int& id);
 	void deleteGame(int gameId);
 };

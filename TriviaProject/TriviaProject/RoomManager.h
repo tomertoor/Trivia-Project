@@ -34,6 +34,8 @@ public:
 	std::vector<Room*> getRooms();
 	std::vector<RoomData> getRoomsData();
 
+	//bool checkRoomExists(const unsigned int& id);
+
 	unsigned int getCurrentId() const;
 
 	void addUserToRoom(int roomId, const LoggedUser& name);

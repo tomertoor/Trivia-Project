@@ -228,6 +228,12 @@ Requests::RequestResult MenuRequestHandler::joinRoom(Requests::RequestInfo info)
 			result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
 			result.newHandler = nullptr;
 		}
+		else if (this->m_roomManager->getRooms()[request.roomId]->getData().isActive)
+		{
+			Responses::ErrorResponse errorResponse{ "Error, You can't join active game." };
+			result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
+			result.newHandler = nullptr;
+		}
 		else
 		{
 			this->m_roomManager->getRooms()[request.roomId]->addUser(this->m_user);
