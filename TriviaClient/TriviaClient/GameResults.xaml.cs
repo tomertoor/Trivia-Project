@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Text.Json;
+using System.Threading;
 
 namespace TriviaClient
 {
@@ -13,10 +14,12 @@ namespace TriviaClient
     public partial class GameResults : Window
     {
         public static User loggedUser;
+        private static Mutex mut;
         public GameResults(Window w)
         {
             InitializeComponent();
             loggedUser = Game.loggedUser;
+            mut = new Mutex();
             AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
             {
                 loggedUser.Logout();
@@ -24,8 +27,10 @@ namespace TriviaClient
             try
             {
                 string data = Consts.GET_RESULTS.PadLeft(2, '0') + "0000";
+                mut.WaitOne();
                 loggedUser.SendData(data, loggedUser.sock);
                 ServerMsg msg = loggedUser.GetData();
+                mut.ReleaseMutex();
                 GetGameResults res = new GetGameResults();
                 switch (msg.code)
                 {

@@ -6,6 +6,7 @@ using System.Windows.Threading;
 using System.Text.Json;
 using System.Threading;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace TriviaClient
 {
@@ -22,6 +23,8 @@ namespace TriviaClient
         private static bool isAnswered;
         private static GetQuestionRes currectQuestion;
         private static Thread th;
+        private static MediaPlayer theme;
+        private static MediaPlayer gong;
         public Game(Window w)
         {
             InitializeComponent();
@@ -34,6 +37,10 @@ namespace TriviaClient
             loggedUser = Room.loggedUser;
             timeForQ = Room.qTimeout;
             quesCount = Room.quesCount;
+            theme = new MediaPlayer();
+            theme.Open(new Uri("question.mp3"));
+            gong = new MediaPlayer();
+            gong.Open(new Uri("gong.mp3"));
             th = new Thread(StartGame);
             th.IsBackground = true;
             th.Start();
@@ -59,6 +66,7 @@ namespace TriviaClient
                     this.quesNum.Text = this.quesNum.Text.Substring(0, this.quesNum.Text.LastIndexOf(' ') + 1) + i.ToString();
                 }));
                 WaitForNextQuestion(_time.Seconds);
+                theme.Stop();
                 if(!isAnswered)
                 {
                     this.Dispatcher.BeginInvoke(new Action(() =>
@@ -101,6 +109,7 @@ namespace TriviaClient
                         }
                     }));
                 }
+                gong.Play();
                 WaitForNextQuestion(3);//wait 3 seconds between each question
             }
             this.Dispatcher.BeginInvoke(new Action(() =>
@@ -161,6 +170,7 @@ namespace TriviaClient
                     message.Text = "Error occured";
                 }
             }));
+            theme.Play();
         }
         private void AddQuestion()
         {
