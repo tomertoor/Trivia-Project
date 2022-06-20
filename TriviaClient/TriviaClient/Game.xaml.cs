@@ -35,14 +35,14 @@ namespace TriviaClient
             {
                 loggedUser.Logout();
             };
-            string dir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
+            string dir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName;
             loggedUser = Room.loggedUser;
             timeForQ = Room.qTimeout;
             quesCount = Room.quesCount;
             theme = new MediaPlayer();
-            theme.Open(new Uri(dir + @"question.mp3"));
+            theme.Open(new Uri(dir + @"\question.mp3"));
             gong = new MediaPlayer();
-            gong.Open(new Uri(dir + @"gong.mp3"));
+            gong.Open(new Uri(dir + @"\gong.mp3"));
             th = new Thread(StartGame);
             th.IsBackground = true;
             th.Start();
@@ -68,10 +68,6 @@ namespace TriviaClient
                     this.quesNum.Text = this.quesNum.Text.Substring(0, this.quesNum.Text.LastIndexOf(' ') + 1) + i.ToString();
                 }));
                 WaitForNextQuestion(_time.Seconds);
-                this.Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    theme.Stop();
-                }));
                 if (!isAnswered)
                 {
                     this.Dispatcher.BeginInvoke(new Action(() =>
@@ -114,14 +110,11 @@ namespace TriviaClient
                         }
                     }));
                 }
-                this.Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    gong.Play();
-                }));
                 WaitForNextQuestion(3);//wait 3 seconds between each question
             }
             this.Dispatcher.BeginInvoke(new Action(() =>
             {
+                gong.Play();
                 GameResults results = new GameResults(this);
                 this.Close();
                 results.Show();
@@ -198,7 +191,7 @@ namespace TriviaClient
             Timer = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, delegate
                 {
                     countdown.Text = _time.ToString("c");
-                    if (_time == TimeSpan.Zero) { Timer.Stop(); countdown.Text = "Time over!"; };
+                    if (_time == TimeSpan.Zero) { Timer.Stop(); countdown.Text = "Time over!"; this.Dispatcher.BeginInvoke(new Action(() =>{ theme.Stop(); gong.Play();}));};
                     _time = _time.Add(TimeSpan.FromSeconds(-1));
                 }, Application.Current.Dispatcher);
             Timer.Start();
