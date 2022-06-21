@@ -19,7 +19,8 @@ namespace TriviaClient
             {
                 loggedUser.Logout();
             };
-
+            JoinRoom.refresh = false;
+            Room.refresh = false;
             if (Login.loggedUser.passedWhat == Consts.LOG_IN)
                 loggedUser = Login.loggedUser;
             else if (Signup.loggedUser.passedWhat == Consts.SIGN_UP)

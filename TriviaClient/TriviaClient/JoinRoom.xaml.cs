@@ -16,7 +16,7 @@ namespace TriviaClient
         private static List<string> rooms;
         public static User loggedUser;
         private static Thread thread;
-        private static bool refresh;
+        public static bool refresh;
         public JoinRoom(Window w)
         {
             InitializeComponent();

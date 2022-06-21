@@ -17,7 +17,7 @@ namespace TriviaClient
         public static User loggedUser;
         private static string mod;
         public static string name;
-        private static bool refresh;
+        public static bool refresh;
         private static Mutex mut;
         public static int quesCount;
         public static int qTimeout;
@@ -30,6 +30,7 @@ namespace TriviaClient
             {
                 loggedUser.Logout();
             };
+            JoinRoom.refresh = false;
             users = new List<string>();
             if (JoinRoom.loggedUser.passedWhat == Consts.JOIN_ROOM)
             {

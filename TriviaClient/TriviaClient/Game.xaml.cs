@@ -35,6 +35,7 @@ namespace TriviaClient
             {
                 loggedUser.Logout();
             };
+            Room.refresh = false;
             string dir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName;
             loggedUser = Room.loggedUser;
             timeForQ = Room.qTimeout;

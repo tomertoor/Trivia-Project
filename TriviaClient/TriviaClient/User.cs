@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Text;
+using System.Security.Cryptography;
 
 
 namespace TriviaClient
@@ -121,6 +122,7 @@ namespace TriviaClient
             msg.data = Encoding.ASCII.GetString(data);
 
             return msg;
+
         }
     }
 
@@ -128,5 +130,34 @@ namespace TriviaClient
     {
         public string code;
         public string data;
+    }
+
+    public abstract class CryptoAlgorithm
+    {
+        public abstract byte[] Encrypt(string msg);
+        public abstract string Decrypt(byte[] msg);
+    }
+
+    public class RSACryptoAlgorithm : CryptoAlgorithm
+    {
+        private RSACryptoServiceProvider RSAKeyInfo;
+        private UnicodeEncoding ByteConverter;
+        public RSACryptoAlgorithm() { RSAKeyInfo = new RSACryptoServiceProvider(); ByteConverter = new UnicodeEncoding(); }
+        public override byte[] Encrypt(string msg)
+        {
+            using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
+            {
+                RSA.ImportParameters(RSAKeyInfo.ExportParameters(false));
+                return RSA.Encrypt(ByteConverter.GetBytes(msg), false);
+            }
+        }
+        public override string Decrypt(byte[] msg)
+        {
+            using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
+            {
+                RSA.ImportParameters(RSAKeyInfo.ExportParameters(true));
+                return ByteConverter.GetString(RSA.Decrypt(msg, false));
+            }
+        }
     }
 }
