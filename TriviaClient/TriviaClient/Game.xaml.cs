@@ -110,11 +110,14 @@ namespace TriviaClient
                         }
                     }));
                 }
-                WaitForNextQuestion(3);//wait 3 seconds between each question
+                WaitForNextQuestion(4);//wait 4 seconds between each question
+                this.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    gong.Stop();
+                }));
             }
             this.Dispatcher.BeginInvoke(new Action(() =>
             {
-                gong.Play();
                 GameResults results = new GameResults(this);
                 this.Close();
                 results.Show();
