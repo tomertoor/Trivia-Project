@@ -149,6 +149,7 @@ namespace TriviaClient
                         }
                         catch (Exception)
                         {
+                            refresh = false;
                             loggedUser.passedWhat = Consts.JOIN_ROOM;
                             Room.name = btn.Name;
                             Room room = new Room(this);

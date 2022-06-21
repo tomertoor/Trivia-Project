@@ -34,7 +34,7 @@ namespace TriviaClient
     }
     class Consts
     {
-        public const string IP = "85.250.113.63";
+        public const string IP = "85.250.126.121";
         public const string STATS = "s";
         public const int OK_STATUS = 1;
         public const string SIGN_UP = "01";

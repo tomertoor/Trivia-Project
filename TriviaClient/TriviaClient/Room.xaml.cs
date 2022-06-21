@@ -73,6 +73,7 @@ namespace TriviaClient
             {
                 try
                 {
+                    JoinRoom.refresh = false;
                     string data = Consts.GET_ROOM_STATE.PadLeft(2, '0') + "0000";
                     mut.WaitOne();
                     loggedUser.SendData(data, loggedUser.sock);
