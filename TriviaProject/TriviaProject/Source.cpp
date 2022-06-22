@@ -1,6 +1,5 @@
 #include "WSAInitializer.h"
 #include "Server.h"
-#include "OTPCryptoAlgorithm.h"
 
 #pragma warning(disable : 4996)
 int main()

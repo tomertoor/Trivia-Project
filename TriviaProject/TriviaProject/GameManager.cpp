@@ -37,8 +37,11 @@ void GameManager::deleteGame(int gameId)
 	for (auto it = this->m_games.begin() ; it != this->m_games.end() ; it++)
 	{
 		if ((*it)->getId() == gameId)
+		{
 			delete (*it);
 			this->m_games.erase(it);
+			return;
+		}
 	}
 }
 
@@ -52,6 +55,11 @@ Game* GameManager::getGameById(const unsigned int& id)
 		}
 	}
 	return nullptr;
+}
+
+std::vector<Game*> GameManager::getGames()
+{
+	return this->m_games;
 }
 
 void GameManager::updateStatistics(std::string name, GameData results)

@@ -165,7 +165,7 @@
     <ClInclude Include="LoginRequestHandler.h" />
     <ClInclude Include="MenuRequestHandler.h" />
     <ClInclude Include="MongoDataBase.h" />
-    <ClInclude Include="OTPCryptoAlgorithm.h" />
+    <ClInclude Include="PAZCryptoAlgorithm.h" />
     <ClInclude Include="Question.h" />
     <ClInclude Include="RequestHandlerFactory.h" />
     <ClInclude Include="Requests.h" />
@@ -196,7 +196,7 @@
     <ClCompile Include="LoginRequestHandler.cpp" />
     <ClCompile Include="MenuRequestHandler.cpp" />
     <ClCompile Include="MongoDataBase.cpp" />
-    <ClCompile Include="OTPCryptoAlgorithm.cpp" />
+    <ClCompile Include="PAZCryptoAlgorithm.cpp" />
     <ClCompile Include="Question.cpp" />
     <ClCompile Include="RequestHandlerFactory.cpp" />
     <ClCompile Include="Room.cpp" />

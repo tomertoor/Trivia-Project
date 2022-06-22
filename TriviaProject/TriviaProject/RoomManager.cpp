@@ -9,6 +9,10 @@ RoomManager::RoomManager()
 
 RoomManager::~RoomManager()
 {
+	for (auto it : this->m_rooms)
+	{
+		delete it.second;
+	}
 }
 
 RoomManager* RoomManager::getInstance()

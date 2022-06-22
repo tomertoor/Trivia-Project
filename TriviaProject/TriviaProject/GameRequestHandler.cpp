@@ -92,9 +92,16 @@ Requests::RequestResult GameRequestHandler::getGameResults(Requests::RequestInfo
 		{
 			this->m_handlerFactory.getRoomManager().getRooms().at(this->m_game->getId()); // if the room doesnt exist it will trigger expection
 			this->m_handlerFactory.getRoomManager().deleteRoom(this->m_game->getId());
-
 		}
 		catch(...)
+		{
+		}
+		try
+		{
+			this->m_handlerFactory.getGameManager().getGames().at(this->m_game->getId()); // if the game doesnt exist it will trigger expection
+			this->m_handlerFactory.getGameManager().deleteGame(this->m_game->getId());
+		}
+		catch (...)
 		{
 		}
 		result.newHandler = this->m_handlerFactory.createMenuRequestHandler(this->m_user);

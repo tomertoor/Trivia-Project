@@ -19,7 +19,6 @@
 #include "json.hpp"
 #include "GameData.h"
 #include "PlayerResults.h"
-
 #include <mutex>
 
 using bsoncxx::builder::stream::close_array;

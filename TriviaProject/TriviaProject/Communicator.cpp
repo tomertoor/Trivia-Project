@@ -90,7 +90,7 @@ void Communicator::handleNewClient(SOCKET sock)
     {
         while (true)
         {
-            OTPCryptoAlgorithm algorithm(this->getPartFromSocket(sock, 16));
+            PAZCryptoAlgorithm algorithm(this->getPartFromSocket(sock, 16));
             ri.id = stoi(algorithm.Decrypt(stringToBuffer(this->getPartFromSocket(sock, 2))));
             int len = stoi(algorithm.Decrypt(stringToBuffer(this->getPartFromSocket(sock, 4))));
             ri.buffer = stringToBuffer(algorithm.Decrypt(stringToBuffer(this->getPartFromSocket(sock, len))));
@@ -146,14 +146,14 @@ void Communicator::handleNewClient(SOCKET sock)
 */
 void Communicator::sendData(const SOCKET sc, const std::string message)
 {
-    OTPCryptoAlgorithm algorithm("");
+    PAZCryptoAlgorithm algorithm("");
     auto buf = algorithm.Encrypt(message);
     std::string sen = algorithm.GetKey();
     for (int i = 0; i < buf.buffer.size(); i++)
         sen.push_back(buf.buffer[i]);
 	const char* data = sen.c_str();
 
-	if (send(sc, data, message.size(), 0) == INVALID_SOCKET)
+	if (send(sc, data, sen.size(), 0) == INVALID_SOCKET)
 	{
 		throw std::exception("Error while sending message to client");
 	}

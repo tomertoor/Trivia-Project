@@ -21,6 +21,7 @@ public:
 	Game* createGame(Room& room, const unsigned int& id);
 	void deleteGame(int gameId);
 	Game* getGameById(const unsigned int& id);
+	std::vector<Game*> getGames();
 
 	void updateStatistics(std::string name, GameData results);
 };

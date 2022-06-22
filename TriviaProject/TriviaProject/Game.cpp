@@ -12,6 +12,11 @@ Game::Game(const std::vector<Question> questions, int gameId)
 
 Game::~Game()
 {
+	for (auto& it : *(this->m_players))
+	{
+		delete it.second;
+	}
+
 	delete this->m_players;
 }
 
