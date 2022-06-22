@@ -19,7 +19,7 @@ Requests::RequestResult RoomMemberRequestHandler::getRoomState(Requests::Request
 		Responses::GetRoomStateResponse response = { OK_STATUS, (bool)data.isActive, users, data.numOfQuestionsInGame, data.timePerQuestion };
 		if ((bool)data.isActive)
 		{
-			result.newHandler = this->m_handlerFactory.createGameRequestHandler(this->m_user, this->m_handlerFactory.getGameManager().createGame(*this->m_room, this->m_room->getData().id));
+			result.newHandler = this->m_handlerFactory.createGameRequestHandler(this->m_user, this->m_handlerFactory.getGameManager().getGameById(this->m_room->getData().id));
 		}
 		else
 		{
@@ -39,6 +39,10 @@ Requests::RequestResult RoomMemberRequestHandler::getRoomState(Requests::Request
 	
 }
 
+/*Function responsible for handling leave room,
+* Input - request: the request info to handle
+* Output - The result
+*/
 Requests::RequestResult RoomMemberRequestHandler::leaveRoom(Requests::RequestInfo request)
 {
 	Requests::RequestResult result;
@@ -58,12 +62,16 @@ Requests::RequestResult RoomMemberRequestHandler::leaveRoom(Requests::RequestInf
 	return result;
 }
 
+//Constructor
 RoomMemberRequestHandler::RoomMemberRequestHandler(Room* room, LoggedUser user) : m_room(room), m_user(user), m_handlerFactory(*RequestHandlerFactory::getInstance()), m_roomManager(*RoomManager::getInstance())
 {
 }
 
 
-
+/*Checks if the request id is relevant to the handler functions
+* Input - the request
+* Output - if its relevant
+*/
 bool RoomMemberRequestHandler::isRequestRelevant(Requests::RequestInfo request)
 {
 	if (request.id == std::atoi(ROOM_STATE_CODE) || request.id == std::atoi(LEAVE_ROOM_CODE))
@@ -73,6 +81,10 @@ bool RoomMemberRequestHandler::isRequestRelevant(Requests::RequestInfo request)
 	return false;
 }
 
+/*Function responsible on handling request
+* Input - request: the info
+* Output - the request results
+*/
 Requests::RequestResult RoomMemberRequestHandler::handleRequest(Requests::RequestInfo request)
 {
 	Requests::RequestResult result;

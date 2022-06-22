@@ -20,4 +20,7 @@ public:
 
 	Game* createGame(Room& room, const unsigned int& id);
 	void deleteGame(int gameId);
+	Game* getGameById(const unsigned int& id);
+
+	void updateStatistics(std::string name, GameData results);
 };

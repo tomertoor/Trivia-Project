@@ -12,9 +12,15 @@
 #include <bsoncxx/builder/stream/helpers.hpp>
 #include <bsoncxx/builder/stream/array.hpp>
 #include <bsoncxx/builder/stream/document.hpp>
+#include <bsoncxx/builder/core.hpp>
+#include <mongocxx/pipeline.hpp>
 #include "Question.h"
 #include <cpr/cpr.h>
 #include "json.hpp"
+#include "GameData.h"
+#include "PlayerResults.h"
+
+#include <mutex>
 
 using bsoncxx::builder::stream::close_array;
 using bsoncxx::builder::stream::close_document;
@@ -22,6 +28,7 @@ using bsoncxx::builder::stream::document;
 using bsoncxx::builder::stream::finalize;
 using bsoncxx::builder::stream::open_array;
 using bsoncxx::builder::stream::open_document;
+
 
 #define TOP_SCORE_AMOUNT 5
 
@@ -34,6 +41,7 @@ using bsoncxx::builder::stream::open_document;
 class MongoDataBase : public IDatabase
 {
 private:
+	std::mutex l;
 	mongocxx::instance ins;
 	mongocxx::uri uri;
 	mongocxx::client client;
@@ -46,6 +54,8 @@ private:
 
 
 public:
+	std::mutex dbMutex;
+
 	MongoDataBase();
 	virtual ~MongoDataBase() = default;
 
@@ -73,10 +83,12 @@ public:
 		const std::string& phone, const std::string& birthDate,
 		const std::string& apt, const std::string& city, const std::string& street) override;
 
-	float getPlayerAverageAnswerTime(std::string name) override;
+	double getPlayerAverageAnswerTime(std::string name)  override;
 	int getNumOfCorrectAnswers(std::string name) override;
-	int getNumOfTotalAnswers(std::string name) override;
-	int getNumOfPlayerGames(std::string name) override;
+	int getNumOfTotalAnswers(std::string name)  override;
+	int getNumOfPlayerGames(std::string name)  override;
+
+	void updateStatistics(const std::string& name, GameData newResults);
 
 	std::vector<std::string> getHighestScores() override;
 	void addQuestion(Question& question) override;

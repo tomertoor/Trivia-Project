@@ -41,3 +41,21 @@ void GameManager::deleteGame(int gameId)
 			this->m_games.erase(it);
 	}
 }
+
+Game* GameManager::getGameById(const unsigned int& id)
+{
+	for (int i = 0; i < this->m_games.size(); i++)
+	{
+		if (this->m_games[i]->getId() == id)
+		{
+			return this->m_games[i];
+		}
+	}
+	return nullptr;
+}
+
+void GameManager::updateStatistics(std::string name, GameData results)
+{
+	this->m_database->updateStatistics(name, results);
+}
+

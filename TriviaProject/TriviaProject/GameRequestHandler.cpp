@@ -1,5 +1,9 @@
 #include "GameRequestHandler.h"
 
+/*Function responsible on submitting answer
+* Input - info: the info
+* Output - The result if submit was ok
+*/
 Requests::RequestResult GameRequestHandler::submitAnswer(Requests::RequestInfo info)
 {
 	Requests::RequestResult result;
@@ -20,6 +24,10 @@ Requests::RequestResult GameRequestHandler::submitAnswer(Requests::RequestInfo i
 	return result;
 }
 
+/*Function responsible on getting question
+* Input - the info to handle
+* Output - the result
+*/
 Requests::RequestResult GameRequestHandler::getQuestion(Requests::RequestInfo info)
 {
 	Requests::RequestResult result;
@@ -56,6 +64,10 @@ Requests::RequestResult GameRequestHandler::getQuestion(Requests::RequestInfo in
 	return result;
 }
 
+/*Function responsible on getting game results
+* Input - The info to handle
+* Output - the result of the request
+*/
 Requests::RequestResult GameRequestHandler::getGameResults(Requests::RequestInfo info)
 {
 	Requests::RequestResult result;
@@ -74,6 +86,7 @@ Requests::RequestResult GameRequestHandler::getGameResults(Requests::RequestInfo
 			resultsVec.push_back(PlayerResults{users[i].getName(), resultsMap[users[i]]->correctAnswerCount, resultsMap[users[i]]->wrongAnswerCount, resultsMap[users[i]]->averageAnswerTime});
 		}
 		Responses::GetGameResultsResponse response = { OK_STATUS, resultsVec};
+		this->m_handlerFactory.getGameManager().updateStatistics(this->m_user.getName(), *resultsMap[this->m_user]);
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
 		try
 		{
@@ -83,20 +96,22 @@ Requests::RequestResult GameRequestHandler::getGameResults(Requests::RequestInfo
 		}
 		catch(...)
 		{
-			auto test = "asd";
 		}
 		result.newHandler = this->m_handlerFactory.createMenuRequestHandler(this->m_user);
 	}
-	catch (...)
+	catch (std::exception e)
 	{
-		Responses::ErrorResponse errorResponse{ "Error, Unexpected behaviour." };
+		Responses::ErrorResponse errorResponse{ "Error, Unexpected behaviour. " + std::string(e.what()) };
 		result.response = JsonResponsePacketSerializer::serializeResponse(errorResponse);
 		result.newHandler = nullptr;
 
 	}
 	return result;
 }
-
+/*Responsible on leaving game
+* Input - the info
+* Output - the result
+*/
 Requests::RequestResult GameRequestHandler::leaveGame(Requests::RequestInfo info)
 {
 	Requests::RequestResult result;
@@ -122,6 +137,12 @@ GameRequestHandler::GameRequestHandler(LoggedUser user, Game* game) : m_user(use
 {
 }
 
+
+/*
+This function checks if the request is relevant for this handler
+input: request info struct
+output: true if close room, start game or room state
+*/
 bool GameRequestHandler::isRequestRelevant(Requests::RequestInfo request)
 {
 	if (request.id == std::atoi(LEAVE_GAME_CODE) || request.id == std::atoi(GET_RESULTS_CODE) || request.id == std::atoi(SUBMIT_ANSWER_CODE) || request.id == std::atoi(GET_QUESTION_CODE))
@@ -131,6 +152,10 @@ bool GameRequestHandler::isRequestRelevant(Requests::RequestInfo request)
 	return false;
 }
 
+/*Responsible on hnadling request by sending it to private function
+* Input - the request to handle
+* Output - the request result
+*/
 Requests::RequestResult GameRequestHandler::handleRequest(Requests::RequestInfo request)
 {
 	Requests::RequestResult result;

@@ -6,7 +6,6 @@ int main()
 {
 	WSAInitializer wsa;
 	Server* srv = Server::getInstance();
-
 	srv->run();
 	return 0;
 }

@@ -42,6 +42,10 @@ Requests::RequestResult RoomAdminRequestHandler::handleRequest(Requests::Request
 	return result;
 }
 
+/* Function responsible on getting room state
+* Input - request to handle
+* Output - the result
+*/
 Requests::RequestResult RoomAdminRequestHandler::getRoomState(Requests::RequestInfo request)
 {
 	Requests::RequestResult result;
@@ -104,7 +108,6 @@ Requests::RequestResult RoomAdminRequestHandler::startGame(Requests::RequestInfo
 		Responses::StartGameResponse response = { OK_STATUS };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
 		result.newHandler = this->m_handlerFactory.createGameRequestHandler(this->m_user, this->m_handlerFactory.getGameManager().createGame(*this->m_room, this->m_room->getData().id)); 
-		//this->m_roomManager.deleteRoom(this->m_room->getData().id);
 	}
 	catch (...)
 	{
