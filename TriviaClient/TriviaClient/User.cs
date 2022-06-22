@@ -104,7 +104,12 @@ namespace TriviaClient
         public void SendData(string data, Socket sock)
         {
             PAZCryptoAlgorithm algorithm = new PAZCryptoAlgorithm(""); //encryption does not require a key, generates a random one
-            sock.Send(algorithm.Encrypt(data));
+            var msg = algorithm.Encrypt(data);
+            var key = Encoding.ASCII.GetBytes(algorithm.GetKey());
+            byte[] sen = new byte[msg.Length + key.Length];
+            System.Buffer.BlockCopy(key, 0, sen, 0, key.Length);
+            System.Buffer.BlockCopy(msg, 0, sen, key.Length, msg.Length);
+            sock.Send(sen);
         }
 
         public ServerMsg GetData()
@@ -143,35 +148,34 @@ namespace TriviaClient
     public class PAZCryptoAlgorithm : CryptoAlgorithm
     {
         private string key;
+        private int lastIdxKey;
         public PAZCryptoAlgorithm(string Key) { key = Key; }
         public override byte[] Encrypt(string msg)
         {
-            var result = new byte[msg.Length + 16];
+            lastIdxKey = 0;
+            byte[] result = new byte[msg.Length];
             var random = new Random();
             key = new string(System.Linq.Enumerable.Repeat(Consts.chars, 16).Select(s => s[random.Next(s.Length)]).ToArray());
-            int i = 0;
-            for (; i < 16; i++)
-                result[i] = (byte)key[i];
-            for(; i<msg.Length; i++)
+            for(int i = 0; i<msg.Length; i++)
             {
-                var sum = (int)msg[i] + (int)key[i % key.Length];
-                if (sum > 255)
-                    sum -= 255;
+                var sum = ((int)msg[i] + (int)key[i % key.Length]) % 255;
                 result[i] = (byte)sum;
             }
+            var s = Encoding.ASCII.GetString(result);
             return result;
         }
         public override string Decrypt(byte[] msg)
         {
             string result = "";
-            for (int i = 0; i < msg.Length; i++)
+            lastIdxKey = 0;
+            for (int lastIdxKey = 0; lastIdxKey < msg.Length; lastIdxKey++)
             {
-                var dif = (int)msg[i] - (int)key[i % key.Length];
-                if (dif < 0)
-                    dif += 255;
+                var dif = ((int)msg[lastIdxKey] - (int)key[lastIdxKey % key.Length]) % 255;
                 result += (char)dif;
             }
             return result;
         }
+
+        public string GetKey() { return key; }
     }
 }
