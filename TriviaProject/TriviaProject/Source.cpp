@@ -7,11 +7,6 @@ int main()
 {
 	WSAInitializer wsa;
 	Server* srv = Server::getInstance();
-	OTPCryptoAlgorithm algorithm;
-	std::string before = "checking..";
-	auto after = algorithm.Encrypt(before);
-	before = algorithm.Decrypt(after);
-
 	srv->run();
 	return 0;
 }

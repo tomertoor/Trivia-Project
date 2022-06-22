@@ -43,5 +43,7 @@ private:
 	std::string getPartFromSocket(const SOCKET sc, const int bytesNum, const int flags);
 	std::string bufferToString(Buffer buf);
 
+	Buffer stringToBuffer(const std::string& msg);
+
 	void checkBroadcastToRoom(SOCKET sock);
 };

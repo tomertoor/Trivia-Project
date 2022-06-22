@@ -204,7 +204,7 @@ std::string Communicator::bufferToString(Buffer buf)
 }
 
 //helper function to convert string to buffer
-Buffer stringToBuffer(const std::string& msg)
+Buffer Communicator::stringToBuffer(const std::string& msg)
 {
     Buffer buf;
     for (int i = 0; i < msg.size(); i++)

@@ -20,9 +20,7 @@ std::string OTPCryptoAlgorithm::Decrypt(Buffer msg)
 	std::string result = "";
 	for (int i = 0; i < msg.buffer.size(); i++)
 	{
-		int dif = (int)msg.buffer[i] - (int)key[i % key.size()];
-		if (dif < 0)
-			dif += 255;
+		int dif = ((int)msg.buffer[i] - (int)key[i % key.size()]) % 255;
 		result.push_back((char)dif);
 	}
 	return result;
