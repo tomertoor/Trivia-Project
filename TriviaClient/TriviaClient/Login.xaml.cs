@@ -38,9 +38,6 @@ namespace TriviaClient
             {
                 User user = new User();
                 PAZCryptoAlgorithm algorithm = new PAZCryptoAlgorithm("");
-                var before = "checking..";
-                var after = algorithm.Encrypt(before);
-                before = algorithm.Decrypt(after);
                 user.sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 user.sock.Connect(Consts.IP, 42069);
                 user.username = this.username.Text;

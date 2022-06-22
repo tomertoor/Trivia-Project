@@ -116,7 +116,7 @@ namespace TriviaClient
         {
             byte[] key = new byte[16];
             this.sock.Receive(key, 16, 0);
-            PAZCryptoAlgorithm algorithm = new PAZCryptoAlgorithm(key.ToString());
+            PAZCryptoAlgorithm algorithm = new PAZCryptoAlgorithm(Encoding.ASCII.GetString(key));
             ServerMsg msg;
             byte[] code = new byte[2];
             this.sock.Receive(code, 2, 0);
@@ -170,7 +170,7 @@ namespace TriviaClient
             for (int i = 0; i < msg.Length; lastIdxKey++, i++)
             {
                 var dif = ((int)msg[i] - (int)key[lastIdxKey % key.Length]) % 255;
-                result += (char)dif;
+                result += Convert.ToChar(dif);
             }
             return result;
         }
