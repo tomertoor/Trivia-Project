@@ -7,8 +7,9 @@ class OTPCryptoAlgorithm : public CryptoAlgorithm
 {
 private:
 	std::string key;
+	int lastIdxKey;
 public:
-	OTPCryptoAlgorithm(const std::string& Key) { key = Key; };
+	OTPCryptoAlgorithm(const std::string& Key) { key = Key; lastIdxKey = 0; };
 	virtual ~OTPCryptoAlgorithm() = default;
 
 	virtual Buffer Encrypt(const std::string& msg) override;

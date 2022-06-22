@@ -3,6 +3,7 @@
 Buffer OTPCryptoAlgorithm::Encrypt(const std::string& msg)
 {
 	Buffer result;
+	lastIdxKey = 0;
 	for (int i = 0; i < 16; i++)
 		result.buffer.push_back(CHARS[rand() % 36]);
 	for (int i = 0; i < msg.size(); i++)
@@ -18,9 +19,9 @@ Buffer OTPCryptoAlgorithm::Encrypt(const std::string& msg)
 std::string OTPCryptoAlgorithm::Decrypt(Buffer msg)
 {
 	std::string result = "";
-	for (int i = 0; i < msg.buffer.size(); i++)
+	for (; lastIdxKey < msg.buffer.size(); lastIdxKey++)
 	{
-		int dif = ((int)msg.buffer[i] - (int)key[i % key.size()]) % 255;
+		int dif = ((int)msg.buffer[lastIdxKey] - (int)key[lastIdxKey % key.size()]) % 255;
 		result.push_back((char)dif);
 	}
 	return result;
