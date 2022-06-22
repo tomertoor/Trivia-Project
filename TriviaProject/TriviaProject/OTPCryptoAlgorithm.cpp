@@ -3,6 +3,8 @@
 Buffer OTPCryptoAlgorithm::Encrypt(const std::string& msg)
 {
 	Buffer result;
+	for (int i = 0; i < 16; i++)
+		result.buffer.push_back(CHARS[rand() % 36]);
 	for (int i = 0; i < msg.size(); i++)
 	{
 		int sum = (int)msg[i] + (int)key[i % key.size()];

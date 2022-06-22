@@ -6,6 +6,7 @@
 #include "RequestHandlerFactory.h"
 #include "IRequestHandler.h"
 #include "JsonRequestPacketDeserializer.h"
+#include "OTPCryptoAlgorithm.h"
 
 const int PORT = 42069;
 

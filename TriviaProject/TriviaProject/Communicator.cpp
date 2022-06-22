@@ -90,13 +90,10 @@ void Communicator::handleNewClient(SOCKET sock)
     {
         while (true)
         {
-            ri.buffer = Buffer();
-            ri.id = stoi(this->getPartFromSocket(sock, 2));
-            int len = stoi(this->getPartFromSocket(sock, 4));
-            for (int i = 0; i < len; i++)
-            {
-                ri.buffer.buffer.push_back(this->getPartFromSocket(sock, 1)[0]);
-            }
+            OTPCryptoAlgorithm algorithm(this->getPartFromSocket(sock, 16));
+            ri.id = stoi(algorithm.Decrypt(stringToBuffer(this->getPartFromSocket(sock, 2))));
+            int len = stoi(algorithm.Decrypt(stringToBuffer(this->getPartFromSocket(sock, 4))));
+            ri.buffer = stringToBuffer(algorithm.Decrypt(stringToBuffer(this->getPartFromSocket(sock, len))));
 
             if (handler->isRequestRelevant(ri))
             {
@@ -149,7 +146,9 @@ void Communicator::handleNewClient(SOCKET sock)
 */
 void Communicator::sendData(const SOCKET sc, const std::string message)
 {
-	const char* data = message.c_str();
+    OTPCryptoAlgorithm algorithm("");
+    auto buf = algorithm.Encrypt(message);
+	const char* data = bufferToString(buf).c_str();
 
 	if (send(sc, data, message.size(), 0) == INVALID_SOCKET)
 	{
@@ -202,6 +201,15 @@ std::string Communicator::bufferToString(Buffer buf)
     for (unsigned int i = 0; i < buf.buffer.size(); i++)
         data += buf.buffer[i];
     return data;
+}
+
+//helper function to convert string to buffer
+Buffer stringToBuffer(const std::string& msg)
+{
+    Buffer buf;
+    for (int i = 0; i < msg.size(); i++)
+        buf.buffer.push_back(msg[i]);
+    return buf;
 }
 
 void Communicator::checkBroadcastToRoom(SOCKET sock)
