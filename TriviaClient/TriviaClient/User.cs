@@ -129,7 +129,6 @@ namespace TriviaClient
             msg.data = algorithm.Decrypt(data);
 
             return msg;
-
         }
     }
 
