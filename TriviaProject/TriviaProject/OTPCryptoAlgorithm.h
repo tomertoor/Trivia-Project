@@ -14,4 +14,5 @@ public:
 
 	virtual Buffer Encrypt(const std::string& msg) override;
 	virtual std::string Decrypt(Buffer msg) override;
+	std::string GetKey();
 };

@@ -148,7 +148,10 @@ void Communicator::sendData(const SOCKET sc, const std::string message)
 {
     OTPCryptoAlgorithm algorithm("");
     auto buf = algorithm.Encrypt(message);
-	const char* data = bufferToString(buf).c_str();
+    std::string sen = algorithm.GetKey();
+    for (int i = 0; i < buf.buffer.size(); i++)
+        sen.push_back(buf.buffer[i]);
+	const char* data = sen.c_str();
 
 	if (send(sc, data, message.size(), 0) == INVALID_SOCKET)
 	{
