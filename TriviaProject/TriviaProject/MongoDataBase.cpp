@@ -43,13 +43,21 @@ void MongoDataBase::testQuestions()
 	nlohmann::json json = nlohmann::json::parse(res.text);
 	for (auto& iter : json["results"])
 	{
-		Question question;
-		question.content = iter["question"];
-		question.correctAnswer = iter["correct_answer"];
-		for (auto& it : iter["incorrect_answers"])
+		srand(time(NULL));
+		int correctIndex = rand() % 4, i = 0;
+		std::vector<std::string> answers;
+		auto it = iter["incorrect_answers"].begin();
+		for (int i = 0 ; i < 4; i++)
 		{
-			question.incorrectAnswers.push_back(it);
+			if (correctIndex == i)
+				answers.push_back(iter["correct_answer"]);
+			else
+			{
+				answers.push_back(*it);
+				it++;
+			}
 		}
+		Question question(iter["question"], answers, correctIndex);
 		this->addQuestion(question);
 	}
 }
@@ -100,7 +108,7 @@ void MongoDataBase::addNewUser(const std::string& username, const std::string& p
 {
 	if (!doesUserExist(username))
 	{
-		mongocxx::collection coll = db[USER_COLLECTION];
+		mongocxx::collection userColl = db[USER_COLLECTION];
 		auto builder = bsoncxx::builder::stream::document{};
 		bsoncxx::document::value newUser = builder 
 			<< "username" << username 
@@ -114,7 +122,18 @@ void MongoDataBase::addNewUser(const std::string& username, const std::string& p
 				<< bsoncxx::builder::stream::close_document
 			<< "birth date" << birthDate
 			<< bsoncxx::builder::stream::finalize;
-		coll.insert_one(newUser.view());
+		userColl.insert_one(newUser.view());
+		
+		mongocxx::collection statsColl = db[STATS_COLLECTION];
+		auto statsBuilder = bsoncxx::builder::stream::document{};
+		bsoncxx::document::value newStats = statsBuilder
+			<< "name" << username
+			<< "gameCount" << 0
+			<< "totalAnswers" << 0
+			<< "correctAnswers" << 0
+			<< "averageAnswerTime" << 0.0
+			<< bsoncxx::builder::stream::finalize;
+		statsColl.insert_one(newStats.view());
 	}
 }
 
@@ -122,16 +141,16 @@ void MongoDataBase::addNewUser(const std::string& username, const std::string& p
 * Input - name: the name to look for
 * Output - the average time
 */
-float MongoDataBase::getPlayerAverageAnswerTime(std::string name)
+double MongoDataBase::getPlayerAverageAnswerTime(std::string name) 
 {
+	std::lock_guard<std::mutex> guard(dbMutex);
 	bsoncxx::stdx::optional<bsoncxx::document::value> row = db[STATS_COLLECTION].find_one(
 		document{}
 		<< "name" << name 
 		<< finalize
 	);
 	auto view = row.value().view();
-	
-	return std::stof(view["averageAnswerTime"].get_decimal128().value.to_string());
+	return view["averageAnswerTime"].get_double().value;
 }
 
 
@@ -139,15 +158,16 @@ float MongoDataBase::getPlayerAverageAnswerTime(std::string name)
 * Input - the name to look for
 * Output - the number of correct answers
 */
-int MongoDataBase::getNumOfCorrectAnswers(std::string name)
+int MongoDataBase::getNumOfCorrectAnswers(std::string name) 
 {
+	std::lock_guard<std::mutex> guard(dbMutex);
 	bsoncxx::stdx::optional<bsoncxx::document::value> row = db[STATS_COLLECTION].find_one(
 		document{}
 		<< "name" << name
 		<< finalize
 	);
 	auto view = row.value().view();
-
+	
 	return view["correctAnswers"].get_int32().value;
 }
 
@@ -155,8 +175,9 @@ int MongoDataBase::getNumOfCorrectAnswers(std::string name)
 * Input - the name to look for
 * Output - the number of total answers
 */
-int MongoDataBase::getNumOfTotalAnswers(std::string name)
+int MongoDataBase::getNumOfTotalAnswers(std::string name) 
 {
+	std::lock_guard<std::mutex> guard(dbMutex);
 	bsoncxx::stdx::optional<bsoncxx::document::value> row = db[STATS_COLLECTION].find_one(
 		document{}
 		<< "name" << name
@@ -171,8 +192,9 @@ int MongoDataBase::getNumOfTotalAnswers(std::string name)
 * Input - the name to look for
 * Output - the num of games
 */
-int MongoDataBase::getNumOfPlayerGames(std::string name)
+int MongoDataBase::getNumOfPlayerGames(std::string name) 
 {
+	std::lock_guard<std::mutex> guard(dbMutex);
 	bsoncxx::stdx::optional<bsoncxx::document::value> row = db[STATS_COLLECTION].find_one(
 		document{}
 		<< "name" << name
@@ -181,6 +203,35 @@ int MongoDataBase::getNumOfPlayerGames(std::string name)
 	auto view = row.value().view();
 
 	return view["gameCount"].get_int32().value;
+}
+
+/*Function that update statistics
+* Input - the name to update for and the results to append to the db
+* Output - None.
+*/
+void MongoDataBase::updateStatistics(const std::string& name, GameData newResults)
+{
+	int correctAns = this->getNumOfCorrectAnswers(name);
+	PlayerResults overallResults{ name, correctAns, this->getNumOfTotalAnswers(name) - correctAns, this->getPlayerAverageAnswerTime(name) };
+	overallResults.correctAnswerCount += newResults.correctAnswerCount;
+	overallResults.wrongAnswerCount += newResults.wrongAnswerCount;
+	overallResults.averageAnswerTime = ( ((int)overallResults.correctAnswerCount + overallResults.wrongAnswerCount) * overallResults.averageAnswerTime + newResults.averageAnswerTime) / ((int)overallResults.correctAnswerCount + overallResults.wrongAnswerCount + 1);
+
+	mongocxx::collection coll = db[STATS_COLLECTION];
+	// switching from struct to regular vars since mongo likes to make errors if not
+	int totalAnswers = overallResults.wrongAnswerCount + overallResults.correctAnswerCount;
+	int correctAnswers = overallResults.correctAnswerCount;
+	double averageAnswerTime = overallResults.averageAnswerTime;
+
+	std::lock_guard<std::mutex> guard(dbMutex);
+	db[STATS_COLLECTION].update_one(document{} << "name" << name << finalize, document{} 
+			<< "$inc" << open_document <<"gameCount" << 1 << close_document 
+			<< "$set" << open_document
+			<< "totalAnswers" << totalAnswers
+			<< "averageAnswerTime" << averageAnswerTime
+			<< "correctAnswers" << correctAnswers << close_document << finalize);
+
+
 }
 
 /*Function that gets the highest score
@@ -220,21 +271,21 @@ std::vector<std::string> MongoDataBase::getHighestScores()
 * Input - the question to add
 * Output - none.
 */
-void MongoDataBase::addQuestion(const Question& question)
+void MongoDataBase::addQuestion(Question& question)
 {
 	mongocxx::collection coll = db[QUESTION_COLLECTION];
 
 	bsoncxx::builder::stream::array bsonArr;
 
-	for (auto& iter : question.incorrectAnswers)
+	for (auto& iter : question.getPossibleAnswers())
 	{
 		bsonArr << iter;
 	}
 	auto builder = bsoncxx::builder::stream::document{};
 	bsoncxx::document::value newQuestion = builder
-		<< "content" << question.content
-		<< "correctAnswer" << question.correctAnswer
-		<< "incorrectAnswers" << bsonArr 
+		<< "content" << question.getQuestion()
+		<< "correctAnswerId" << question.getCorrectAnswerId()
+		<< "possibleAnswers" << bsonArr 
 		<< bsoncxx::builder::stream::finalize;
 	coll.insert_one(newQuestion.view());
 }
@@ -247,16 +298,22 @@ std::list<Question> MongoDataBase::getQuestions(int amount)
 {
 	mongocxx::collection coll = db[QUESTION_COLLECTION];
 	std::list<Question> questions;
-	mongocxx::cursor cursor = coll.find({});
 	int count = 0;
+	mongocxx::pipeline pipe{};
+	pipe.sample(int32_t(amount));
+	mongocxx::cursor cursor = coll.aggregate(pipe, mongocxx::options::aggregate{});
 	for (auto& doc : cursor)
 	{
 		if (count == amount)
 		{
 			break;
 		}
-		Question question;
-		question.operator=(doc);
+		std::string content = doc["content"].get_utf8().value.to_string();
+		int correctAnswerId = doc["correctAnswerId"].get_int32();
+		std::vector<std::string> answers;
+		for (auto& ans : doc["possibleAnswers"].get_array().value)
+			answers.push_back(ans.get_utf8().value.to_string());
+		Question question(content, answers, correctAnswerId);
 		questions.push_back(question);
 		count++;
 	}

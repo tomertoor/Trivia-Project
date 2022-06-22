@@ -6,6 +6,7 @@
 #include "RequestHandlerFactory.h"
 #include "IRequestHandler.h"
 #include "JsonRequestPacketDeserializer.h"
+#include "PAZCryptoAlgorithm.h"
 
 const int PORT = 42069;
 
@@ -41,6 +42,8 @@ private:
 	std::string getPartFromSocket(const SOCKET sc, const int bytesNum);
 	std::string getPartFromSocket(const SOCKET sc, const int bytesNum, const int flags);
 	std::string bufferToString(Buffer buf);
+
+	Buffer stringToBuffer(const std::string& msg);
 
 	void checkBroadcastToRoom(SOCKET sock);
 };

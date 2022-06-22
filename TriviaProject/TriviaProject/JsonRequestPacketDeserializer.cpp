@@ -27,6 +27,10 @@ JsonRequestPacketDeserializer* JsonRequestPacketDeserializer::getInstance()
 	}
 	return instance;
 }
+/*Desirializing a buffer to a login request object
+* Input - buffer: the buffer to desirialize
+* Output - the request desirialized
+*/
 Requests::LoginRequest JsonRequestPacketDeserializer::deserializeLoginRequest(Buffer buffer)
 {
 	Requests::LoginRequest request;
@@ -108,6 +112,21 @@ Requests::CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoom
 	request.questionCount = std::stoi((std::string)json["questionCount"]);
 	request.questionTimeout = std::stoi((std::string)json["questionTimeout"]);
 	request.roomName = json["roomName"];
+
+	return request;
+}
+
+/*Desirializing a buffer to a SubmitAnswer request object
+* Input - buffer: the buffer to desirialize
+* Output - the request desirialized
+*/
+Requests::SubmitAnswerRequest JsonRequestPacketDeserializer::deserializeSubmitAnswerRequest(Buffer buffer)
+{
+	Requests::SubmitAnswerRequest request;
+	std::string str = vectorToString(buffer.buffer);
+
+	json json = json::parse(str);
+	request.answerId = json["answerId"];
 
 	return request;
 }

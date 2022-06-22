@@ -42,6 +42,10 @@ Requests::RequestResult RoomAdminRequestHandler::handleRequest(Requests::Request
 	return result;
 }
 
+/* Function responsible on getting room state
+* Input - request to handle
+* Output - the result
+*/
 Requests::RequestResult RoomAdminRequestHandler::getRoomState(Requests::RequestInfo request)
 {
 	Requests::RequestResult result;
@@ -50,11 +54,11 @@ Requests::RequestResult RoomAdminRequestHandler::getRoomState(Requests::RequestI
 		RoomData data = this->m_room->getData();
 		std::vector<std::string> users;
 		auto usersVec = this->m_room->getAllUsers();
-		for (int i = 0; i < usersVec.size(); i++)
+		for (unsigned int i = 0; i < usersVec.size(); i++)
 		{
 			users.push_back(usersVec[i].getName());
 		}
-		Responses::GetRoomStateResponse response = { OK_STATUS, data.isActive, users, data.timePerQuestion, data.numOfQuestionsInGame };
+		Responses::GetRoomStateResponse response = { OK_STATUS, (bool)data.isActive, users, data.numOfQuestionsInGame, data.timePerQuestion };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
 		result.newHandler = nullptr; // to be changed
 	}
@@ -103,7 +107,7 @@ Requests::RequestResult RoomAdminRequestHandler::startGame(Requests::RequestInfo
 		this->m_room->startRoom();
 		Responses::StartGameResponse response = { OK_STATUS };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = nullptr; // to be changed
+		result.newHandler = this->m_handlerFactory.createGameRequestHandler(this->m_user, this->m_handlerFactory.getGameManager().createGame(*this->m_room, this->m_room->getData().id)); 
 	}
 	catch (...)
 	{

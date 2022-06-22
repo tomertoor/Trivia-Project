@@ -9,6 +9,10 @@ RoomManager::RoomManager()
 
 RoomManager::~RoomManager()
 {
+	for (auto it : this->m_rooms)
+	{
+		delete it.second;
+	}
 }
 
 RoomManager* RoomManager::getInstance()
@@ -38,8 +42,9 @@ void RoomManager::createRoom(const LoggedUser& user, const RoomData& data)
 */
 void RoomManager::deleteRoom(const int& id)
 {
-	delete this->m_rooms[id];
+	Room* room = this->m_rooms[id]; // code flow that if both threads enter on same time, it saves the room to delete it after, the erase is called first to cause exception and catch it before delete makes real errors.
 	this->m_rooms.erase(id);
+	delete room;
 	this->currentId--;
 }
 
