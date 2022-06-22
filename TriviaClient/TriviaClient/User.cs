@@ -149,7 +149,7 @@ namespace TriviaClient
     {
         private string key;
         private int lastIdxKey;
-        public PAZCryptoAlgorithm(string Key) { key = Key; }
+        public PAZCryptoAlgorithm(string Key) { key = Key; lastIdxKey = 0; }
         public override byte[] Encrypt(string msg)
         {
             lastIdxKey = 0;
@@ -167,10 +167,9 @@ namespace TriviaClient
         public override string Decrypt(byte[] msg)
         {
             string result = "";
-            lastIdxKey = 0;
-            for (int lastIdxKey = 0; lastIdxKey < msg.Length; lastIdxKey++)
+            for (int i = 0; i < msg.Length; lastIdxKey++, i++)
             {
-                var dif = ((int)msg[lastIdxKey] - (int)key[lastIdxKey % key.Length]) % 255;
+                var dif = ((int)msg[i] - (int)key[lastIdxKey % key.Length]) % 255;
                 result += (char)dif;
             }
             return result;
