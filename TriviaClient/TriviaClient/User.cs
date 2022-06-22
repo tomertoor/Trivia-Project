@@ -2,7 +2,7 @@
 using System.Net.Sockets;
 using System.Text;
 using System.Security.Cryptography;
-
+using System.Linq;
 
 namespace TriviaClient
 {
@@ -56,6 +56,7 @@ namespace TriviaClient
         public const string GET_RESULTS = "18";
         public const string ADMIN = "admin";
         public const string MEMBER = "member";
+        public const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     }
     
     public struct User
@@ -102,24 +103,25 @@ namespace TriviaClient
 
         public void SendData(string data, Socket sock)
         {
-            byte[] msg = new byte[data.Length];
-            for (int i = 0; i < data.Length; i++)
-                msg[i] = (byte)data[i];
-            sock.Send(msg);
+            PAZCryptoAlgorithm algorithm = new PAZCryptoAlgorithm(""); //encryption does not require a key, generates a random one
+            sock.Send(algorithm.Encrypt(data));
         }
 
         public ServerMsg GetData()
         {
+            byte[] key = new byte[16];
+            this.sock.Receive(key, 16, 0);
+            PAZCryptoAlgorithm algorithm = new PAZCryptoAlgorithm(key.ToString());
             ServerMsg msg;
             byte[] code = new byte[2];
             this.sock.Receive(code, 2, 0);
-            msg.code = Encoding.ASCII.GetString(code);
+            msg.code = algorithm.Decrypt(code);
             byte[] len = new byte[4];
             this.sock.Receive(len, 4, 0);
-            int size = Int32.Parse(Encoding.ASCII.GetString(len, 0, 4));
+            int size = Int32.Parse(algorithm.Decrypt(len));
             byte[] data = new byte[size];
             this.sock.Receive(data, size, 0);
-            msg.data = Encoding.ASCII.GetString(data);
+            msg.data = algorithm.Decrypt(data);
 
             return msg;
 
@@ -138,26 +140,38 @@ namespace TriviaClient
         public abstract string Decrypt(byte[] msg);
     }
 
-    public class RSACryptoAlgorithm : CryptoAlgorithm
+    public class PAZCryptoAlgorithm : CryptoAlgorithm
     {
-        private RSACryptoServiceProvider RSAKeyInfo;
-        private UnicodeEncoding ByteConverter;
-        public RSACryptoAlgorithm() { RSAKeyInfo = new RSACryptoServiceProvider(); ByteConverter = new UnicodeEncoding(); }
+        private string key;
+        public PAZCryptoAlgorithm(string Key) { key = Key; }
         public override byte[] Encrypt(string msg)
         {
-            using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
+            var result = new byte[msg.Length + 16];
+            var random = new Random();
+            key = new string(System.Linq.Enumerable.Repeat(Consts.chars, 16).Select(s => s[random.Next(s.Length)]).ToArray());
+            int i = 0;
+            for (; i < 16; i++)
+                result[i] = (byte)key[i];
+            for(; i<msg.Length; i++)
             {
-                RSA.ImportParameters(RSAKeyInfo.ExportParameters(false));
-                return RSA.Encrypt(ByteConverter.GetBytes(msg), false);
+                var sum = (int)msg[i] + (int)key[i % key.Length];
+                if (sum > 255)
+                    sum -= 255;
+                result[i] = (byte)sum;
             }
+            return result;
         }
         public override string Decrypt(byte[] msg)
         {
-            using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
+            string result = "";
+            for (int i = 0; i < msg.Length; i++)
             {
-                RSA.ImportParameters(RSAKeyInfo.ExportParameters(true));
-                return ByteConverter.GetString(RSA.Decrypt(msg, false));
+                var dif = (int)msg[i] - (int)key[i % key.Length];
+                if (dif < 0)
+                    dif += 255;
+                result += (char)dif;
             }
+            return result;
         }
     }
 }
