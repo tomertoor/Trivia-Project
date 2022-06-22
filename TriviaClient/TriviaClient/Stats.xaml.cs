@@ -10,6 +10,8 @@ namespace TriviaClient
     public partial class Stats : Window
     {
         public static User loggedUser;
+        
+        //constructor
         public Stats(Window w)
         {
             InitializeComponent();
@@ -22,12 +24,14 @@ namespace TriviaClient
             loggedUser = Menu.loggedUser;
         }
 
+        //to enable moving the window throug the screen
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
             this.DragMove();
         }
 
+        //function to handle the high scores button click
         private void highScores_Click(object sender, RoutedEventArgs e)
         {
             HighScores scores = new HighScores(this);
@@ -35,6 +39,7 @@ namespace TriviaClient
             scores.Show();
         }
 
+        //function to handle the return to menu button click
         private void menu_Click(object sender, RoutedEventArgs e)
         {
             loggedUser.passedWhat = Consts.STATS;
@@ -43,6 +48,7 @@ namespace TriviaClient
             menu.Show();
         }
 
+        //function to handle my stats button click
         private void myStats_Click(object sender, RoutedEventArgs e)
         {
             UserStats stats = new UserStats();

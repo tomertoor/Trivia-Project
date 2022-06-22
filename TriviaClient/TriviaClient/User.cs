@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Text;
-using System.Security.Cryptography;
 using System.Linq;
 
 namespace TriviaClient
 {
+    //class for signup response deserializing
     public class SignupResponse
     {
         public SignupResponse()
@@ -15,6 +15,7 @@ namespace TriviaClient
         public string status { get; set; }
     }
 
+    //class for login response deserializing
     public class LoginResponse
     {
         public LoginResponse()
@@ -24,6 +25,7 @@ namespace TriviaClient
         public string status { get; set; }
     }
 
+    //class for error response deserializing
     public class ErrorResponse
     {
         public ErrorResponse()
@@ -32,9 +34,12 @@ namespace TriviaClient
         }
         public string message { get; set; }
     }
+
+    //class for all of the consts we are using in the code
     class Consts
     {
-        public const string IP = "85.250.126.121";
+        public const string IP = "127.0.0.1";
+        public const int PORT = 42069;
         public const string STATS = "s";
         public const int OK_STATUS = 1;
         public const string SIGN_UP = "01";
@@ -57,8 +62,10 @@ namespace TriviaClient
         public const string ADMIN = "admin";
         public const string MEMBER = "member";
         public const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        public const int KEY_LENGTH = 16;
     }
     
+    //user struct for each user of the trivia
     public struct User
     {
         public Socket sock;
@@ -72,6 +79,7 @@ namespace TriviaClient
         public string street;
         public string passedWhat;
 
+        //sends the login packet for the server
         public void Login()
         {
             string data = Consts.LOG_IN.PadLeft(2, '0');
@@ -81,6 +89,7 @@ namespace TriviaClient
             SendData(data, this.sock);
         }
 
+        //sends the singup packet for the server
         public void Signup()
         {
             string data = Consts.SIGN_UP.PadLeft(2, '0');
@@ -92,6 +101,7 @@ namespace TriviaClient
             SendData(data, this.sock);
         }
 
+        //sends the logout packet for the server
         public void Logout()
         {
             string data = Consts.LOG_OUT.PadLeft(2, '0');
@@ -101,6 +111,7 @@ namespace TriviaClient
             SendData(data, this.sock);
         }
 
+        //sends the data before encryption to the socket given
         public void SendData(string data, Socket sock)
         {
             PAZCryptoAlgorithm algorithm = new PAZCryptoAlgorithm(""); //encryption does not require a key, generates a random one
@@ -112,10 +123,11 @@ namespace TriviaClient
             sock.Send(sen);
         }
 
+        //return a server msg struct including the data the server sent
         public ServerMsg GetData()
         {
-            byte[] key = new byte[16];
-            this.sock.Receive(key, 16, 0);
+            byte[] key = new byte[Consts.KEY_LENGTH];
+            this.sock.Receive(key, Consts.KEY_LENGTH, 0);
             PAZCryptoAlgorithm algorithm = new PAZCryptoAlgorithm(Encoding.ASCII.GetString(key));
             ServerMsg msg;
             byte[] code = new byte[2];
@@ -132,29 +144,39 @@ namespace TriviaClient
         }
     }
 
+    //this struct saves the data given from the server
     public struct ServerMsg
     {
         public string code;
         public string data;
     }
 
+    //the abstract class for crypto algorithms
     public abstract class CryptoAlgorithm
     {
         public abstract byte[] Encrypt(string msg);
         public abstract string Decrypt(byte[] msg);
     }
 
+    /*
+     * This PAZ crypto algorithm stands for Professor Ariel Zaken crpyto algorithm
+     * Encryption creates a new key with length of 16
+     * The algorithm adds up or subs the ascii values of the current index of the msg 
+     * and the key, then takes the value % 255 (max ascii value)
+     */
     public class PAZCryptoAlgorithm : CryptoAlgorithm
     {
         private string key;
         private int lastIdxKey;
         public PAZCryptoAlgorithm(string Key) { key = Key; lastIdxKey = 0; }
+        
+        //this function encrypts the data by PAZ algorithm, return a byte array of the encrypted data
         public override byte[] Encrypt(string msg)
         {
             lastIdxKey = 0;
             byte[] result = new byte[msg.Length];
             var random = new Random();
-            key = new string(System.Linq.Enumerable.Repeat(Consts.chars, 16).Select(s => s[random.Next(s.Length)]).ToArray());
+            key = new string(System.Linq.Enumerable.Repeat(Consts.chars, Consts.KEY_LENGTH).Select(s => s[random.Next(s.Length)]).ToArray());
             for(int i = 0; i<msg.Length; i++)
             {
                 var sum = ((int)msg[i] + (int)key[i % key.Length]) % 255;
@@ -163,6 +185,8 @@ namespace TriviaClient
             var s = Encoding.ASCII.GetString(result);
             return result;
         }
+
+        //this function decrypts the data by PAZ algorithm, return a string of the decrypted data
         public override string Decrypt(byte[] msg)
         {
             string result = "";
@@ -174,6 +198,7 @@ namespace TriviaClient
             return result;
         }
 
+        //returns the key
         public string GetKey() { return key; }
     }
 }

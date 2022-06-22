@@ -11,6 +11,7 @@ namespace TriviaClient
     public partial class UserStats : Window
     {
         public static User loggedUser;
+        //construntor
         public UserStats()
         {
             InitializeComponent();
@@ -30,8 +31,6 @@ namespace TriviaClient
                 switch (msg.code)
                 {
                     case Consts.PERSONAL_STATS:
-                        /*msg.data = msg.data.Remove(0, 1);
-                        msg.data = msg.data.Remove(msg.data.Length - 1, 1);*/
                         res = JsonSerializer.Deserialize<MystatsResponse>(msg.data);
                         break;
                     case Consts.ERROR:
@@ -40,6 +39,7 @@ namespace TriviaClient
                 }
                 if(res.status == Consts.OK_STATUS)
                 {
+                    //in case of success
                     this.correctAnswers.Text += " " + res.correctAnswers;
                     this.avgTime.Text += " " + res.averageAnswerTime.Substring(0, res.averageAnswerTime.Length-4); //only the first 4 digits 
                     this.noOfGames.Text += " " + res.gameCount;
@@ -59,12 +59,15 @@ namespace TriviaClient
                 this.message.Text = "Error occured";
             }
         }
+        
+        //to enable moving the window throug the screen
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
             this.DragMove();
         }
 
+        //function for handling return to menu button click
         private void menu_Click(object sender, RoutedEventArgs e)
         {
             loggedUser.passedWhat = Consts.PERSONAL_STATS;
@@ -74,6 +77,7 @@ namespace TriviaClient
         }
     }
 
+    //class for personal stats response deserializing
     public class MystatsResponse
     {
         public int status { get; set; }
@@ -81,5 +85,14 @@ namespace TriviaClient
         public string totalAnswers { get; set; }
         public string correctAnswers { get; set; }
         public string averageAnswerTime { get; set; }
+
+        public MystatsResponse()
+        {
+            status = 0;
+            gameCount = "";
+            totalAnswers = "";
+            correctAnswers = "";
+            averageAnswerTime = "";
+        }
     }
 }

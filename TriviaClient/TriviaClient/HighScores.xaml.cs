@@ -12,6 +12,7 @@ namespace TriviaClient
     public partial class HighScores : Window
     {
         public static User loggedUser;
+        //constructor
         public HighScores(Window w)
         {
             InitializeComponent();
@@ -40,20 +41,21 @@ namespace TriviaClient
                 }
                 if (res.status == Consts.OK_STATUS)
                 {
+                    //in case of success
                     if(res.topScores.Count >= 3)
                     {
-                        this.user1.Text = res.topScores[0];
-                        this.user2.Text = res.topScores[1];
-                        this.user3.Text = res.topScores[2];
+                        this.user1.Text += res.topScores[0];
+                        this.user2.Text += res.topScores[1];
+                        this.user3.Text += res.topScores[2];
                     }
                     else if (res.topScores.Count == 2)
                     {
-                        this.user1.Text = res.topScores[0];
-                        this.user2.Text = res.topScores[1];
+                        this.user1.Text += res.topScores[0];
+                        this.user2.Text += res.topScores[1];
                     }
                     else if (res.topScores.Count == 1)
                     {
-                        this.user1.Text = res.topScores[0];
+                        this.user1.Text += res.topScores[0];
                     }
                 }
                 else
@@ -71,11 +73,14 @@ namespace TriviaClient
             }
         }
 
+        //to enable moving the window throug the screen
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
             this.DragMove();
         }
+
+        //function to handle the return to menu button click
         private void menu_Click(object sender, RoutedEventArgs e)
         {
             loggedUser.passedWhat = Consts.HIGH_SCORES;
@@ -85,6 +90,7 @@ namespace TriviaClient
         }
     }
 
+    //class for high scores response deserializing
     public class HighscoresResponse
     {
         public int status { get; set; }

@@ -15,6 +15,7 @@ namespace TriviaClient
     public partial class Signup : Window
     {
         public static User loggedUser;
+        //constructor
         public Signup(Window w)
         {
             InitializeComponent();
@@ -22,18 +23,18 @@ namespace TriviaClient
             this.Top = w.Top;
             AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
             {
-                string data = Consts.LOG_OUT.PadLeft(2, '0') + "0000";
-                loggedUser.SendData(data, loggedUser.sock);
+                loggedUser.Logout();
             };
         }
 
+        //thie function handled the button click for registering
         private void register_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 User user = new User();
                 user.sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                user.sock.Connect(Consts.IP, 42069);
+                user.sock.Connect(Consts.IP, Consts.PORT);
                 user.username = this.username.Text;
                 user.password = this.password.Password;
                 user.email = this.email.Text;
@@ -42,6 +43,7 @@ namespace TriviaClient
                 user.apt = this.apt.Text;
                 user.city = this.city.Text;
                 user.street = this.street.Text;
+                //creates a new user with the data the user gave
                 user.Signup();
                 ServerMsg msg = user.GetData();
                 SignupResponse response = new SignupResponse();
@@ -54,25 +56,22 @@ namespace TriviaClient
                         break;
                     case Consts.ERROR:
                         this.message.Text = msg.data;
-
                         break;
                 }
-               
                 if (response.status.Equals("1"))
                 {
+                    //in case of success, pass the logged user object to the next window, menu
                     loggedUser = user;
                     loggedUser.passedWhat = Consts.SIGN_UP;
                     Menu menu = new Menu(this);
                     this.Close();
                     menu.Show();
                 }
-                
                 else
                 {
                     ErrorResponse errorResponse = new ErrorResponse();
                     msg.data = msg.data.Remove(0, 1);
                     errorResponse = JsonSerializer.Deserialize<ErrorResponse>(msg.data);
-
                     this.message.Text = errorResponse.message;
 
                 }
@@ -84,6 +83,7 @@ namespace TriviaClient
             }
         }
 
+        //handles the home button click, changes to the home window
         private void home_Click(object sender, RoutedEventArgs e)
         {
             MainWindow home = new MainWindow();
@@ -91,6 +91,7 @@ namespace TriviaClient
             home.Show();
         }
 
+        //to enable moveing the window throug the screen
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);

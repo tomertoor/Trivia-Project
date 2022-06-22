@@ -10,6 +10,7 @@ namespace TriviaClient
     public partial class Menu : Window
     {
         public static User loggedUser;
+        //constructor
         public Menu(Window w)
         {
             InitializeComponent();
@@ -21,6 +22,7 @@ namespace TriviaClient
             };
             JoinRoom.refresh = false;
             Room.refresh = false;
+            //checks where the logged user object is
             if (Login.loggedUser.passedWhat == Consts.LOG_IN)
                 loggedUser = Login.loggedUser;
             else if (Signup.loggedUser.passedWhat == Consts.SIGN_UP)
@@ -43,12 +45,14 @@ namespace TriviaClient
             this.username.Text = "Hello " + loggedUser.username + "!";
         }
 
+        //to enable moving the window throug the screen
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
             this.DragMove();
         }
 
+        //function to log out the user in case of exit
         private void exit_Click(object sender, RoutedEventArgs e)
         {
             loggedUser.Logout();
@@ -56,6 +60,7 @@ namespace TriviaClient
             this.Close();
         }
 
+        //function for handling create room button click
         private void createRoom_Click(object sender, RoutedEventArgs e)
         {
             CreateRoom create = new CreateRoom(this);
@@ -63,6 +68,7 @@ namespace TriviaClient
             create.Show();
         }
 
+        //function for handling join room button click
         private void joinRoom_Click(object sender, RoutedEventArgs e)
         {
             JoinRoom join = new JoinRoom(this);
@@ -70,6 +76,7 @@ namespace TriviaClient
             join.Show();
         }
 
+        //function for handling statistics button click
         private void statistics_Click(object sender, RoutedEventArgs e)
         {
             Stats stats = new Stats(this);

@@ -17,6 +17,7 @@ namespace TriviaClient
     /// </summary>
     public partial class Info : Window
     {
+        //constructor
         public Info(Window w)
         {
             InitializeComponent();
@@ -24,6 +25,7 @@ namespace TriviaClient
             this.Top = w.Top;
         }
 
+        //function for handling home button click
         private void home_Click(object sender, RoutedEventArgs e)
         {
             MainWindow main = new MainWindow();
@@ -31,6 +33,7 @@ namespace TriviaClient
             main.Show();
         }
 
+        //to enable moveing the window throug the screen
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
