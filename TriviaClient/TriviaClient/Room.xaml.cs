@@ -17,7 +17,8 @@ namespace TriviaClient
         public static User loggedUser;
         private static string mod;
         public static string name;
-        private static bool refresh;
+        public static bool refresh;
+        private static Mutex mut;
         public static int quesCount;
         public static int qTimeout;
         public Room(Window w)
@@ -27,9 +28,9 @@ namespace TriviaClient
             this.Top = w.Top;
             AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
             {
-                string data = Consts.LOG_OUT.PadLeft(2, '0') + "0000";
-                JoinRoom.loggedUser.SendData(data, loggedUser.sock);
+                loggedUser.Logout();
             };
+            JoinRoom.refresh = false;
             users = new List<string>();
             if (JoinRoom.loggedUser.passedWhat == Consts.JOIN_ROOM)
             {
@@ -40,12 +41,13 @@ namespace TriviaClient
             if (CreateRoom.loggedUser.passedWhat == Consts.CREATE_ROOM)
             {
                 loggedUser = CreateRoom.loggedUser;
+                name = CreateRoom.name;
                 mod = Consts.ADMIN;
                 this.@return.Content = "Close Room";
-
             }
             this.level.Text += mod;
             refresh = true;
+            mut = new Mutex();
             roomName.Text += " " + name;
             quesCount = 0;
             qTimeout = 0;
@@ -60,15 +62,23 @@ namespace TriviaClient
             this.DragMove();
         }
 
+        private void OnWindowclose(object sender, EventArgs e)
+        {
+            loggedUser.Logout();
+            refresh = false;
+        }
         private void RefreshUsers()
         {
             while (refresh)
             {
                 try
                 {
+                    JoinRoom.refresh = false;
                     string data = Consts.GET_ROOM_STATE.PadLeft(2, '0') + "0000";
+                    mut.WaitOne();
                     loggedUser.SendData(data, loggedUser.sock);
                     ServerMsg msg = loggedUser.GetData();
+                    mut.ReleaseMutex();
                     GetRoomStateResponse res = new GetRoomStateResponse();
                     GetClosedroomResponse close = new GetClosedroomResponse();
          
@@ -97,13 +107,16 @@ namespace TriviaClient
                             if (quesCount != res.questionCount)
                             {
                                 this.qCount.Text = this.qCount.Text.Substring(0, this.qCount.Text.LastIndexOf(':') + 1) + " " + res.questionCount.ToString();
+                                quesCount = res.questionCount;
                             }
                             if (qTimeout != res.answerTimeout)
                             {
                                 this.timePerQ.Text = this.timePerQ.Text.Substring(0, this.timePerQ.Text.LastIndexOf(':') + 1) + " " + res.answerTimeout.ToString();
+                                qTimeout = res.answerTimeout;
                             }
                             if(res.hasGameBegun)
                             {
+                                refresh = false;
                                 Game game = new Game(this);
                                 this.Close();
                                 game.Show();
@@ -119,7 +132,6 @@ namespace TriviaClient
                             this.Close();
                             menu.Show();
                         });
-                        
                     }
                     else
                     {
@@ -139,7 +151,7 @@ namespace TriviaClient
                         message.Text = "Error occured";
                     }));
                 }
-                Thread.Sleep(3000);
+                Thread.Sleep(500);
             }
         }
 
@@ -161,7 +173,48 @@ namespace TriviaClient
         }
         private void start_Click(object sender, RoutedEventArgs e)
         {
-            //start game
+            try
+            {
+                string data = Consts.START_GAME + "0000";
+                mut.WaitOne();
+                loggedUser.SendData(data, loggedUser.sock);
+                ServerMsg msg = loggedUser.GetData();
+                mut.ReleaseMutex();
+                GetStartGameRepsonse response = new GetStartGameRepsonse();
+                switch (msg.code)
+                {
+                    case Consts.START_GAME:
+                        msg.data = msg.data.Remove(0, 1);
+                        msg.data = msg.data.Remove(msg.data.Length - 1, 1);
+                        response = JsonSerializer.Deserialize<GetStartGameRepsonse>(msg.data);
+                        break;
+                    case Consts.ERROR:
+                        this.message.Text = msg.data;
+                        break;
+                }
+
+                if (response.status.Equals("1"))
+                {
+                    refresh = false;
+                    Game game = new Game(this);
+                    this.Close();
+                    game.Show();
+                }
+                else
+                {
+                    ErrorResponse errorResponse = new ErrorResponse();
+                    msg.data = msg.data.Remove(0, 1);
+                    errorResponse = JsonSerializer.Deserialize<ErrorResponse>(msg.data);
+
+                    this.message.Text = errorResponse.message;
+
+                }
+            }
+            catch (Exception)
+            {
+                this.message.FontSize = 25;
+                this.message.Text = "Error occured";
+            }
         }
 
         private void return_Click(object sender, RoutedEventArgs e)
@@ -185,6 +238,14 @@ namespace TriviaClient
             menu.Show();
         }
 
+        class GetStartGameRepsonse
+        {
+            public string status { get; set; }
+            public GetStartGameRepsonse()
+            {
+                status = "";
+            }
+        }
         class GetRoomStateResponse
         {
             public int status { get; set; }

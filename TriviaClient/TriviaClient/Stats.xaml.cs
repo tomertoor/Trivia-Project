@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
 
 namespace TriviaClient
@@ -14,6 +15,10 @@ namespace TriviaClient
             InitializeComponent();
             this.Left = w.Left;
             this.Top = w.Top;
+            AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
+            {
+                loggedUser.Logout();
+            };
             loggedUser = Menu.loggedUser;
         }
 

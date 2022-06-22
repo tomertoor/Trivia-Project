@@ -16,7 +16,7 @@ namespace TriviaClient
         private static List<string> rooms;
         public static User loggedUser;
         private static Thread thread;
-        private static bool refresh;
+        public static bool refresh;
         public JoinRoom(Window w)
         {
             InitializeComponent();
@@ -25,8 +25,7 @@ namespace TriviaClient
             loggedUser = Menu.loggedUser;
             AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
             {
-                string data = Consts.LOG_OUT.PadLeft(2, '0') + "0000";
-                loggedUser.SendData(data, loggedUser.sock);
+                loggedUser.Logout();
             };
             JoinRoom.rooms = new List<string>();
             thread = new Thread(RefreshRooms);
@@ -80,7 +79,7 @@ namespace TriviaClient
                         message.Text = "Error occured";
                     }));
                 }
-                Thread.Sleep(3000);
+                Thread.Sleep(1500);
             }
         }
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -88,7 +87,11 @@ namespace TriviaClient
             base.OnMouseLeftButtonDown(e);
             this.DragMove();
         }
-
+        private void OnWindowclose(object sender, EventArgs e)
+        {
+            loggedUser.Logout();
+            refresh = false;
+        }
         private void AddButtonsForEachRoom(List<string> updatedRooms)
         {
             this.Dispatcher.BeginInvoke(new Action(() =>
@@ -146,6 +149,7 @@ namespace TriviaClient
                         }
                         catch (Exception)
                         {
+                            refresh = false;
                             loggedUser.passedWhat = Consts.JOIN_ROOM;
                             Room.name = btn.Name;
                             Room room = new Room(this);

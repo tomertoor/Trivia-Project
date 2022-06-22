@@ -1,4 +1,4 @@
-﻿<Window x:Class="TriviaClient.Game"
+﻿<Window x:Class="TriviaClient.GameResults"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -24,21 +24,15 @@
                     </LinearGradientBrush>
                 </Border.Background>
             </Border>
-
-            <TextBlock Name="question"
-                           TextWrapping="Wrap"
-                           Text=""
+            <StackPanel Name="scores" Margin="80,146,81,10" Grid.RowSpan="2"/>
+            <TextBlock Name="title"
+                           Text="Game results: "
                            FontWeight="SemiBold"
                            FontFamily="helvetica"
-                           FontSize="18"
-                           Foreground="Black" Margin="181,46,182,110"/>
-            <TextBlock Name="countdown" Text="" FontWeight="SemiBold" FontFamily="helvetica" Foreground="Black" Margin="640,35,23,140"/>
-            <TextBlock Name="quesNum" Text="Question Number " FontSize="20" FontWeight="SemiBold" FontFamily="helvetica" Foreground="Black" Margin="18,16,595,159"/>
-            <TextBlock Name="message" Text="" Margin="223,90,223,40" Foreground="Black" TextWrapping="Wrap"/>
-            <Button Name="ans1" Content="" Margin="76,96,466,72" Grid.Row="1" Click="ans_Click"/>
-            <Button Name="ans2" Content="" Margin="466,96,76,72" Grid.Row="1" Click="ans_Click"/>
-            <Button Name="ans3" Content="" Margin="466,10,76,158" Grid.Row="1" Click="ans_Click"/>
-            <Button Name="ans4" Content="" Margin="76,0,466,158" Grid.Row="1" Click="ans_Click"/>
+                           FontSize="22"
+                           Foreground="Black" Margin="312,34,312,122"/>
+            <TextBlock Name="message" Text="" Margin="223,76,223,54" Foreground="Black" TextWrapping="Wrap"/>
+            <Button Name="menu" Content="Return to menu" Height="45" Margin="10,26,544,129" Click="menu_Click"/>
         </Grid>
 
     </Grid>

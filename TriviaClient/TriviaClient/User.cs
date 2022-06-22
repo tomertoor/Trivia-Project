@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Text;
-
+using System.Security.Cryptography;
+using System.Linq;
 
 namespace TriviaClient
 {
@@ -33,7 +34,7 @@ namespace TriviaClient
     }
     class Consts
     {
-        public const string IP = "85.250.96.65";
+        public const string IP = "85.250.126.121";
         public const string STATS = "s";
         public const int OK_STATUS = 1;
         public const string SIGN_UP = "01";
@@ -49,16 +50,15 @@ namespace TriviaClient
         public const string CLOSE_ROOM = "11";
         public const string START_GAME = "12";
         public const string LEAVE_ROOM = "14";
-        public const string GET_QUESTION = "15";
+        public const string GET_QUESTION = "16";
+        public const string LEAVE_GAME = "15";
+        public const string SUBMIT_ANSWER = "17";
+        public const string GET_RESULTS = "18";
         public const string ADMIN = "admin";
         public const string MEMBER = "member";
+        public const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     }
     
-    public struct Message
-    {
-        string code;
-        string data;
-    }
     public struct User
     {
         public Socket sock;
@@ -103,24 +103,30 @@ namespace TriviaClient
 
         public void SendData(string data, Socket sock)
         {
-            byte[] msg = new byte[data.Length];
-            for (int i = 0; i < data.Length; i++)
-                msg[i] = (byte)data[i];
-            sock.Send(msg);
+            PAZCryptoAlgorithm algorithm = new PAZCryptoAlgorithm(""); //encryption does not require a key, generates a random one
+            var msg = algorithm.Encrypt(data);
+            var key = Encoding.ASCII.GetBytes(algorithm.GetKey());
+            byte[] sen = new byte[msg.Length + key.Length];
+            System.Buffer.BlockCopy(key, 0, sen, 0, key.Length);
+            System.Buffer.BlockCopy(msg, 0, sen, key.Length, msg.Length);
+            sock.Send(sen);
         }
 
         public ServerMsg GetData()
         {
+            byte[] key = new byte[16];
+            this.sock.Receive(key, 16, 0);
+            PAZCryptoAlgorithm algorithm = new PAZCryptoAlgorithm(Encoding.ASCII.GetString(key));
             ServerMsg msg;
             byte[] code = new byte[2];
             this.sock.Receive(code, 2, 0);
-            msg.code = Encoding.ASCII.GetString(code);
+            msg.code = algorithm.Decrypt(code);
             byte[] len = new byte[4];
             this.sock.Receive(len, 4, 0);
-            int size = Int32.Parse(Encoding.ASCII.GetString(len, 0, 4));
+            int size = Int32.Parse(algorithm.Decrypt(len));
             byte[] data = new byte[size];
             this.sock.Receive(data, size, 0);
-            msg.data = Encoding.ASCII.GetString(data);
+            msg.data = algorithm.Decrypt(data);
 
             return msg;
         }
@@ -130,5 +136,44 @@ namespace TriviaClient
     {
         public string code;
         public string data;
+    }
+
+    public abstract class CryptoAlgorithm
+    {
+        public abstract byte[] Encrypt(string msg);
+        public abstract string Decrypt(byte[] msg);
+    }
+
+    public class PAZCryptoAlgorithm : CryptoAlgorithm
+    {
+        private string key;
+        private int lastIdxKey;
+        public PAZCryptoAlgorithm(string Key) { key = Key; lastIdxKey = 0; }
+        public override byte[] Encrypt(string msg)
+        {
+            lastIdxKey = 0;
+            byte[] result = new byte[msg.Length];
+            var random = new Random();
+            key = new string(System.Linq.Enumerable.Repeat(Consts.chars, 16).Select(s => s[random.Next(s.Length)]).ToArray());
+            for(int i = 0; i<msg.Length; i++)
+            {
+                var sum = ((int)msg[i] + (int)key[i % key.Length]) % 255;
+                result[i] = (byte)sum;
+            }
+            var s = Encoding.ASCII.GetString(result);
+            return result;
+        }
+        public override string Decrypt(byte[] msg)
+        {
+            string result = "";
+            for (int i = 0; i < msg.Length; lastIdxKey++, i++)
+            {
+                var dif = ((int)msg[i] - (int)key[lastIdxKey % key.Length]) % 255;
+                result += Convert.ToChar(dif);
+            }
+            return result;
+        }
+
+        public string GetKey() { return key; }
     }
 }

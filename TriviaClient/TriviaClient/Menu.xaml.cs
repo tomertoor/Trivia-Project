@@ -17,10 +17,10 @@ namespace TriviaClient
             this.Top = w.Top;
             AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
             {
-                string data = Consts.LOG_OUT.PadLeft(2, '0') + "0000";
-                loggedUser.SendData(data, loggedUser.sock);
+                loggedUser.Logout();
             };
-
+            JoinRoom.refresh = false;
+            Room.refresh = false;
             if (Login.loggedUser.passedWhat == Consts.LOG_IN)
                 loggedUser = Login.loggedUser;
             else if (Signup.loggedUser.passedWhat == Consts.SIGN_UP)
@@ -33,6 +33,8 @@ namespace TriviaClient
                 loggedUser = Stats.loggedUser;
             else if (Room.loggedUser.passedWhat == Consts.ADMIN || Room.loggedUser.passedWhat == Consts.MEMBER)
                 loggedUser = Room.loggedUser;
+            else if (GameResults.loggedUser.passedWhat == Consts.GET_RESULTS)
+                loggedUser = GameResults.loggedUser;
             else
             {
                 loggedUser.username = "none";
