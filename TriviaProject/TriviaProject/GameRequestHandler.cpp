@@ -115,7 +115,7 @@ Requests::RequestResult GameRequestHandler::getGameResults(Requests::RequestInfo
 	}
 	return result;
 }
-/*Responsible on leaving game
+/*Responsible on leaving game, if user is leaving it disconnects him.
 * Input - the info
 * Output - the result
 */
@@ -126,6 +126,7 @@ Requests::RequestResult GameRequestHandler::leaveGame(Requests::RequestInfo info
 	try
 	{
 		this->m_game->removePlayer(this->m_user);
+		this->m_handlerFactory.getLoginManager().logout(this->m_user.getName());
 		Responses::LeaveGameResponse response = { OK_STATUS };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
 		result.newHandler = nullptr;
