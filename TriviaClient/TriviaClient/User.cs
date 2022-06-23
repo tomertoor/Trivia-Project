@@ -38,7 +38,7 @@ namespace TriviaClient
     //class for all of the consts we are using in the code
     class Consts
     {
-        public const string IP = "80.178.83.12";
+        public const string IP = "85.250.126.121";
         public const int PORT = 42069;
         public const string STATS = "s";
         public const int OK_STATUS = 1;

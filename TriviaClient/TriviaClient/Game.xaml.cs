@@ -320,5 +320,12 @@ namespace TriviaClient
                 message.Text = "Error occured";
             }
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            string data = Consts.LEAVE_GAME.PadLeft(2, '0') + "0000";
+            loggedUser.SendData(data, loggedUser.sock);
+            
+        }
     }
 }

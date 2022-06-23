@@ -6,6 +6,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:TriviaClient"
         mc:Ignorable="d"
+        Closing="Window_Closing"
         Title="MainWindow" Height="400" Width="800"
         ResizeMode="NoResize" WindowStyle="None"
         AllowsTransparency="True" Background="Transparent">
