@@ -37,7 +37,8 @@ namespace TriviaClient
             this.Close();
             menu.Show();
         }
-
+        /*function that is responsible on handling the create button click event, sends packet to the server to create the room
+         */
         private void create_Click(object sender, RoutedEventArgs e)
         {
             //send request by the info from the user
@@ -69,7 +70,7 @@ namespace TriviaClient
                         this.message.Text = response.data;
                         break;
                 }
-                if(res.status.Equals("1"))
+                if(res.status.Equals("1")) //if the room is succesfully made
                 {
                     name = this.roomName.Text;
                     loggedUser.passedWhat = Consts.CREATE_ROOM;

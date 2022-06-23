@@ -51,7 +51,7 @@ namespace TriviaClient
             roomName.Text += " " + name;
             quesCount = 0;
             qTimeout = 0;
-            Thread thread = new Thread(RefreshUsers);
+            Thread thread = new Thread(RefreshUsers); //creates another thread so the room will show and it will run async
             thread.Start();
             ;
         }
@@ -67,6 +67,10 @@ namespace TriviaClient
             loggedUser.Logout();
             refresh = false;
         }
+        /*Function responsible on refreshing users while in room, handles all the packet sending and handling
+         * Input - None
+         * Output - None
+         */
         private void RefreshUsers()
         {
             while (refresh)
@@ -155,6 +159,10 @@ namespace TriviaClient
             }
         }
 
+        /*Refreshes labels for users    based on list of users
+         * Input - list of users
+         * Output - None
+         */
         private void AddLabelsForUsers(List<string> updatedUsers)
         {
             this.Dispatcher.BeginInvoke(new Action(() =>
@@ -216,7 +224,7 @@ namespace TriviaClient
                 this.message.Text = "Error occured";
             }
         }
-
+        //Returns it to lobby based on admin, admin gonna close and member will just leave
         private void return_Click(object sender, RoutedEventArgs e)
         {
             loggedUser.passedWhat = mod;

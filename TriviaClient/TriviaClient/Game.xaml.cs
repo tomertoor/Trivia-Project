@@ -40,15 +40,19 @@ namespace TriviaClient
             loggedUser = Room.loggedUser;
             timeForQ = Room.qTimeout;
             quesCount = Room.quesCount;
+
+            //Takes care of opening the music files
             theme = new MediaPlayer();
             theme.Open(new Uri(dir + @"\question.mp3"));
             gong = new MediaPlayer();
             gong.Open(new Uri(dir + @"\gong.mp3"));
+
+            //Creates a thread to run the game async and for the constructor to finish so it can show the screen
             th = new Thread(StartGame);
             th.IsBackground = true;
             th.Start();
         }
-
+        //Responsible on starting the game loop.
         private void StartGame()
         {
             for (int i = 1; i<=quesCount; i++)
@@ -130,6 +134,10 @@ namespace TriviaClient
             Thread.Sleep(seconds * 1000);
         }
         
+        /*Function responisble on getting the current question and calling another function to display it
+         Input - None
+        Output - None
+        */
         private void GetQuestion()
         {
             this.Dispatcher.BeginInvoke(new Action(() =>
@@ -180,6 +188,7 @@ namespace TriviaClient
                 theme.Play();
             }));
         }
+        //Function that displays the message
         private void AddQuestion()
         {
             this.question.Text = currectQuestion.question;
@@ -188,7 +197,7 @@ namespace TriviaClient
             this.ans3.Content = currectQuestion.answers[2][1];
             this.ans4.Content = currectQuestion.answers[3][1];
         }
-
+        //Incharge of setting the timer
         private void SetTimer()
         {
             _time = TimeSpan.FromSeconds(timeForQ);
@@ -236,7 +245,7 @@ namespace TriviaClient
                 status = "0";
             }
         }
-
+        //Event for answer click, handles submitting and also disabling other buttons.
         private void ans_Click(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;

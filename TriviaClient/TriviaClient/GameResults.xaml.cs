@@ -58,7 +58,10 @@ namespace TriviaClient
                 message.Text = "Error occured";
             }
         }
-
+        /*Displays the scores of the user
+         * Input - the list of the score
+         * Output - none
+         */
         private void ShowScores(List<GameResult> users)
         {
             scores.Children.Clear();

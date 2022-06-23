@@ -35,6 +35,10 @@ namespace TriviaClient
             ;
         }
 
+        /*Function responsible on refreshing room async
+         * Input - None
+         * Output - None
+         */
         private void RefreshRooms()
         {
             while (refresh)
@@ -82,16 +86,23 @@ namespace TriviaClient
                 Thread.Sleep(1500);
             }
         }
+        //Responsible on dragging
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
             this.DragMove();
         }
+        //makes sure he logs out on window close
         private void OnWindowclose(object sender, EventArgs e)
         {
             loggedUser.Logout();
             refresh = false;
         }
+
+        /*Function responsible on represnting each room with buttons 
+         * Input - the list of room names
+         * Output - None
+         */
         private void AddButtonsForEachRoom(List<string> updatedRooms)
         {
             this.Dispatcher.BeginInvoke(new Action(() =>
@@ -115,6 +126,10 @@ namespace TriviaClient
             }));
         }
 
+        /*Callback function for joinRoom, uses button index in the list to join
+         Input - the object that trigerred the event and the eventArgs if any
+        Output - None. 
+        */
         public void joinRoom(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
