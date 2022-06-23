@@ -38,7 +38,7 @@ namespace TriviaClient
     //class for all of the consts we are using in the code
     class Consts
     {
-        public const string IP = "127.0.0.1";
+        public const string IP = "80.178.83.12";
         public const int PORT = 42069;
         public const string STATS = "s";
         public const int OK_STATUS = 1;
@@ -61,7 +61,7 @@ namespace TriviaClient
         public const string GET_RESULTS = "18";
         public const string ADMIN = "admin";
         public const string MEMBER = "member";
-        public const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        public const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
         public const int KEY_LENGTH = 16;
     }
     

@@ -10,7 +10,7 @@ private:
 	std::vector<std::string> m_possibleAnswers;
 	int m_correctAnswerId;
 public:
-	Question() = default;
+	Question();
 	Question(const std::string& question, const std::vector<std::string>& possibleAnswers, int correctAnswerId);
 	~Question() = default;
 

@@ -8,8 +8,10 @@
 #include "JsonRequestPacketDeserializer.h"
 #include "PAZCryptoAlgorithm.h"
 
-const int PORT = 42069;
+#define CODE_LEN 2
+#define SIZE_LEN 4
 
+const int PORT = 42069;
 
 class Communicator
 {
@@ -17,33 +19,21 @@ private:
 	SOCKET m_serverSocket;
 	std::map<SOCKET, IRequestHandler*> m_clients;
 	RequestHandlerFactory& m_handlerFactory;
-public:
-	
-	void startHandleRequests();
-
-	static Communicator* getInstance(RequestHandlerFactory& handlerFactory);
-
-	~Communicator();
-	
-	Communicator(Communicator&) = delete;
-	Communicator& operator=(const Communicator&) = delete;
-
-
-private:
 
 	static Communicator* instance;
-
 	Communicator(RequestHandlerFactory& handlerFactory);
-
 	void bindAndListen();
 	void handleNewClient(SOCKET sock);
-
 	void sendData(const SOCKET sc, const std::string message);
 	std::string getPartFromSocket(const SOCKET sc, const int bytesNum);
 	std::string getPartFromSocket(const SOCKET sc, const int bytesNum, const int flags);
 	std::string bufferToString(Buffer buf);
-
 	Buffer stringToBuffer(const std::string& msg);
 
-	void checkBroadcastToRoom(SOCKET sock);
+public:
+	void startHandleRequests();
+	static Communicator* getInstance(RequestHandlerFactory& handlerFactory);
+	~Communicator();
+	Communicator(Communicator&) = delete;
+	Communicator& operator=(const Communicator&) = delete;
 };

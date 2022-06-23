@@ -76,7 +76,7 @@ output: none
 */
 void LoginManager::logout(const std::string& username)
 {
-	for (int i = 0; i < this->m_loggedUsers.size(); i++) 
+	for (unsigned int i = 0; i < this->m_loggedUsers.size(); i++) 
 	{
 		if (this->m_loggedUsers[i].getName() == username)
 			m_loggedUsers.erase(this->m_loggedUsers.begin() + i); //erases the cell
@@ -119,7 +119,7 @@ bool LoginManager::isPhoneValid(const std::string& phone)
 */
 bool LoginManager::isAlreadyLogged(LoggedUser user)
 {
-	for (int i = 0; i < this->m_loggedUsers.size(); i++)
+	for (unsigned int i = 0; i < this->m_loggedUsers.size(); i++)
 	{
 		if (this->m_loggedUsers[i].getName() == user.getName())
 		{

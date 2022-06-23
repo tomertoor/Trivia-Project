@@ -18,7 +18,6 @@ private:
 	Requests::RequestResult getGameResults(Requests::RequestInfo info);
 	Requests::RequestResult leaveGame(Requests::RequestInfo info);
 
-
 public:
 	GameRequestHandler(LoggedUser user, Game* game);
 	virtual ~GameRequestHandler() = default;

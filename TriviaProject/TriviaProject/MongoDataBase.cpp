@@ -215,7 +215,7 @@ void MongoDataBase::updateStatistics(const std::string& name, GameData newResult
 	PlayerResults overallResults{ name, correctAns, this->getNumOfTotalAnswers(name) - correctAns, this->getPlayerAverageAnswerTime(name) };
 	overallResults.correctAnswerCount += newResults.correctAnswerCount;
 	overallResults.wrongAnswerCount += newResults.wrongAnswerCount;
-	overallResults.averageAnswerTime = ( ((int)overallResults.correctAnswerCount + overallResults.wrongAnswerCount) * overallResults.averageAnswerTime + newResults.averageAnswerTime) / ((int)overallResults.correctAnswerCount + overallResults.wrongAnswerCount + 1);
+	overallResults.averageAnswerTime = ( (overallResults.correctAnswerCount + overallResults.wrongAnswerCount) * overallResults.averageAnswerTime + newResults.averageAnswerTime) / (overallResults.correctAnswerCount + overallResults.wrongAnswerCount + 1);
 
 	mongocxx::collection coll = db[STATS_COLLECTION];
 	// switching from struct to regular vars since mongo likes to make errors if not
@@ -255,7 +255,7 @@ std::vector<std::string> MongoDataBase::getHighestScores()
 	std::vector<std::string> finalVec;
 	if (vec.size() < TOP_SCORE_AMOUNT)
 	{
-		for (int i = 0; i < vec.size(); i++)
+		for (unsigned int i = 0; i < vec.size(); i++)
 		{
 			finalVec.push_back(vec[i].first);
 		}

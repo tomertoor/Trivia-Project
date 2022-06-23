@@ -16,6 +16,7 @@ private:
 	std::unordered_map<LoggedUser, GameData*, UserHash>* m_players;
 	int m_gameId;
 	std::clock_t startTime;
+
 public:
 	Game(const std::vector<Question> questions, int gameId);
 	~Game();

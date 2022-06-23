@@ -7,7 +7,7 @@
 class GameException : public std::exception
 {
 public:
-    int status;
+    unsigned int status;
     GameException(int status) : status(status) {};
     ~GameException() {};
 };

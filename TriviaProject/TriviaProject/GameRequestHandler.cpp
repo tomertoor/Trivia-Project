@@ -81,7 +81,7 @@ Requests::RequestResult GameRequestHandler::getGameResults(Requests::RequestInfo
 			users.push_back(it.first);
 		}
 		std::vector<PlayerResults> resultsVec;
-		for (int i = 0; i < users.size(); i++)
+		for (unsigned int i = 0; i < users.size(); i++)
 		{
 			resultsVec.push_back(PlayerResults{users[i].getName(), resultsMap[users[i]]->correctAnswerCount, resultsMap[users[i]]->wrongAnswerCount, resultsMap[users[i]]->averageAnswerTime});
 		}

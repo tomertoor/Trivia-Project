@@ -59,7 +59,6 @@ void Communicator::bindAndListen()
 
 	struct sockaddr_in sa = { 0 };
 
-
 	sa.sin_port = htons(PORT); // port that server will listen for
 	sa.sin_family = AF_INET;   // must be AF_INET
 	sa.sin_addr.s_addr = INADDR_ANY;    // when there are few ip's for the machine. We will use always "INADDR_ANY"
@@ -83,16 +82,15 @@ void Communicator::handleNewClient(SOCKET sock)
 
     IRequestHandler* handler = new LoginRequestHandler();
     this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(sock, handler));
-
     Requests::RequestInfo ri;
 
     try
     {
         while (true)
         {
-            PAZCryptoAlgorithm algorithm(this->getPartFromSocket(sock, 16));
-            ri.id = stoi(algorithm.Decrypt(stringToBuffer(this->getPartFromSocket(sock, 2))));
-            int len = stoi(algorithm.Decrypt(stringToBuffer(this->getPartFromSocket(sock, 4))));
+            PAZCryptoAlgorithm algorithm(this->getPartFromSocket(sock, KEY_LEN));
+            ri.id = stoi(algorithm.Decrypt(stringToBuffer(this->getPartFromSocket(sock, CODE_LEN))));
+            int len = stoi(algorithm.Decrypt(stringToBuffer(this->getPartFromSocket(sock, SIZE_LEN))));
             ri.buffer = stringToBuffer(algorithm.Decrypt(stringToBuffer(this->getPartFromSocket(sock, len))));
 
             if (handler->isRequestRelevant(ri))
@@ -133,12 +131,8 @@ void Communicator::handleNewClient(SOCKET sock)
             this->m_clients.erase(sock);
         }
         std::cout << "User at socket " << sock << " disconnected." << std::endl;
-
-
-
     }
 }
-
 
 /*Helper function for sending data
 * Input - sc : the socket to receive from, message: the message to send
@@ -149,7 +143,7 @@ void Communicator::sendData(const SOCKET sc, const std::string message)
     PAZCryptoAlgorithm algorithm("");
     auto buf = algorithm.Encrypt(message);
     std::string sen = algorithm.GetKey();
-    for (int i = 0; i < buf.buffer.size(); i++)
+    for (unsigned int i = 0; i < buf.buffer.size(); i++)
         sen.push_back(buf.buffer[i]);
 	const char* data = sen.c_str();
 
@@ -192,7 +186,6 @@ std::string Communicator::getPartFromSocket(const SOCKET sc, const int bytesNum,
 	return received;
 }
 
-
 /*
 Helper function to convert buffer to string
 input: buffer
@@ -210,11 +203,7 @@ std::string Communicator::bufferToString(Buffer buf)
 Buffer Communicator::stringToBuffer(const std::string& msg)
 {
     Buffer buf;
-    for (int i = 0; i < msg.size(); i++)
+    for (unsigned int i = 0; i < msg.size(); i++)
         buf.buffer.push_back(msg[i]);
     return buf;
-}
-
-void Communicator::checkBroadcastToRoom(SOCKET sock)
-{
 }

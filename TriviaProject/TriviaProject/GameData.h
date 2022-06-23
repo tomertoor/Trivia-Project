@@ -17,7 +17,7 @@ struct GameData
 	unsigned int correctAnswerCount;
 	unsigned int wrongAnswerCount;
 	double averageAnswerTime;
-	int currentQuestionIndex;
+	unsigned int currentQuestionIndex;
 	bool operator==(const GameData& other)
 	{
 		return averageAnswerTime == other.averageAnswerTime;

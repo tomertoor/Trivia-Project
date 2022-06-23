@@ -1,7 +1,10 @@
 #pragma once
 #include "CryptoAlgorithm.h"
 
-#define CHARS "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+#define CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()"
+#define KEY_LEN 16
+#define CHARS_SIZE 72
+#define MAX_CHAR_VAL 255
 
 class PAZCryptoAlgorithm : public CryptoAlgorithm
 {

@@ -25,7 +25,7 @@ Game* GameManager::createGame(Room& room, const unsigned int& id)
 	for (auto& question : this->m_database->getQuestions(room.getData().numOfQuestionsInGame))
 		questions.push_back(question);
 	Game* game = new Game(questions, id);
-	for (int i = 0; i < room.getAllUsers().size(); i++)
+	for (unsigned int i = 0; i < room.getAllUsers().size(); i++)
 		game->addUser(room.getAllUsers()[i]);
 	this->m_games.push_back(game);
 	return game;
@@ -47,7 +47,7 @@ void GameManager::deleteGame(int gameId)
 
 Game* GameManager::getGameById(const unsigned int& id)
 {
-	for (int i = 0; i < this->m_games.size(); i++)
+	for (unsigned int i = 0; i < this->m_games.size(); i++)
 	{
 		if (this->m_games[i]->getId() == id)
 		{
