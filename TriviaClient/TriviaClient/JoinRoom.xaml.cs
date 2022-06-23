@@ -23,10 +23,7 @@ namespace TriviaClient
             this.Left = w.Left;
             this.Top = w.Top;
             loggedUser = Menu.loggedUser;
-            AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
-            {
-                loggedUser.Logout();
-            };
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);
             JoinRoom.rooms = new List<string>();
             thread = new Thread(RefreshRooms);
             refresh = true;
@@ -92,13 +89,11 @@ namespace TriviaClient
             base.OnMouseLeftButtonDown(e);
             this.DragMove();
         }
-        //makes sure he logs out on window close
-        private void OnWindowclose(object sender, EventArgs e)
+
+        private void OnProcessExit(object sender, EventArgs e)
         {
             loggedUser.Logout();
-            refresh = false;
         }
-
         /*Function responsible on represnting each room with buttons 
          * Input - the list of room names
          * Output - None
@@ -212,6 +207,11 @@ namespace TriviaClient
                 this.Close();
                 menu.Show();
             }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            refresh = false;
         }
     }
 

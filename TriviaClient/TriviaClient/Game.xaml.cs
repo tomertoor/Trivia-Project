@@ -26,16 +26,14 @@ namespace TriviaClient
         private static Thread th;
         private static MediaPlayer theme;
         private static MediaPlayer gong;
+        private static bool refresh;
         public Game(Window w)
         {
             InitializeComponent();
             this.Left = w.Left;
             this.Top = w.Top;
-            AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
-            {
-                loggedUser.Logout();
-            };
             Room.refresh = false;
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);
             string dir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName;
             loggedUser = Room.loggedUser;
             timeForQ = Room.qTimeout;
@@ -49,13 +47,14 @@ namespace TriviaClient
 
             //Creates a thread to run the game async and for the constructor to finish so it can show the screen
             th = new Thread(StartGame);
+            refresh = true;
             th.IsBackground = true;
             th.Start();
         }
         //Responsible on starting the game loop.
         private void StartGame()
         {
-            for (int i = 1; i<=quesCount; i++)
+            for (int i = 1; i<=quesCount && refresh; i++)
             {
                 GetQuestion();
                 SetTimer();
@@ -79,6 +78,13 @@ namespace TriviaClient
                     {
                         try
                         {
+                            this.Dispatcher.BeginInvoke(new Action(() =>
+                            {
+                                this.ans1.IsHitTestVisible = false;
+                                this.ans2.IsHitTestVisible = false;
+                                this.ans3.IsHitTestVisible = false;
+                                this.ans4.IsHitTestVisible = false;
+                            }));
                             string data = Consts.SUBMIT_ANSWER.PadLeft(2, '0');
                             string msg = "{\"answerId\":-1}";
                             data += msg.Length.ToString().PadLeft(4, '0');
@@ -209,22 +215,11 @@ namespace TriviaClient
                 }, Application.Current.Dispatcher);
             Timer.Start();
         }
-
-        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        private void OnProcessExit(object sender, EventArgs e)
         {
-            base.OnMouseLeftButtonDown(e);
-            this.DragMove();
+            string data = Consts.LEAVE_GAME.PadLeft(2, '0') + "0000";
+            loggedUser.SendData(data, loggedUser.sock);
         }
-        private void OnWindowclose(object sender, EventArgs e)
-        {
-            try
-            {
-                loggedUser.Logout();
-                th.Abort();
-            }
-            catch (Exception) { }
-        }
-
         class GetQuestionRes
         {
             public int status { get; set; }
@@ -323,9 +318,7 @@ namespace TriviaClient
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            string data = Consts.LEAVE_GAME.PadLeft(2, '0') + "0000";
-            loggedUser.SendData(data, loggedUser.sock);
-            
+            refresh = false;
         }
     }
 }

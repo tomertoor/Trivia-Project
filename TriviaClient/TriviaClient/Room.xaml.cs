@@ -26,10 +26,7 @@ namespace TriviaClient
             InitializeComponent();
             this.Left = w.Left;
             this.Top = w.Top;
-            AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
-            {
-                loggedUser.Logout();
-            };
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler (OnProcessExit);
             JoinRoom.refresh = false;
             users = new List<string>();
             if (JoinRoom.loggedUser.passedWhat == Consts.JOIN_ROOM)
@@ -179,6 +176,17 @@ namespace TriviaClient
                 }
             }));
         }
+        private void OnProcessExit(object sender, EventArgs e)
+        {
+            string data = "";
+            if (mod == Consts.ADMIN)
+                data = Consts.CLOSE_ROOM.PadLeft(2, '0') + "0000";
+            if (mod == Consts.MEMBER)
+                data = Consts.LEAVE_ROOM.PadLeft(2, '0') + "0000";
+            loggedUser.SendData(data, loggedUser.sock);
+            ServerMsg msg = loggedUser.GetData();
+            loggedUser.Logout();
+        }
         private void start_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -278,6 +286,11 @@ namespace TriviaClient
             {
                 status = "0";
             }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            refresh = false;
         }
     }
 }
